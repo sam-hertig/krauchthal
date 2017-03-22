@@ -167,6 +167,7 @@ function init() {
 
 function createDNA() {
 
+    // Create DNA material
     var dnaMat = new THREE.MeshPhongMaterial({ 
         color : 0x00FF00,
         specular : 0xFFFFFF,
@@ -177,232 +178,188 @@ function createDNA() {
         shading: THREE.SmoothShading
     });
 
-    // create helix container
-    helixObj = new THREE.Object3D();
-    helixObj.position.set(1.353, -10.015, 5.629);
-    helixObj.rotation.set(1.241, 0.007, 0);    
-    helixObj.scale.set(4, 4, 4);
+    // Create helix container
+    dnaObj = new THREE.Object3D();
+    dnaObj.position.set(1.353, -10.015, 5.629);
+    dnaObj.rotation.set(1.241, 0.007, 0);    
+    dnaObj.scale.set(4, 4, 4);
+
+    // Gather vertices for unfolded shape
+    var dnaPathObj1 = {
+        doublehelix: true,
+        points1: [
+            new THREE.Vector3(-20, -20, -60),
+            new THREE.Vector3(-1/4, 0, -Math.sqrt(3)/2).multiplyScalar(10),
+            new THREE.Vector3(-6, 0, -7),
+        ],
+        points2: [],
+        angleOffsets: [0, 1.2*Math.PI],
+        initDir: new THREE.Vector3(-1/4, 0, -Math.sqrt(3)/2),
+    }
+    var dnaPathObj2 = {
+        doublehelix: false,
+        points1: [
+            new THREE.Vector3(-3.933, -1.621, -6.295),
+            new THREE.Vector3(-3.164, -0.027, -6.339),
+            new THREE.Vector3(-2.998, 0.382, -5.407),
+            new THREE.Vector3(-2.529, -0.349, -4.456),
+            new THREE.Vector3(-1.750, -1.139, -4.390),
+            new THREE.Vector3(-0.597, -1.505, -4.870),
+            new THREE.Vector3(0.867, -0.986, -4.804),
+            new THREE.Vector3(1.193, 0.164, -3.176),
+            new THREE.Vector3(0.797, -0.447, -1.266)
+        ],
+        points2: [
+            new THREE.Vector3(-4.099, 1.898, -4.379),
+            new THREE.Vector3(-3.548, 1.709, -3.428),
+            new THREE.Vector3(-2.992, 0.448, -2.603),
+            new THREE.Vector3(-2.069, -0.090, -1.826),
+            new THREE.Vector3(-1.250, -0.096, -0.876)    
+        ],
+        angleOffsets: [],
+        initDir: new THREE.Vector3(0, 0, 0)
+    }
+    var dnaPathObj3 = {
+        doublehelix: true,
+        points1: [
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 0, 10),
+            new THREE.Vector3(10, 0, 20),
+            new THREE.Vector3(-10, -10, 60),
+        ],
+        points2: [],
+        angleOffsets: [0, 1.2*Math.PI],
+        initDir: new THREE.Vector3(0, 0, 1),
+    }
+    var pathObjList1 = [dnaPathObj1, dnaPathObj2, dnaPathObj3];
+    var pathObjListTest = [dnaPathObj2];
 
 
-    // Interior single strand 1:
-    var helixVertices1 = [
-        new THREE.Vector3(-3.933, -1.621, -6.295),
-        new THREE.Vector3(-3.164, -0.027, -6.339),
-        new THREE.Vector3(-2.998, 0.382, -5.407),
-        new THREE.Vector3(-2.529, -0.349, -4.456),
-        new THREE.Vector3(-1.750, -1.139, -4.390),
-        new THREE.Vector3(-0.597, -1.505, -4.870),
-        new THREE.Vector3(0.867, -0.986, -4.804),
-        new THREE.Vector3(1.193, 0.164, -3.176),
-        new THREE.Vector3(0.797, -0.447, -1.266)
-    ];
+    
+    function createDNAgeometry(pathObjList, extrusionSteps) {
 
-    // Interior single strand 1:
-    var helixVertices2 = [
-        new THREE.Vector3(-4.099, 1.898, -4.379),
-        new THREE.Vector3(-3.548, 1.709, -3.428),
-        new THREE.Vector3(-2.992, 0.448, -2.603),
-        new THREE.Vector3(-2.069, -0.090, -1.826),
-        new THREE.Vector3(-1.250, -0.096, -0.876)
-    ];
+        // DNA properties (type B):
+        var radius = 1.0; //nm
+        var pitch = 3.32; //nm
+        var angleDiff = 1.2*Math.PI; // 11/6 ratio between groove widths
+        var basesPerTurn = 8; // theoretically 10.5, but 8 looks ok
+        var resolution = 8; // 8 looks ok
 
+        // create helix cross-sectional geometry:
+        var helixShape = new THREE.Shape();
+        const longSide = 0.2;
+        const shortSide = 0.07;
+        helixShape.moveTo( -longSide/2, 0);
+        helixShape.quadraticCurveTo(0, shortSide/2, longSide/2, 0);
+        helixShape.quadraticCurveTo(0, -shortSide/2, -longSide/2, 0);
 
-    // Doublehelix1:
+        // Loop over pathObjects 
+        var strand1vertices = [];
+        var strand2vertices = [];
+        var i, obj;
+        for (i=0; i<pathObjList.length; i++) {
+            obj = pathObjList[i];
+            if (obj.doublehelix) {
 
-    // DNA properties (type B):
-    var radius = 1.0; //nm
-    var pitch = 3.32; //nm
-    var angleDiff = 1.2*Math.PI; //
-    var basesPerTurn = 8; // theoretically 10.5, but 8 looks ok
-    var resolution = 8; // 8 looks ok
+                // Create backbone curve
+                var bbCurve = new THREE.CatmullRomCurve3(obj.points1);
+                
 
-    // create helix cross-sectional geometry:
-    var helixShape = new THREE.Shape();
-    var longSide = 0.2;
-    var shortSide = 0.07;
-    helixShape.moveTo( -longSide/2, 0);
-    helixShape.quadraticCurveTo(0, shortSide/2, longSide/2, 0);
-    helixShape.quadraticCurveTo(0, -shortSide/2, -longSide/2, 0);
+                // spiral around backbone to create helices:
+                var bbLength = bbCurve.getLength();
+                var nrOfBases = Math.floor((bbLength/pitch)*basesPerTurn);
+                var backBoneVertices = bbCurve.getSpacedPoints(nrOfBases);
+                var baseNr, angle, x,y,z;
+                // var currentQuat = new THREE.Quaternion();
+                // var currentBackBone = new THREE.Vector3();
+                // var currentDial1 = new THREE.Vector3();
+                // var currentSummed1 = new THREE.Vector3();
+                // var currentDial2 = new THREE.Vector3();
+                // var currentSummed2 = new THREE.Vector3();    
+                // var currentTangent = new THREE.Vector3();
+                // var previousBackBone = new THREE.Vector3();
+                // for (baseNr=0; baseNr<nrOfBases; baseNr++) {
+                //     angle1 = baseNr*2*Math.PI/basesPerTurn;
+                //     angle2 = angle1 + angleDiff;
+                //     currentDial1 = new THREE.Vector3(radius * Math.cos(angle1), radius * Math.sin(angle1), 0);
+                //     currentDial1.applyQuaternion(currentQuat);
+                //     currentDial2 = new THREE.Vector3(radius * Math.cos(angle2), radius * Math.sin(angle2), 0);
+                //     currentDial2.applyQuaternion(currentQuat);        
+                //     currentBackBone = backBoneVertices[baseNr];
+                //     currentSummed1.addVectors(currentBackBone, currentDial1);
+                //     currentSummed2.addVectors(currentBackBone, currentDial2);
+                //     helixVertices1.push(currentSummed1.clone());
+                //     helixVertices2.push(currentSummed2.clone());
+                //     if (baseNr>0) {
+                //         currentTangent.subVectors(currentBackBone, previousBackBone).normalize();
+                //         currentQuat.setFromUnitVectors(initDir, currentTangent);    
+                //     }
+                //     previousBackBone = currentBackBone.clone();
+                // }
 
-    // create backbone path:
-    var initDir = new THREE.Vector3(0, 0, 1); //initial direction (tangent)
-    var bbCurve = new THREE.CatmullRomCurve3( [
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 0, 10),
-        new THREE.Vector3(10, 0, 20),
-        new THREE.Vector3(-10, -10, 60),
-    ] );
     // var bbGeom = new THREE.Geometry();
     // bbGeom.vertices = bbCurve.getSpacedPoints(24);
     // var bbMat = new THREE.LineBasicMaterial( { color : 0xff0000 } );
     // var bbObj = new THREE.Line( bbGeom, bbMat );
     // helixObj.add(bbObj);
 
-    // spiral around backbone to create helices:
-    var bbLength = bbCurve.getLength();
-    var nrOfBases = Math.floor((bbLength/pitch)*basesPerTurn);
-    var backBoneVertices = bbCurve.getSpacedPoints(nrOfBases);
-    // var helixVertices1 = [];
-    //var helixVertices2 = [];
-    var baseNr, angle, x,y,z;
-    var currentQuat = new THREE.Quaternion();
-    var currentBackBone = new THREE.Vector3();
-    var currentDial1 = new THREE.Vector3();
-    var currentSummed1 = new THREE.Vector3();
-    var currentDial2 = new THREE.Vector3();
-    var currentSummed2 = new THREE.Vector3();    
-    var currentTangent = new THREE.Vector3();
-    var previousBackBone = new THREE.Vector3();
-    for (baseNr=0; baseNr<nrOfBases; baseNr++) {
-        angle1 = baseNr*2*Math.PI/basesPerTurn;
-        angle2 = angle1 + angleDiff;
-        currentDial1 = new THREE.Vector3(radius * Math.cos(angle1), radius * Math.sin(angle1), 0);
-        currentDial1.applyQuaternion(currentQuat);
-        currentDial2 = new THREE.Vector3(radius * Math.cos(angle2), radius * Math.sin(angle2), 0);
-        currentDial2.applyQuaternion(currentQuat);        
-        currentBackBone = backBoneVertices[baseNr];
-        currentSummed1.addVectors(currentBackBone, currentDial1);
-        currentSummed2.addVectors(currentBackBone, currentDial2);
-        helixVertices1.push(currentSummed1.clone());
-        helixVertices2.push(currentSummed2.clone());
-        if (baseNr>0) {
-            currentTangent.subVectors(currentBackBone, previousBackBone).normalize();
-            currentQuat.setFromUnitVectors(initDir, currentTangent);    
-        }
-        previousBackBone = currentBackBone.clone();
-    }    
-
-    // extrude:
-    var helixSpline1 = new THREE.CatmullRomCurve3(helixVertices1);
-    var helixGeom1 = new THREE.ExtrudeGeometry(helixShape, { steps : nrOfBases*resolution, extrudePath : helixSpline1 });
-    var helixSpline2 = new THREE.CatmullRomCurve3(helixVertices2);
-    var helixGeom2 = new THREE.ExtrudeGeometry(helixShape, { steps : nrOfBases*resolution, extrudePath : helixSpline2 });
-    //helixGeom1.morphTargets.push({ name: "1", vertices: helixGeom1.vertices });    
-    // add other helix as morph target:
-    //helixGeom1.morphTargets.push({ name: "2", vertices: helixGeom2.vertices });
-    
-    // create mesh:
-    var helixMesh1 = new THREE.Mesh(helixGeom1, dnaMat);
-    var helixMesh2 = new THREE.Mesh(helixGeom2, dnaMat);
-    // helixMesh.castShadow = true;
-    // helixMesh.receiveShadow = true;
-    helixMesh1.geometry.computeVertexNormals();
-    helixMesh1.geometry.computeMorphNormals();
-
-    helixObj.add(helixMesh1);
-    helixObj.add(helixMesh2);
-
-    return helixObj;
-
-    //Starting Point for last part of double helix: 
-    //new THREE.Vector3(-6, 0, -7)
-    // Direction: 150deg angle (Jiang et al. 2016)
-    //new THREE.Vector3(-1/4, 0, -Math.Sqrt(3)/2) )
+     
 
 
-    //new THREE.Vector3(-6, 0, -7),
-    //new THREE.Vector3(-1/4, 0, -Math.Sqrt(3)/2).multiplyScalar(10),
-    //new THREE.Vector3(-20, -20, -60),
-
-}
-
-
-
-
-
-
-
-var dnaPathObj1 = {
-    doublehelix: true,
-    points1: [
-        new THREE.Vector3(-20, -20, -60),
-        new THREE.Vector3(-1/4, 0, -Math.Sqrt(3)/2).multiplyScalar(10),
-        new THREE.Vector3(-6, 0, -7),
-    ],
-    points2: [],
-    angleOffsets: [0, 1.2*Math.PI]
-}
-
-var dnaPathObj2 = {
-    doublehelix: false,
-    points1: [
-        new THREE.Vector3(-3.933, -1.621, -6.295),
-        new THREE.Vector3(-3.164, -0.027, -6.339),
-        new THREE.Vector3(-2.998, 0.382, -5.407),
-        new THREE.Vector3(-2.529, -0.349, -4.456),
-        new THREE.Vector3(-1.750, -1.139, -4.390),
-        new THREE.Vector3(-0.597, -1.505, -4.870),
-        new THREE.Vector3(0.867, -0.986, -4.804),
-        new THREE.Vector3(1.193, 0.164, -3.176),
-        new THREE.Vector3(0.797, -0.447, -1.266)
-    ],
-    points2: [
-        new THREE.Vector3(-4.099, 1.898, -4.379),
-        new THREE.Vector3(-3.548, 1.709, -3.428),
-        new THREE.Vector3(-2.992, 0.448, -2.603),
-        new THREE.Vector3(-2.069, -0.090, -1.826),
-        new THREE.Vector3(-1.250, -0.096, -0.876)    
-    ],
-    angleOffsets: []
-}
-
-var dnaPathObj3 = {
-    doublehelix: true,
-    points1: [
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 0, 10),
-        new THREE.Vector3(10, 0, 20),
-        new THREE.Vector3(-10, -10, 60),
-    ],
-    points2: [],
-    angleOffsets: [0, 1.2*Math.PI]
-}
-
-var pathObjList1 = [dnaPathObj1, dnaPathObj2, dnaPathObj3];
-
-
-function createDNAgeometry(pathObjList, extrusionSteps) {
-
-    var strand1vertices = [];
-    var strand2vertices = [];
-
-    var i, obj;
-    for (i=0; i<pathObjList.length; i++) {
-
-        obj = pathObjList[i];
-
-        if (obj.doublehelix) {
-
-        } else {
-            // Simply add vertices to strand vertices, ensuring closest ends are connected:
-            var crossing = false;
-            if (strand1vertices.length>0) {
-                const dist11 = strand1vertices[strand1vertices.length-1].distanceTo(obj.points1[0]);
-                const dist12 = strand1vertices[strand1vertices.length-1].distanceTo(obj.points2[0]);
-                const dist21 = strand2vertices[strand2vertices.length-1].distanceTo(obj.points1[0]);
-                const dist22 = strand2vertices[strand2vertices.length-1].distanceTo(obj.points2[0]);
-                const distII = dist11 + dist22;
-                const distX = dist12 + dist21;
-                crossing = (distX<distII) ? true : false;
-            }
-            if (crossing) {
-                strand1vertices = strand1vertices.concat(obj.points2);
-                strand2vertices = strand2vertices.concat(obj.points1);
             } else {
-                strand1vertices = strand1vertices.concat(obj.points1);
-                strand2vertices = strand2vertices.concat(obj.points2);                
+                // Simply add vertices to strand vertices, ensuring closest ends are connected:
+                var crossing = false;
+                if (strand1vertices.length>0) {
+                    const dist11 = strand1vertices[strand1vertices.length-1].distanceTo(obj.points1[0]);
+                    const dist12 = strand1vertices[strand1vertices.length-1].distanceTo(obj.points2[0]);
+                    const dist21 = strand2vertices[strand2vertices.length-1].distanceTo(obj.points1[0]);
+                    const dist22 = strand2vertices[strand2vertices.length-1].distanceTo(obj.points2[0]);
+                    const distII = dist11 + dist22;
+                    const distX = dist12 + dist21;
+                    crossing = (distX<distII) ? true : false;
+                }
+                if (crossing) {
+                    strand1vertices = strand1vertices.concat(obj.points2);
+                    strand2vertices = strand2vertices.concat(obj.points1);
+                } else {
+                    strand1vertices = strand1vertices.concat(obj.points1);
+                    strand2vertices = strand2vertices.concat(obj.points2);                
+                }
             }
 
         }
+
+        // Extrude both strands:
+        const helixSpline1 = new THREE.CatmullRomCurve3(strand1vertices);
+        const helixSpline2 = new THREE.CatmullRomCurve3(strand2vertices);
+        const helixGeom1 = new THREE.ExtrudeGeometry(helixShape, { steps : extrusionSteps, extrudePath : helixSpline1 });
+        const helixGeom2 = new THREE.ExtrudeGeometry(helixShape, { steps : extrusionSteps, extrudePath : helixSpline2 });
+        
+        // Return list of the two strand geometries:
+        return [helixGeom1, helixGeom2];
 
     }
 
-    // Extrude both strands:
+    const helixGeometries = createDNAgeometry(pathObjListTest, 100);
 
+    const dnaMesh1 = new THREE.Mesh(helixGeometries[0], dnaMat);
+    const dnaMesh2 = new THREE.Mesh(helixGeometries[1], dnaMat);
 
-    return dnaGeomList;
+    dnaObj.add(dnaMesh1);
+    dnaObj.add(dnaMesh2);
 
+    //scene.add(dnaObj);
+    return dnaObj;
 }
+
+
+
+
+
+
+
+
+
 
 
 

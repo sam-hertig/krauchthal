@@ -198,13 +198,13 @@ function createDNA() {
     ];
 
     // Interior single strand 1:
-	var helixVertices2 = [
-		new THREE.Vector3(-4.099, 1.898, -4.379),
-		new THREE.Vector3(-3.548, 1.709, -3.428),
-		new THREE.Vector3(-2.992, 0.448, -2.603),
-		new THREE.Vector3(-2.069, -0.090, -1.826),
-		new THREE.Vector3(-1.250, -0.096, -0.876)
-	];
+    var helixVertices2 = [
+        new THREE.Vector3(-4.099, 1.898, -4.379),
+        new THREE.Vector3(-3.548, 1.709, -3.428),
+        new THREE.Vector3(-2.992, 0.448, -2.603),
+        new THREE.Vector3(-2.069, -0.090, -1.826),
+        new THREE.Vector3(-1.250, -0.096, -0.876)
+    ];
 
 
     // Doublehelix1:
@@ -309,6 +309,117 @@ function createDNA() {
 
 
 
+
+
+
+var dnaPathObj1 = {
+    doublehelix: true,
+    points1: [
+        new THREE.Vector3(-20, -20, -60),
+        new THREE.Vector3(-1/4, 0, -Math.Sqrt(3)/2).multiplyScalar(10),
+        new THREE.Vector3(-6, 0, -7),
+    ],
+    points2: [],
+    angleOffsets: [0, 1.2*Math.PI]
+}
+
+var dnaPathObj2 = {
+    doublehelix: false,
+    points1: [
+        new THREE.Vector3(-3.933, -1.621, -6.295),
+        new THREE.Vector3(-3.164, -0.027, -6.339),
+        new THREE.Vector3(-2.998, 0.382, -5.407),
+        new THREE.Vector3(-2.529, -0.349, -4.456),
+        new THREE.Vector3(-1.750, -1.139, -4.390),
+        new THREE.Vector3(-0.597, -1.505, -4.870),
+        new THREE.Vector3(0.867, -0.986, -4.804),
+        new THREE.Vector3(1.193, 0.164, -3.176),
+        new THREE.Vector3(0.797, -0.447, -1.266)
+    ],
+    points2: [
+        new THREE.Vector3(-4.099, 1.898, -4.379),
+        new THREE.Vector3(-3.548, 1.709, -3.428),
+        new THREE.Vector3(-2.992, 0.448, -2.603),
+        new THREE.Vector3(-2.069, -0.090, -1.826),
+        new THREE.Vector3(-1.250, -0.096, -0.876)    
+    ],
+    angleOffsets: []
+}
+
+var dnaPathObj3 = {
+    doublehelix: true,
+    points1: [
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 10),
+        new THREE.Vector3(10, 0, 20),
+        new THREE.Vector3(-10, -10, 60),
+    ],
+    points2: [],
+    angleOffsets: [0, 1.2*Math.PI]
+}
+
+var pathObjList1 = [dnaPathObj1, dnaPathObj2, dnaPathObj3];
+
+
+function createDNAgeometry(pathObjList, extrusionSteps) {
+
+    var strand1vertices = [];
+    var strand2vertices = [];
+
+    var i, obj;
+    for (i=0; i<pathObjList.length; i++) {
+
+        obj = pathObjList[i];
+
+        if (obj.doublehelix) {
+
+        } else {
+            // Simply add vertices to strand vertices, ensuring closest ends are connected:
+            var crossing = false;
+            if (strand1vertices.length>0) {
+                const dist11 = strand1vertices[strand1vertices.length-1].distanceTo(obj.points1[0]);
+                const dist12 = strand1vertices[strand1vertices.length-1].distanceTo(obj.points2[0]);
+                const dist21 = strand2vertices[strand2vertices.length-1].distanceTo(obj.points1[0]);
+                const dist22 = strand2vertices[strand2vertices.length-1].distanceTo(obj.points2[0]);
+                const distII = dist11 + dist22;
+                const distX = dist12 + dist21;
+                crossing = (distX<distII) ? true : false;
+            }
+            if (crossing) {
+                strand1vertices = strand1vertices.concat(obj.points2);
+                strand2vertices = strand2vertices.concat(obj.points1);
+            } else {
+                strand1vertices = strand1vertices.concat(obj.points1);
+                strand2vertices = strand2vertices.concat(obj.points2);                
+            }
+
+        }
+
+    }
+
+    // Extrude both strands:
+
+
+    return dnaGeomList;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function animateDNA(mesh, t) {
 
     var currentParams = {
@@ -330,10 +441,6 @@ function animateDNA(mesh, t) {
     tween.start();
 
 }
-
-
-
-
 
 
 function createParticleSystem() {

@@ -188,11 +188,7 @@ function createDNA() {
     helixObj.scale.set(4, 4, 4);
 
 
-    //ball:
-    //4.498870991890846 -5.279934922100132 1.903944260357144
-    //6.480783482024507 5.484407729838058 -1.0004331685199954
-
-    // Interior single strand:
+    // Interior single strand 1:
     var helixVertices1 = [
         new THREE.Vector3(-3.933, -1.621, -6.295),
         new THREE.Vector3(-3.164, -0.027, -6.339),
@@ -202,10 +198,17 @@ function createDNA() {
         new THREE.Vector3(-0.597, -1.505, -4.870),
         new THREE.Vector3(0.867, -0.986, -4.804),
         new THREE.Vector3(1.193, 0.164, -3.176),
-        new THREE.Vector3(0.797, -0.447, -1.266),
-        // new THREE.Vector3(1, 0, 0),
+        new THREE.Vector3(0.797, -0.447, -1.266)
     ];
 
+    // Interior single strand 1:
+	var helixVertices2 = [
+		new THREE.Vector3(-4.099, 1.898, -4.379),
+		new THREE.Vector3(-3.548, 1.709, -3.428),
+		new THREE.Vector3(-2.992, 0.448, -2.603),
+		new THREE.Vector3(-2.069, -0.090, -1.826),
+		new THREE.Vector3(-1.250, -0.096, -0.876)
+	];
 
 
     // Doublehelix1:
@@ -244,7 +247,7 @@ function createDNA() {
     var nrOfBases = Math.floor((bbLength/pitch)*basesPerTurn);
     var backBoneVertices = bbCurve.getSpacedPoints(nrOfBases);
     // var helixVertices1 = [];
-    var helixVertices2 = [];
+    //var helixVertices2 = [];
     var baseNr, angle, x,y,z;
     var currentQuat = new THREE.Quaternion();
     var currentBackBone = new THREE.Vector3();
@@ -294,6 +297,9 @@ function createDNA() {
     helixObj.add(helixMesh2);
 
     return helixObj;
+
+    //Starting Point for last part of double helix: 
+    //new THREE.Vector3(-6, 0, -7)
 
 }
 

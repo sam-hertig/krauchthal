@@ -189,12 +189,12 @@ function createDNA() {
         doublehelix: true,
         points1: [
             new THREE.Vector3(-20, -20, -60),
-            new THREE.Vector3(-1/4, 0, -Math.sqrt(3)/2).multiplyScalar(10),
+            // new THREE.Vector3(-1/4, 0, -Math.sqrt(3)/2).multiplyScalar(10),
+            new THREE.Vector3(-14, 0, -12),
             new THREE.Vector3(-6, 0, -7),
         ],
         points2: [],
-        angleOffsets: [0, 1.2*Math.PI],
-        initDir: new THREE.Vector3(-1/4, 0, -Math.sqrt(3)/2),
+        angleOffsets: [1.2*Math.PI, 1.2*Math.PI], //1.3
     }
     var dnaPathObj2 = {
         doublehelix: false,
@@ -210,6 +210,7 @@ function createDNA() {
             new THREE.Vector3(0.797, -0.447, -1.266)
         ],
         points2: [
+            new THREE.Vector3(-6.038, 1.588, -5.994),
             new THREE.Vector3(-4.099, 1.898, -4.379),
             new THREE.Vector3(-3.548, 1.709, -3.428),
             new THREE.Vector3(-2.992, 0.448, -2.603),
@@ -217,7 +218,6 @@ function createDNA() {
             new THREE.Vector3(-1.250, -0.096, -0.876)    
         ],
         angleOffsets: [],
-        initDir: new THREE.Vector3(0, 0, 0)
     }
     var dnaPathObj3 = {
         doublehelix: true,
@@ -229,10 +229,8 @@ function createDNA() {
         ],
         points2: [],
         angleOffsets: [0, 1.2*Math.PI],
-        initDir: new THREE.Vector3(0, 0, 1),
     }
     var pathObjList1 = [dnaPathObj1, dnaPathObj2, dnaPathObj3];
-    var pathObjListTest = [dnaPathObj2];
 
 
     
@@ -253,59 +251,47 @@ function createDNA() {
         helixShape.quadraticCurveTo(0, shortSide/2, longSide/2, 0);
         helixShape.quadraticCurveTo(0, -shortSide/2, -longSide/2, 0);
 
-        // Loop over pathObjects 
+        // Loop over pathObjects:
         var strand1vertices = [];
         var strand2vertices = [];
         var i, obj;
         for (i=0; i<pathObjList.length; i++) {
             obj = pathObjList[i];
             if (obj.doublehelix) {
-
-                // Create backbone curve
+                // Create backbone curve:
                 var bbCurve = new THREE.CatmullRomCurve3(obj.points1);
-                
-
-                // spiral around backbone to create helices:
+                // Spiral around backbone to create helices:
                 var bbLength = bbCurve.getLength();
                 var nrOfBases = Math.floor((bbLength/pitch)*basesPerTurn);
                 var backBoneVertices = bbCurve.getSpacedPoints(nrOfBases);
                 var baseNr, angle, x,y,z;
-                // var currentQuat = new THREE.Quaternion();
-                // var currentBackBone = new THREE.Vector3();
-                // var currentDial1 = new THREE.Vector3();
-                // var currentSummed1 = new THREE.Vector3();
-                // var currentDial2 = new THREE.Vector3();
-                // var currentSummed2 = new THREE.Vector3();    
-                // var currentTangent = new THREE.Vector3();
-                // var previousBackBone = new THREE.Vector3();
-                // for (baseNr=0; baseNr<nrOfBases; baseNr++) {
-                //     angle1 = baseNr*2*Math.PI/basesPerTurn;
-                //     angle2 = angle1 + angleDiff;
-                //     currentDial1 = new THREE.Vector3(radius * Math.cos(angle1), radius * Math.sin(angle1), 0);
-                //     currentDial1.applyQuaternion(currentQuat);
-                //     currentDial2 = new THREE.Vector3(radius * Math.cos(angle2), radius * Math.sin(angle2), 0);
-                //     currentDial2.applyQuaternion(currentQuat);        
-                //     currentBackBone = backBoneVertices[baseNr];
-                //     currentSummed1.addVectors(currentBackBone, currentDial1);
-                //     currentSummed2.addVectors(currentBackBone, currentDial2);
-                //     helixVertices1.push(currentSummed1.clone());
-                //     helixVertices2.push(currentSummed2.clone());
-                //     if (baseNr>0) {
-                //         currentTangent.subVectors(currentBackBone, previousBackBone).normalize();
-                //         currentQuat.setFromUnitVectors(initDir, currentTangent);    
-                //     }
-                //     previousBackBone = currentBackBone.clone();
-                // }
-
-    // var bbGeom = new THREE.Geometry();
-    // bbGeom.vertices = bbCurve.getSpacedPoints(24);
-    // var bbMat = new THREE.LineBasicMaterial( { color : 0xff0000 } );
-    // var bbObj = new THREE.Line( bbGeom, bbMat );
-    // helixObj.add(bbObj);
-
-     
-
-
+                var currentQuat = new THREE.Quaternion();
+                var currentBackBone = new THREE.Vector3();
+                var currentDial1 = new THREE.Vector3();
+                var currentSummed1 = new THREE.Vector3();
+                var currentDial2 = new THREE.Vector3();
+                var currentSummed2 = new THREE.Vector3();    
+                var currentTangent = new THREE.Vector3();
+                var previousBackBone = new THREE.Vector3();
+                var zVec = new THREE.Vector3(0, 0, 1);
+                for (baseNr=0; baseNr<nrOfBases; baseNr++) {
+                    angle1 = baseNr*2*Math.PI/basesPerTurn + obj.angleOffsets[0];
+                    angle2 = angle1 + obj.angleOffsets[1];
+                    currentDial1 = new THREE.Vector3(radius * Math.cos(angle1), radius * Math.sin(angle1), 0);
+                    currentDial1.applyQuaternion(currentQuat);
+                    currentDial2 = new THREE.Vector3(radius * Math.cos(angle2), radius * Math.sin(angle2), 0);
+                    currentDial2.applyQuaternion(currentQuat);        
+                    currentBackBone = backBoneVertices[baseNr];
+                    currentSummed1.addVectors(currentBackBone, currentDial1);
+                    currentSummed2.addVectors(currentBackBone, currentDial2);
+                    strand1vertices.push(currentSummed1.clone());
+                    strand2vertices.push(currentSummed2.clone());
+                    if (baseNr>0) {
+                        currentTangent.subVectors(currentBackBone, previousBackBone).normalize();
+                        currentQuat.setFromUnitVectors(zVec, currentTangent);    
+                    }
+                    previousBackBone = currentBackBone.clone();
+                }
             } else {
                 // Simply add vertices to strand vertices, ensuring closest ends are connected:
                 var crossing = false;
@@ -340,7 +326,7 @@ function createDNA() {
 
     }
 
-    const helixGeometries = createDNAgeometry(pathObjListTest, 100);
+    const helixGeometries = createDNAgeometry(pathObjList1, 2000);
 
     const dnaMesh1 = new THREE.Mesh(helixGeometries[0], dnaMat);
     const dnaMesh2 = new THREE.Mesh(helixGeometries[1], dnaMat);

@@ -109,7 +109,7 @@ function init() {
     controls = new THREE.TrackballControls( camera, renderer.domElement );
     controls.maxDistance = 250;
     controls.zoomSpeed = 0.5;
-    //controls.noPan = true;
+    controls.noPan = true;
 
     // Shadows
     camLight.castShadow = true;
@@ -183,13 +183,10 @@ function init() {
                 tcontrol.setSize( Math.max( tcontrol.size - 0.1, 0.1 ) );
                 break;
             case 77: //m
-                animateDNA(dna.children[0], 2000);
-                animateDNA(dna.children[1], 2000);
-                animateDNA(rna.children[0], 2000);
-                break;
-            case 78: //n
-                animateDNA(rna.children[0], 2000);
-                break;                
+                animateDNA(dna.children[0], 3000);
+                animateDNA(dna.children[1], 3000);
+                animateDNA(rna.children[0], 3000);
+                break;               
         }
     });
     window.addEventListener( 'keyup', function ( event ) {

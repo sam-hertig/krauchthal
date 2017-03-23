@@ -44,7 +44,7 @@ function init() {
 
     // Load cas9
     var loader1 = new THREE.JSONLoader();
-    loader1.load('models/crisprV1.json', function (geometry, materials) {
+    loader1.load('models/crisprV2.2.json', function (geometry, materials) {
 
         var test1 = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
         test1.receiveShadow = true;
@@ -60,7 +60,7 @@ function init() {
  
         // Load RNA
         var loader2 = new THREE.JSONLoader();
-        loader2.load('models/crisprV1b.json', function (geometry, materials) {
+        loader2.load('models/crisprV2.2b.json', function (geometry, materials) {
             test2 = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
             // test2.receiveShadow = true;
             // test2.castShadow = true;
@@ -205,9 +205,9 @@ function createDNA() {
     }    
     var dnaPathObj1 = {
         doublehelix: true,
-        points1: helixPoints1,
+        points1: [new THREE.Vector3(-20, -20, -61.5)].concat(helixPoints1),
         points2: [],
-        angleOffsets: [1.2*Math.PI, 1.2*Math.PI],
+        angleOffsets: [0, 1.2*Math.PI],
     }
     var dnaPathObj2 = {
         doublehelix: false,
@@ -234,7 +234,7 @@ function createDNA() {
     }
     var dnaPathObj3 = {
         doublehelix: true,
-        points1: helixPoints3,
+        points1: helixPoints3.concat([new THREE.Vector3(-10, -10, 62)]),
         points2: [],
         angleOffsets: [0, 1.2*Math.PI],
     }
@@ -346,6 +346,7 @@ function createDNA() {
         // Extrude both strands:
         var helixSpline1 = new THREE.CatmullRomCurve3(strand1vertices);
         var helixSpline2 = new THREE.CatmullRomCurve3(strand2vertices);
+        console.log('DNA strands lengths:', helixSpline1.getLength(), helixSpline2.getLength());
         var helixGeom1 = new THREE.ExtrudeGeometry(helixShape, { steps : extrusionSteps, extrudePath : helixSpline1 });
         var helixGeom2 = new THREE.ExtrudeGeometry(helixShape, { steps : extrusionSteps, extrudePath : helixSpline2 });
         

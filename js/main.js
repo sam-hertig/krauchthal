@@ -15,8 +15,6 @@ var rnaMat1 = new THREE.MeshPhongMaterial({
     side : THREE.DoubleSide, 
     shading: THREE.SmoothShading
 });
-
-// Create RNA material 2
 var rnaMat2 = new THREE.MeshPhongMaterial({ 
     color : 0x0000FF,
     specular : 0xFFFFFF,
@@ -28,12 +26,21 @@ var rnaMat2 = new THREE.MeshPhongMaterial({
 });
 
 // Create DNA material
-var dnaMat = new THREE.MeshPhongMaterial({ 
+var dnaMat1 = new THREE.MeshPhongMaterial({ 
     color : 0x9900AA,
     specular : 0xFFFFFF,
     shininess: 10,
     morphTargets : true, 
     morphNormals : true, 
+    side : THREE.DoubleSide, 
+    shading: THREE.SmoothShading
+});
+var dnaMat2 = new THREE.MeshPhongMaterial({ 
+    color : 0x9900AA,
+    specular : 0xFFFFFF,
+    shininess: 10,
+    // morphTargets : true, 
+    // morphNormals : true,     
     side : THREE.DoubleSide, 
     shading: THREE.SmoothShading
 });
@@ -78,9 +85,9 @@ function init() {
 
         //materials[0].fog = false;
         var test1 = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
-        // test1.receiveShadow = true;
-        // test1.castShadow = true;
-        scene.add(test1);
+        //test1.receiveShadow = true;
+        //test1.castShadow = true;
+        //scene.add(test1);
         test1.scale.set(10,10,10);
 
         // Center mol
@@ -93,8 +100,8 @@ function init() {
         var loader2 = new THREE.JSONLoader();
         loader2.load('models/crisprV2.2e.json', function (geometry, materials) {
             test2 = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
-            // test2.receiveShadow = true;
-            // test2.castShadow = true;
+            //test2.receiveShadow = true;
+            //test2.castShadow = true;
             test2.material = rnaMat1;
             test2.scale.set(10,10,10);     
             scene.add(test2);   
@@ -109,7 +116,7 @@ function init() {
     controls = new THREE.TrackballControls( camera, renderer.domElement );
     controls.maxDistance = 250;
     controls.zoomSpeed = 0.5;
-    controls.noPan = true;
+    //controls.noPan = true;
 
     // Shadows
     camLight.castShadow = true;
@@ -144,21 +151,28 @@ function init() {
 
     // cut DNA part 1
     var dnaPart1 = createDNApart1();
-    //scene.add(dnaPart1);   
+    scene.add(dnaPart1);
+
+    // cut DNA part 2
+    var dnaPart2 = createDNApart2();
+    scene.add(dnaPart2);
+
+    // console.log(rna, dna, dnaPart1, dnaPart2);
 
     // Transform Controls (delete later...)
-    // var tcontrol = new THREE.TransformControls( camera, renderer.domElement );
-    // tcontrol.addEventListener( 'change', onTransform ); //render
-    // function onTransform() {
-    //    console.log('----');
-    //    console.log(this.object.position.x, this.object.position.y, this.object.position.z);
-    //    console.log(this.object.rotation.x, this.object.rotation.y, this.object.rotation.z);
-    //    console.log(this.object.scale.x, this.object.scale.y, this.object.scale.z);
-    // } 
-    // var posBall = new THREE.Mesh((new THREE.SphereGeometry(0.1)), new THREE.MeshLambertMaterial({color: 0xff0000}));
-    // rna.add(posBall);
-    // tcontrol.attach(posBall);
-    // scene.add(tcontrol);
+    var tcontrol = new THREE.TransformControls( camera, renderer.domElement );
+    tcontrol.addEventListener( 'change', onTransform ); //render
+    function onTransform() {
+      console.log('----');
+      console.log(this.object.position.x, this.object.position.y, this.object.position.z);
+      console.log(this.object.rotation.x, this.object.rotation.y, this.object.rotation.z);
+      console.log(this.object.scale.x, this.object.scale.y, this.object.scale.z);
+    } 
+    //var posBall = new THREE.Mesh((new THREE.SphereGeometry(0.1)), new THREE.MeshLambertMaterial({color: 0xff0000}));
+    //rna.add(posBall);
+    //tcontrol.attach(posBall);
+    tcontrol.attach(dnaPart1);
+    scene.add(tcontrol);
 
     window.addEventListener( 'keydown', function ( event ) {
         switch ( event.keyCode ) {
@@ -267,85 +281,6 @@ function createFloppyRNA() {
 
 
 
-function createDNApart1() {
-
-    // Create helix container
-    dnaObj = new THREE.Object3D();
-    dnaObj.position.set(1.353, -10.015, 5.629);
-    dnaObj.rotation.set(1.241, 0.007, 0);    
-    dnaObj.scale.set(4, 4, 4);
-
-    // Gather vertices for unfolded shape
-    var helixPoints1 = [
-        new THREE.Vector3(-20, -20, -60),
-        new THREE.Vector3(-14, 0, -12),
-        new THREE.Vector3(-6, 0, -7),
-    ];
-
-   
-    var dnaPathObj1 = {
-        doublehelix: true,
-        points1: [new THREE.Vector3(-20, -20, -61.5)].concat(helixPoints1),
-        points2: [],
-        angleOffsets: [0, 1.2*Math.PI],
-    }
-    var dnaPathObj2 = {
-        doublehelix: false,
-        points1: [
-            new THREE.Vector3(-3.933, -1.621, -6.295),
-            new THREE.Vector3(-3.164, -0.027, -6.339),
-            new THREE.Vector3(-2.998, 0.382, -5.407),
-            new THREE.Vector3(-2.529, -0.349, -4.456),
-            new THREE.Vector3(-1.750, -1.139, -4.390),
-            new THREE.Vector3(-0.597, -1.505, -4.870),
-            new THREE.Vector3(0.867, -0.986, -4.804),
-            new THREE.Vector3(1.193, 0.164, -3.176),
-            new THREE.Vector3(1.118, 0.156, -2.631), // CUT!
-        ],
-        points2: [
-            new THREE.Vector3(-6.038, 1.588, -5.994),
-            new THREE.Vector3(-4.099, 1.898, -4.379),
-            new THREE.Vector3(-3.548, 1.709, -3.428),
-            new THREE.Vector3(-2.992, 0.448, -2.603),
-            new THREE.Vector3(-2.069, -0.090, -1.826), // CUT!
-        ],
-        angleOffsets: [],
-    }
-
-            
-    var pathObjList = [dnaPathObj1, dnaPathObj2];
-
-    var extrudeQuality = 500;
-
-    // Create Geometries:
-    var dnaGeometries = createDNAgeometry(pathObjList, extrudeQuality);
-    var dnaGeom1 = dnaGeometries[0];
-    var dnaGeom2 = dnaGeometries[1];
-
-    // Add Morph targets:
-    // var dnaGeometriesMorphed1 = createDNAgeometry(pathObjList2, extrudeQuality);
-    // var dnaGeom1morphed1 = dnaGeometriesMorphed1[0];
-    // var dnaGeom2morphed1 = dnaGeometriesMorphed1[1];
-    // dnaGeom1.morphTargets.push({ name: "1", vertices: dnaGeom1.vertices });
-    // dnaGeom2.morphTargets.push({ name: "1", vertices: dnaGeom2.vertices });    
-    // dnaGeom1.morphTargets.push({ name: "2", vertices: dnaGeom1morphed1.vertices });
-    // dnaGeom2.morphTargets.push({ name: "2", vertices: dnaGeom2morphed1.vertices });
-   
-    // Create Meshes:
-    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat);
-    var dnaMesh2 = new THREE.Mesh(dnaGeom2, dnaMat);
-    dnaObj.add(dnaMesh1);
-    dnaObj.add(dnaMesh2);
-
-    // Compute Normals:
-    // dnaMesh1.geometry.computeVertexNormals();
-    // dnaMesh2.geometry.computeVertexNormals();
-    // dnaMesh1.geometry.computeMorphNormals();    
-    // dnaMesh2.geometry.computeMorphNormals(); 
-
-    return dnaObj;
-}
-
 
 function createDNA() {
 
@@ -431,8 +366,8 @@ function createDNA() {
     dnaGeom2.morphTargets.push({ name: "2", vertices: dnaGeom2morphed1.vertices });
    
     // Create Meshes:
-    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat);
-    var dnaMesh2 = new THREE.Mesh(dnaGeom2, dnaMat);
+    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat1);
+    var dnaMesh2 = new THREE.Mesh(dnaGeom2, dnaMat1);
     dnaObj.add(dnaMesh1);
     dnaObj.add(dnaMesh2);
 
@@ -447,6 +382,130 @@ function createDNA() {
 
 
 
+
+function createDNApart1() {
+
+    // Create helix container
+    dnaObj = new THREE.Object3D();
+    dnaObj.position.set(1.353, -10.015, 5.629);
+    dnaObj.rotation.set(1.241, 0.007, 0);    
+    dnaObj.scale.set(4, 4, 4);
+
+    // Gather vertices for unfolded shape
+    var helixPoints1 = [
+        new THREE.Vector3(-20, -20, -60),
+        new THREE.Vector3(-14, 0, -12),
+        new THREE.Vector3(-6, 0, -7),
+    ];
+
+   
+    var dnaPathObj1 = {
+        doublehelix: true,
+        points1: [new THREE.Vector3(-20, -20, -61.5)].concat(helixPoints1),
+        points2: [],
+        angleOffsets: [0, 1.2*Math.PI],
+    }
+    var dnaPathObj2 = {
+        doublehelix: false,
+        points1: [
+            new THREE.Vector3(-3.933, -1.621, -6.295),
+            new THREE.Vector3(-3.164, -0.027, -6.339),
+            new THREE.Vector3(-2.998, 0.382, -5.407),
+            new THREE.Vector3(-2.529, -0.349, -4.456),
+            new THREE.Vector3(-1.750, -1.139, -4.390),
+            new THREE.Vector3(-0.597, -1.505, -4.870),
+            new THREE.Vector3(0.867, -0.986, -4.804),
+            new THREE.Vector3(1.193, 0.164, -3.176),
+            new THREE.Vector3(1.118, 0.156, -2.631), // CUT!
+        ],
+        points2: [
+            new THREE.Vector3(-6.038, 1.588, -5.994),
+            new THREE.Vector3(-4.099, 1.898, -4.379),
+            new THREE.Vector3(-3.548, 1.709, -3.428),
+            new THREE.Vector3(-2.992, 0.448, -2.603),
+            new THREE.Vector3(-2.069, -0.090, -1.826), // CUT!
+        ],
+        angleOffsets: [],
+    }
+
+            
+    var pathObjList = [dnaPathObj1, dnaPathObj2];
+
+    var extrudeQuality = 500;
+
+    // Create Geometries:
+    var dnaGeometries = createDNAgeometry(pathObjList, extrudeQuality);
+    var dnaGeom1 = dnaGeometries[0];
+    var dnaGeom2 = dnaGeometries[1];
+   
+    // Create Meshes:
+    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat2);
+    var dnaMesh2 = new THREE.Mesh(dnaGeom2, dnaMat2);
+    dnaObj.add(dnaMesh1);
+    dnaObj.add(dnaMesh2);
+
+    // Compute Normals just to make stuff look smooth:
+    dnaMesh1.geometry.computeVertexNormals();
+    dnaMesh2.geometry.computeVertexNormals();
+
+    return dnaObj;
+}
+
+function createDNApart2() {
+
+    // Create helix container
+    dnaObj = new THREE.Object3D();
+    dnaObj.position.set(1.353, -10.015, 5.629);
+    dnaObj.rotation.set(1.241, 0.007, 0);    
+    dnaObj.scale.set(4, 4, 4);
+
+    // Gather vertices for unfolded shape   
+    var dnaPathObj2 = {
+        doublehelix: false,
+        points1: [
+            new THREE.Vector3(1.118, 0.156, -2.631), // CUT!
+            new THREE.Vector3(0.797, -0.447, -1.266)
+        ],
+        points2: [
+            new THREE.Vector3(-2.069, -0.090, -1.826), // CUT!
+            new THREE.Vector3(-1.250, -0.096, -0.876)
+        ],
+        angleOffsets: [],
+    }
+    var helixPoints3 = [
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 10),
+        new THREE.Vector3(10, 0, 20),
+        new THREE.Vector3(-10, -10, 60),
+    ]
+    var dnaPathObj3 = {
+        doublehelix: true,
+        points1: helixPoints3.concat([new THREE.Vector3(-10, -10, 62)]),
+        points2: [],
+        angleOffsets: [0, 1.2*Math.PI],
+    }      
+
+    var pathObjList = [dnaPathObj2, dnaPathObj3];
+
+    var extrudeQuality = 500;
+
+    // Create Geometries:
+    var dnaGeometries = createDNAgeometry(pathObjList, extrudeQuality);
+    var dnaGeom1 = dnaGeometries[0];
+    var dnaGeom2 = dnaGeometries[1];
+   
+    // Create Meshes:
+    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat2);
+    var dnaMesh2 = new THREE.Mesh(dnaGeom2, dnaMat2);
+    dnaObj.add(dnaMesh1);
+    dnaObj.add(dnaMesh2);
+
+    // Compute Normals just to make stuff look smooth:
+    dnaMesh1.geometry.computeVertexNormals();
+    dnaMesh2.geometry.computeVertexNormals();
+
+    return dnaObj;
+}
 
 
 function createDNAgeometry(pathObjList, extrusionSteps) {
@@ -554,7 +613,7 @@ function createDNAgeometry(pathObjList, extrusionSteps) {
     // Extrude both strands:
     var helixSpline1 = new THREE.CatmullRomCurve3(strand1vertices);
     var helixSpline2 = new THREE.CatmullRomCurve3(strand2vertices);
-    console.log('DNA strands lengths:', helixSpline1.getLength(), helixSpline2.getLength());
+    console.log('Strand lengths:', helixSpline1.getLength(), helixSpline2.getLength());
     var helixGeom1 = new THREE.ExtrudeGeometry(helixShape, { steps : extrusionSteps, extrudePath : helixSpline1 });
     var helixGeom2 = new THREE.ExtrudeGeometry(helixShape, { steps : extrusionSteps, extrudePath : helixSpline2 });
     

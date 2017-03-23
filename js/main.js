@@ -17,9 +17,8 @@ function init() {
 
     // Scene and Renderer
     scene = new THREE.Scene();
-    // scene.fog = new THREE.FogExp2(0xffffff, 0.002);
-    scene.fog = new THREE.FogExp2(0xffffff, 0.001);
-    // scene.fog = new THREE.Fog(0xffffff, 1, 2000);
+    // scene.fog = new THREE.FogExp2(0xffffff, 0.002); //0.001
+    scene.fog = new THREE.Fog(0xffffff, 80, 300);
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor( scene.fog.color );
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -75,8 +74,9 @@ function init() {
 
     // Camera Controls
     controls = new THREE.TrackballControls( camera, renderer.domElement );
-    controls.maxDistance = 2000;
+    controls.maxDistance = 250;
     controls.zoomSpeed = 0.5;
+    controls.noPan = true;
 
     // Shadows
     camLight.castShadow = true;

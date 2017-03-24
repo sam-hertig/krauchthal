@@ -8,6 +8,7 @@ var clock, deltaTime, particleSystem;
 var uniforms;
 
 var T = 0;
+noise.seed(Math.random());
 
 var pdb4CMP, pdb4ZTO, pdb5F9R, gRNA; 
 
@@ -227,7 +228,7 @@ function init() {
                 animateDNA(rna.children[0], 3000);
                 break;
             case 78: //n
-                conformationalChange(pdb4ZTO, pdb5F9R, 1000);
+                conformationalChange(pdb5F9R, pdb4ZTO);
                 break; 
         }
     });
@@ -245,34 +246,26 @@ function init() {
 
 
 
-function conformationalChange(pdb1, pdb2, t) {
+function conformationalChange(pdb1, pdb2) {
 
-    var currentParams = {
-        rot1 : pdb1.rotation.z,
-        rot2 : pdb2.rotation.z + 2*Math.PI
-    };
-    var targetParams = {
-        rot1 : pdb1.rotation.z + 2*Math.PI,
-        rot2 : pdb2.rotation.z   
-    };                
+    //T+=1;
 
-    var tween = new TWEEN.Tween(currentParams).to(targetParams, t);
+    var maxDisplacement = 20;
+    var centerX = 26.389580000000002
 
-    var transition = function() {
-        pdb1.rotation.z = currentParams.rot1;
-        pdb2.rotation.z = currentParams.rot2;
-    }
+    var x = pdb5F9R.position.x;
 
-    tween.onUpdate(transition);
-    tween.easing(TWEEN.Easing.Bounce.InOut);
-    tween.start();
+    console.log(T, x);
 
-    function changeVis() {
-        pdb1.visible = !pdb1.visible;
-        pdb2.visible = !pdb2.visible;        
-    }
+    var value = noise.perlin2(x, T);
 
-    setTimeout(changeVis, t/2);   
+    pdb5F9R.position.x = centerX + (maxDisplacement*value);
+    
+
+    //pdb5F9R.position.x 
+
+    console.log(value, pdb5F9R.position.x);
+    console.log('----');
 
 }
 

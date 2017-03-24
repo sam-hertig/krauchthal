@@ -7,6 +7,10 @@ var postprocessing = {};
 var clock, deltaTime, particleSystem;
 var uniforms;
 
+var T = 0;
+
+var pdb4CMP, pdb4ZTO, pdb5F9R, gRNA; 
+
 // Create RNA material 1
 var rnaMat1 = new THREE.MeshPhongMaterial({ 
     color : 0x0000FF,
@@ -46,7 +50,7 @@ var dnaMat2 = new THREE.MeshPhongMaterial({
 });
 
 init();
-animate();
+// animate();
 
 function init() {
 
@@ -79,7 +83,7 @@ function init() {
     camLight.lookAt(new THREE.Vector3(0, 0, 0));
     camera.add(camLight);
 
-    // Load cas9
+    // Load cas9 5f9r
     var loader1 = new THREE.JSONLoader();
     loader1.load('models/crisprV2.3.json', function (geometry, materials) {
 
@@ -88,32 +92,42 @@ function init() {
         //geometry.mergeVertices();
         //geometry.computeVertexNormals();
         //geometry.computeFaceNormals();
-        var test1 = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+        pdb5F9R = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
         //test1.receiveShadow = true;
         //test1.castShadow = true;
-        scene.add(test1);
-        test1.scale.set(10,10,10);
-        console.log(test1.material);
+        scene.add(pdb5F9R);
+        pdb5F9R.scale.set(10,10,10);
+        //console.log(test1.material);
         //test1.material.materials[0].alphaTest = 0.5;
-
+        //pdb5F9R.visible = false;
 
         // Center mol
-        test1.geometry.computeBoundingSphere();
-        var center = test1.geometry.boundingSphere.center.clone();
+        pdb5F9R.geometry.computeBoundingSphere();
+        var center = pdb5F9R.geometry.boundingSphere.center.clone();
         center.multiplyScalar(10);
-        test1.position.copy(center.negate());  
+        pdb5F9R.position.copy(center.negate());  
  
         // Load RNA
         var loader2 = new THREE.JSONLoader();
         loader2.load('models/crisprV2.2e.json', function (geometry, materials) {
-            test2 = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
-            //test2.receiveShadow = true;
-            //test2.castShadow = true;
-            test2.material = rnaMat1;
-            test2.scale.set(10,10,10);     
-            scene.add(test2);   
-            test2.position.copy(center);
-        });        
+            gRNA = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+            gRNA.material = rnaMat1;
+            gRNA.scale.set(10,10,10);     
+            scene.add(gRNA);   
+            gRNA.position.copy(center);
+        });
+
+        // Load cas9 4zt0
+        var loader3 = new THREE.JSONLoader();
+        loader3.load('models/crisprV2.4.4zt0.json', function (geometry, materials) {
+            pdb4ZTO = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+            pdb4ZTO.scale.set(10,10,10);     
+            scene.add(pdb4ZTO);   
+            pdb4ZTO.position.copy(center);
+            pdb4ZTO.visible = false;
+        });
+
+        animate();
 
     });
 
@@ -211,7 +225,10 @@ function init() {
                 animateDNA(dna.children[0], 3000);
                 animateDNA(dna.children[1], 3000);
                 animateDNA(rna.children[0], 3000);
-                break;               
+                break;
+            case 78: //n
+                conformationalChange(pdb4ZTO, pdb5F9R, 1000);
+                break; 
         }
     });
     window.addEventListener( 'keyup', function ( event ) {
@@ -225,6 +242,41 @@ function init() {
 
 
 }
+
+
+
+function conformationalChange(pdb1, pdb2, t) {
+
+    var currentParams = {
+        rot1 : pdb1.rotation.z,
+        rot2 : pdb2.rotation.z + 2*Math.PI
+    };
+    var targetParams = {
+        rot1 : pdb1.rotation.z + 2*Math.PI,
+        rot2 : pdb2.rotation.z   
+    };                
+
+    var tween = new TWEEN.Tween(currentParams).to(targetParams, t);
+
+    var transition = function() {
+        pdb1.rotation.z = currentParams.rot1;
+        pdb2.rotation.z = currentParams.rot2;
+    }
+
+    tween.onUpdate(transition);
+    tween.easing(TWEEN.Easing.Bounce.InOut);
+    tween.start();
+
+    function changeVis() {
+        pdb1.visible = !pdb1.visible;
+        pdb2.visible = !pdb2.visible;        
+    }
+
+    setTimeout(changeVis, t/2);   
+
+}
+
+
 
 
 function createFloppyRNA() {

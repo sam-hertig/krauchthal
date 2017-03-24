@@ -84,11 +84,18 @@ function init() {
     loader1.load('models/crisprV2.3.json', function (geometry, materials) {
 
         //materials[0].fog = false;
+        //console.log(geometry.vertices.length);
+        //geometry.mergeVertices();
+        //geometry.computeVertexNormals();
+        //geometry.computeFaceNormals();
         var test1 = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
         //test1.receiveShadow = true;
         //test1.castShadow = true;
-        //scene.add(test1);
+        scene.add(test1);
         test1.scale.set(10,10,10);
+        console.log(test1.material);
+        //test1.material.materials[0].alphaTest = 0.5;
+
 
         // Center mol
         test1.geometry.computeBoundingSphere();
@@ -149,13 +156,13 @@ function init() {
     var dna = createDNA();
     scene.add(dna);
 
-    // cut DNA part 1
-    var dnaPart1 = createDNApart1();
-    scene.add(dnaPart1);
+    // // cut DNA part 1
+    // var dnaPart1 = createDNApart1();
+    // scene.add(dnaPart1);
 
-    // cut DNA part 2
-    var dnaPart2 = createDNApart2();
-    scene.add(dnaPart2);
+    // // cut DNA part 2
+    // var dnaPart2 = createDNApart2();
+    // scene.add(dnaPart2);
 
     // console.log(rna, dna, dnaPart1, dnaPart2);
 
@@ -171,8 +178,8 @@ function init() {
     //var posBall = new THREE.Mesh((new THREE.SphereGeometry(0.1)), new THREE.MeshLambertMaterial({color: 0xff0000}));
     //rna.add(posBall);
     //tcontrol.attach(posBall);
-    tcontrol.attach(dnaPart1);
-    scene.add(tcontrol);
+    // tcontrol.attach(dnaPart1);
+    // scene.add(tcontrol);
 
     window.addEventListener( 'keydown', function ( event ) {
         switch ( event.keyCode ) {

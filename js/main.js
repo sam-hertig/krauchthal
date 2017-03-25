@@ -249,11 +249,11 @@ function init() {
 
 function conformationalChange(pdb1, pdb2) {
 
-    T+=2;
+    T+=10;
     
     var smoothness = 10; //0.01
     var maxDisplacement = (T<300) ? T*0.00333 : (2-(T*0.00333)); //10
-    maxDisplacement = (maxDisplacement<0) ? 0 : maxDisplacement;
+    maxDisplacement = (maxDisplacement<0) ? 0 : 5*maxDisplacement;
     console.log(T, maxDisplacement);
 
 
@@ -771,7 +771,7 @@ function animate() {
     stats.update();
     animateParticles();
     TWEEN.update();
-    conformationalChange(pdb5F9R, pdb4ZTO);
+    //conformationalChange(pdb5F9R, pdb4ZTO);
     render();
 }
 

@@ -7,8 +7,9 @@ var postprocessing = {};
 var clock, deltaTime, particleSystem;
 var uniforms;
 
+var center;
 var T = 0;
-noise.seed(Math.random());
+var p5 = new p5();
 
 var pdb4CMP, pdb4ZTO, pdb5F9R, gRNA; 
 
@@ -104,9 +105,9 @@ function init() {
 
         // Center mol
         pdb5F9R.geometry.computeBoundingSphere();
-        var center = pdb5F9R.geometry.boundingSphere.center.clone();
-        center.multiplyScalar(10);
-        pdb5F9R.position.copy(center.negate());  
+        center = pdb5F9R.geometry.boundingSphere.center.clone();
+        center.multiplyScalar(10).negate();
+        pdb5F9R.position.copy(center);  
  
         // Load RNA
         var loader2 = new THREE.JSONLoader();
@@ -248,22 +249,22 @@ function init() {
 
 function conformationalChange(pdb1, pdb2) {
 
-    //T+=1;
-
+    var smoothness = 0.01; //0.01
     var maxDisplacement = 5;
-    var centerX = 26.38958, centerY = -80.87195, centerZ = 95.60385;
-
-    var value = noise.perlin2(pdb5F9R.position.x, pdb5F9R.position.y, pdb5F9R.position.z);
-
-    pdb5F9R.position.x = centerX + (maxDisplacement*value);
-    pdb5F9R.position.y = centerY + (maxDisplacement*value);
-    pdb5F9R.position.z = centerZ + (maxDisplacement*value);
     
+    var xGen = (T*smoothness) + 17;
+    var yGen = (T*smoothness) + 11;
+    var zGen = (T*smoothness) + 82;
+    
+    var x = maxDisplacement * (2*p5.noise(xGen)-1);
+    var y = maxDisplacement * (2*p5.noise(yGen)-1);
+    var z = maxDisplacement * (2*p5.noise(zGen)-1);
 
-    //pdb5F9R.position.x 
+    var displacement = new THREE.Vector3(x, y, z);
 
-    console.log(value, pdb5F9R.position.x);
-    console.log('----');
+    pdb5F9R.position.addVectors(center, displacement);
+
+    T+=1;
 
 }
 
@@ -754,7 +755,7 @@ function animate() {
     stats.update();
     animateParticles();
     TWEEN.update();
-    //conformationalChange(pdb5F9R, pdb4ZTO);
+    conformationalChange(pdb5F9R, pdb4ZTO);
     render();
 }
 

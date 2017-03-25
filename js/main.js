@@ -94,7 +94,7 @@ function init() {
         //geometry.mergeVertices();
         //geometry.computeVertexNormals();
         //geometry.computeFaceNormals();
-        pdb5F9R = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+        pdb5F9R = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
         //test1.receiveShadow = true;
         //test1.castShadow = true;
         scene.add(pdb5F9R);
@@ -112,7 +112,7 @@ function init() {
         // Load RNA
         var loader2 = new THREE.JSONLoader();
         loader2.load('models/crisprV2.2e.json', function (geometry, materials) {
-            gRNA = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+            gRNA = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
             gRNA.material = rnaMat1;
             gRNA.scale.set(10,10,10);     
             scene.add(gRNA);   
@@ -122,7 +122,7 @@ function init() {
         // Load cas9 4zt0
         var loader3 = new THREE.JSONLoader();
         loader3.load('models/crisprV2.4.4zt0.json', function (geometry, materials) {
-            pdb4ZTO = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+            pdb4ZTO = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
             pdb4ZTO.scale.set(10,10,10);     
             scene.add(pdb4ZTO);   
             pdb4ZTO.position.copy(center);
@@ -249,8 +249,14 @@ function init() {
 
 function conformationalChange(pdb1, pdb2) {
 
-    var smoothness = 0.01; //0.01
-    var maxDisplacement = 5;
+    T+=2;
+    
+    var smoothness = 10; //0.01
+    var maxDisplacement = (T<300) ? T*0.00333 : (2-(T*0.00333)); //10
+    maxDisplacement = (maxDisplacement<0) ? 0 : maxDisplacement;
+    console.log(T, maxDisplacement);
+
+
     
     var xGen = (T*smoothness) + 17;
     var yGen = (T*smoothness) + 11;
@@ -263,8 +269,18 @@ function conformationalChange(pdb1, pdb2) {
     var displacement = new THREE.Vector3(x, y, z);
 
     pdb5F9R.position.addVectors(center, displacement);
+    pdb4ZTO.position.addVectors(center, displacement);
 
-    T+=1;
+
+    if (T>200 && T<400) {
+        pdb1.visible = (0.5-Math.random() > 0);
+        pdb2.visible = !pdb1.visible;
+    }
+
+    else if (T===400) {
+        pdb1.visible = false;
+        pdb2.visible = true;
+    }
 
 }
 

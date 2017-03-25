@@ -250,16 +250,14 @@ function conformationalChange(pdb1, pdb2) {
 
     //T+=1;
 
-    var maxDisplacement = 20;
-    var centerX = 26.389580000000002
+    var maxDisplacement = 5;
+    var centerX = 26.38958, centerY = -80.87195, centerZ = 95.60385;
 
-    var x = pdb5F9R.position.x;
-
-    console.log(T, x);
-
-    var value = noise.perlin2(x, T);
+    var value = noise.perlin2(pdb5F9R.position.x, pdb5F9R.position.y, pdb5F9R.position.z);
 
     pdb5F9R.position.x = centerX + (maxDisplacement*value);
+    pdb5F9R.position.y = centerY + (maxDisplacement*value);
+    pdb5F9R.position.z = centerZ + (maxDisplacement*value);
     
 
     //pdb5F9R.position.x 
@@ -756,6 +754,7 @@ function animate() {
     stats.update();
     animateParticles();
     TWEEN.update();
+    //conformationalChange(pdb5F9R, pdb4ZTO);
     render();
 }
 

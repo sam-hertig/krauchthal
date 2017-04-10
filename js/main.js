@@ -162,15 +162,15 @@ function init() {
 
     // Bubbles
     particleSystem = createParticleSystem();
-    scene.add(particleSystem);
+    //scene.add(particleSystem);
 
     // Floppy RNA
-    var rna = createFloppyRNA();
-    scene.add(rna);
+    //var rna = createFloppyRNA();
+    //scene.add(rna);
 
     // DNA
-    var dna = createDNA();
-    scene.add(dna);
+    //var dna = createDNA();
+    //scene.add(dna);
 
     // // cut DNA part 1
     // var dnaPart1 = createDNApart1();
@@ -181,6 +181,10 @@ function init() {
     // scene.add(dnaPart2);
 
     // console.log(rna, dna, dnaPart1, dnaPart2);
+
+    // Nucleus
+    var nucleus = createNucleus();
+    scene.add(nucleus);
 
     // Transform Controls (delete later...)
     var tcontrol = new THREE.TransformControls( camera, renderer.domElement );
@@ -245,6 +249,54 @@ function init() {
 
 }
 
+
+function createNucleus() {
+
+
+    var nucleusGeom = new THREE.Geometry();
+
+    var membraneGeom = new THREE.SphereGeometry(100, 32, 32);
+    var membraneMesh = new THREE.Mesh(membraneGeom);
+    membraneMesh.updateMatrix();
+    nucleusGeom.merge(membraneMesh.geometry, membraneMesh.matrix);
+
+
+    var npcGeom = new THREE.Geometry();
+    var subunitGeom = new THREE.SphereGeometry(1, 16, 16);
+    var subunitMesh = new THREE.Mesh(subunitGeom);
+    subunitMesh.position.x = 100;
+
+    var i;
+    for (i=0; i<8; i++) {
+        subunitMesh.position.y = 1.2*Math.cos(i*Math.PI/4);
+        subunitMesh.position.z = 1.2*Math.sin(i*Math.PI/4);
+        subunitMesh.updateMatrix();
+        npcGeom.merge(subunitMesh.geometry, subunitMesh.matrix);
+    }
+
+
+    var npcMesh = new THREE.Mesh(npcGeom);
+    npcMesh.updateMatrix();
+    nucleusGeom.merge(npcMesh.geometry, npcMesh.matrix)
+
+    var holeGeom = new THREE.PlaneBufferGeometry(1,1);
+    var holeMat = new THREE.MeshBasicMaterial({color: 0x555555});
+    var hole = new THREE.Mesh(holeGeom, holeMat);
+    hole.position.x = 100;
+    hole.rotation.y = Math.PI/2;
+    scene.add(hole);
+
+    var nucleusMat = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
+    
+    var nucleus = new THREE.Mesh(nucleusGeom, nucleusMat);
+    return nucleus;
+
+    // Create array of NPC positions: eg. a thousand vectors starting 0/0/0 pointing to the nuclear membrane
+    // http://corysimon.github.io/articles/uniformdistn-on-sphere/
+    // https://hbfs.wordpress.com/2010/10/12/random-points-on-a-sphere-generating-random-sequences-iii/
+    // https://www.jasondavies.com/maps/random-points/
+    
+}
 
 
 function conformationalChange(pdb1, pdb2) {

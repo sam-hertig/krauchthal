@@ -252,10 +252,34 @@ function init() {
 
 function createNucleus() {
 
+    var positions = [];
+    var radius = 100;
+
+    var j, Theta, Phi, x, y, z, pos;
+    for (j=0; j<10; j++) {
+
+        Theta = 2*Math.PI*Math.random();
+        Phi = Math.acos(1 - 2*Math.random());
+
+        // console.log(Theta, Phi);
+
+        x = Math.sin(Phi) * Math.cos(Theta);
+        y = Math.sin(Phi) * Math.sin(Theta);
+        z = Math.cos(Phi);
+
+        pos = new THREE.Vector3(x, y, z).multiplyScalar(radius);
+
+        positions.push(pos);
+
+        // console.log(pos.length());
+
+    } 
+
+
 
     var nucleusGeom = new THREE.Geometry();
 
-    var membraneGeom = new THREE.SphereGeometry(100, 32, 32);
+    var membraneGeom = new THREE.SphereGeometry(radius, 32, 32);
     var membraneMesh = new THREE.Mesh(membraneGeom);
     membraneMesh.updateMatrix();
     nucleusGeom.merge(membraneMesh.geometry, membraneMesh.matrix);
@@ -265,6 +289,9 @@ function createNucleus() {
     var subunitGeom = new THREE.SphereGeometry(1, 16, 16);
     var subunitMesh = new THREE.Mesh(subunitGeom);
     subunitMesh.position.x = 100;
+
+    // cont here
+
 
     var i;
     for (i=0; i<8; i++) {

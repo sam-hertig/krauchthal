@@ -52,7 +52,7 @@ var dnaMat2 = new THREE.MeshPhongMaterial({
 });
 
 init();
-// animate();
+
 
 function init() {
 
@@ -62,16 +62,16 @@ function init() {
     // Scene and Renderer
     scene = new THREE.Scene();
     // scene.fog = new THREE.FogExp2(0xffffff, 0.002); //0.001
-    scene.fog = new THREE.Fog(0xffffff, 80, 300);
+    scene.fog = new THREE.Fog(0xffffff, 80, 300); // 30000
     renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor( scene.fog.color );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    var container = document.getElementById( 'container' );
-    container.appendChild( renderer.domElement );
+    renderer.setClearColor(scene.fog.color);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    var container = document.getElementById('container');
+    container.appendChild(renderer.domElement);
 
     // Camera
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );   
+    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 50000 );   
     camera.up.set(0.3,0.9,0.2);
     camera.lookAt(new THREE.Vector3(0, 0, 0)); 
     //camera.position.set(-79, -44, 122);
@@ -132,7 +132,7 @@ function init() {
 
     // Camera Controls
     controls = new THREE.TrackballControls( camera, renderer.domElement );
-    controls.maxDistance = 1000; //250
+    controls.maxDistance = 20000; //250
     controls.zoomSpeed = 0.5;
     //controls.noPan = true;
 
@@ -179,6 +179,7 @@ function init() {
 
     // Nucleus
     var nucleus = createNucleus();
+    nucleus.scale.set(4, 4, 4);
     scene.add(nucleus);
 
     // Transform Controls (delete later...)
@@ -248,13 +249,20 @@ function init() {
 function createNucleus() {
 
     var positions = [];
-    var radius = 200;
-    var nrOfNpc = 100;
-    var npcRadius = radius/100;
+    var radius = 3000; // 3000
+    var nrOfNpc = 200; // 2000
+    var npcRadius = 60; // 60
     var holeRadius = npcRadius*1.2;
 
-    var nucleusMat = new THREE.MeshLambertMaterial({color: 0xaaaaaa, side: THREE.DoubleSide});
-    var holesMat = new THREE.MeshBasicMaterial({color: 0x555555});
+    var nucleusMat = new THREE.MeshLambertMaterial({
+        color: 0xaaaaaa, 
+        side: THREE.DoubleSide,
+        fog: false
+    });
+    var holesMat = new THREE.MeshBasicMaterial({
+        color: 0x555555,
+        fog: false
+    });
 
     var nucleusGeom = new THREE.Geometry();
 

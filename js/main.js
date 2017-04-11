@@ -53,6 +53,19 @@ var dnaMat2 = new THREE.MeshPhongMaterial({
 
 init();
 
+wheelRxTest();
+
+
+function wheelRxTest() {
+
+    //document.addEventListener('wheel', (event) => console.log('Wheeled!'));
+
+    const wheelEvent$ = Rx.Observable.fromEvent(document, 'wheel');
+
+    wheelEvent$.subscribe(() => console.log('Wheeled!'));
+
+}
+
 
 function init() {
 
@@ -132,7 +145,7 @@ function init() {
 
     // Camera Controls
     controls = new THREE.TrackballControls( camera, renderer.domElement );
-    controls.maxDistance = 20000; //250
+    controls.maxDistance = 250; //250
     controls.zoomSpeed = 0.5;
     //controls.noPan = true;
 
@@ -157,15 +170,15 @@ function init() {
 
     // Bubbles
     particleSystem = createParticleSystem();
-    scene.add(particleSystem);
+    //scene.add(particleSystem);
 
     // Floppy RNA
-    var rna = createFloppyRNA();
-    scene.add(rna);
+    //var rna = createFloppyRNA();
+    //scene.add(rna);
 
     // DNA
-    var dna = createDNA();
-    scene.add(dna);
+    //var dna = createDNA();
+    //scene.add(dna);
 
     // // cut DNA part 1
     // var dnaPart1 = createDNApart1();
@@ -176,9 +189,9 @@ function init() {
     // scene.add(dnaPart2);
 
     // Nucleus
-    var nucleus = createNucleus();
-    nucleus.scale.set(4, 4, 4);
-    scene.add(nucleus);    
+    //var nucleus = createNucleus();
+    //nucleus.scale.set(4, 4, 4);
+    //scene.add(nucleus);    
 
     // Transform Controls (delete later...)
     var tcontrol = new THREE.TransformControls( camera, renderer.domElement );

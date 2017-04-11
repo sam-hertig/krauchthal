@@ -175,12 +175,10 @@ function init() {
     // var dnaPart2 = createDNApart2();
     // scene.add(dnaPart2);
 
-    // console.log(rna, dna, dnaPart1, dnaPart2);
-
     // Nucleus
     var nucleus = createNucleus();
     nucleus.scale.set(4, 4, 4);
-    scene.add(nucleus);
+    scene.add(nucleus);    
 
     // Transform Controls (delete later...)
     var tcontrol = new THREE.TransformControls( camera, renderer.domElement );
@@ -250,7 +248,7 @@ function createNucleus() {
 
     var positions = [];
     var radius = 3000; // 3000
-    var nrOfNpc = 200; // 2000
+    var nrOfNpc = 100; // 2000
     var npcRadius = 60; // 60
     var holeRadius = npcRadius*1.2;
 
@@ -338,7 +336,9 @@ function createNucleus() {
 
     return nucleus;
 
-
+    // var prev = window.performance.now();
+    // now = window.performance.now();
+    // console.log((now-prev)/1000);
     
 }
 

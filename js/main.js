@@ -254,22 +254,28 @@ function createNucleus() {
     var npcRadius = 60; // 60
     var holeRadius = npcRadius*1.2;
 
-    var nucleusMat = new THREE.MeshLambertMaterial({
+    var outerNucleusMat = new THREE.MeshLambertMaterial({
         color: 0xaaaaaa, 
-        side: THREE.DoubleSide,
+        // side: THREE.DoubleSide,
         fog: false
     });
+    var innerNucleusMat = new THREE.MeshLambertMaterial({
+        color: 0xffffff, 
+        side: THREE.DoubleSide,
+        fog: true
+    });
+
     var holesMat = new THREE.MeshBasicMaterial({
         color: 0x555555,
         fog: false
     });
 
-    var nucleusGeom = new THREE.Geometry();
+    var outerNucleusGeom = new THREE.Geometry();
 
     var membraneGeom = new THREE.SphereGeometry(radius, 32, 32);
     var membraneMesh = new THREE.Mesh(membraneGeom);
     membraneMesh.updateMatrix();
-    nucleusGeom.merge(membraneMesh.geometry, membraneMesh.matrix);
+    outerNucleusGeom.merge(membraneMesh.geometry, membraneMesh.matrix);
 
     var npcGeom = new THREE.Geometry();
     var subunitGeom = new THREE.SphereGeometry(npcRadius, 8, 8);
@@ -305,7 +311,7 @@ function createNucleus() {
         npcMesh.position.copy(pos);
         npcMesh.quaternion.copy(quat);
         npcMesh.updateMatrix();
-        nucleusGeom.merge(npcMesh.geometry, npcMesh.matrix);
+        outerNucleusGeom.merge(npcMesh.geometry, npcMesh.matrix);
 
         holeMesh.position.copy(pos);
         holeMesh.quaternion.copy(quat);
@@ -318,16 +324,19 @@ function createNucleus() {
     }     
 
     
-    var nucleusBufferGeom = new THREE.BufferGeometry().fromGeometry(nucleusGeom);
+    var outerNucleusBufferGeom = new THREE.BufferGeometry().fromGeometry(outerNucleusGeom);
     var holesBufferGeom = new THREE.BufferGeometry().fromGeometry(holesGeom);
 
-    var nucleus = new THREE.Mesh(nucleusBufferGeom, nucleusMat);
+    var outerNucleus = new THREE.Mesh(outerNucleusBufferGeom, outerNucleusMat);
     var holes = new THREE.Mesh(holesBufferGeom, holesMat);
 
-    var nucleusWithHoles = new THREE.Object3D();
-    nucleusWithHoles.add(nucleus, holes);
+    var innerNucleusBufferGeom = new THREE.SphereBufferGeometry(radius-npcRadius, 32, 32);
+    var innerNucleus = new THREE.Mesh(innerNucleusBufferGeom, innerNucleusMat);
 
-    return nucleusWithHoles;
+    var nucleus = new THREE.Object3D();
+    nucleus.add(outerNucleus, holes, innerNucleus);
+
+    return nucleus;
 
 
     
@@ -343,8 +352,6 @@ function conformationalChange(pdb1, pdb2) {
     maxDisplacement = (maxDisplacement<0) ? 0 : 5*maxDisplacement;
     console.log(T, maxDisplacement);
 
-
-    
     var xGen = (T*smoothness) + 17;
     var yGen = (T*smoothness) + 11;
     var zGen = (T*smoothness) + 82;
@@ -675,9 +682,6 @@ function createDNAgeometry(pathObjList, extrusionSteps) {
     var longSide = 0.22; //0.2
     var shortSide = 0.065; //0.07
     helixShape.ellipse(0, 0, longSide/2, shortSide/2, 0, 2*Math.PI, true, 0.4*Math.PI);
-   
-
-
 
     // Function to check how to tie parts together:
     function checkCrossing(oldList1, newList1, oldList2, newList2) {

@@ -254,9 +254,29 @@ function createNucleus() {
 
     var positions = [];
     var radius = 100;
+    var nrOfNpc = 100;
+    var npcRadius = 1;
+    var holeRadius = 1.2;
 
-    var j, Theta, Phi, x, y, z, pos;
-    for (j=0; j<10; j++) {
+    var nucleusMat = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
+
+    var nucleusGeom = new THREE.Geometry();
+
+    var membraneGeom = new THREE.SphereGeometry(radius, 32, 32);
+    var membraneMesh = new THREE.Mesh(membraneGeom);
+    membraneMesh.updateMatrix();
+    nucleusGeom.merge(membraneMesh.geometry, membraneMesh.matrix);
+
+    var npcGeom = new THREE.Geometry();
+    var subunitGeom = new THREE.SphereGeometry(npcRadius, 16, 16);
+    var subunitMesh = new THREE.Mesh(subunitGeom);
+
+
+
+    var j, Theta, Phi, x, y, z, pos, dial, quat;
+    var zVec = new THREE.Vector3(0, 0, 1);
+
+    for (j=0; j<nrOfNpc; j++) {
 
         Theta = 2*Math.PI*Math.random();
         Phi = Math.acos(1 - 2*Math.random());
@@ -267,53 +287,50 @@ function createNucleus() {
         y = Math.sin(Phi) * Math.sin(Theta);
         z = Math.cos(Phi);
 
-        pos = new THREE.Vector3(x, y, z).multiplyScalar(radius);
+        pos = new THREE.Vector3(x, y, z);
+        quat = new THREE.Quaternion();
+        quat.setFromUnitVectors(zVec, pos);
+        pos.multiplyScalar(radius);
 
-        positions.push(pos);
-
-        // console.log(pos.length());
-
-    } 
-
-
-
-    var nucleusGeom = new THREE.Geometry();
-
-    var membraneGeom = new THREE.SphereGeometry(radius, 32, 32);
-    var membraneMesh = new THREE.Mesh(membraneGeom);
-    membraneMesh.updateMatrix();
-    nucleusGeom.merge(membraneMesh.geometry, membraneMesh.matrix);
+        var i;
+        for (i=0; i<8; i++) {
 
 
-    var npcGeom = new THREE.Geometry();
-    var subunitGeom = new THREE.SphereGeometry(1, 16, 16);
-    var subunitMesh = new THREE.Mesh(subunitGeom);
-    subunitMesh.position.x = 100;
-
-    // cont here
+            dial = new THREE.Vector3(holeRadius*Math.cos(i*Math.PI/4), holeRadius*Math.sin(i*Math.PI/4), 0);
+            dial.applyQuaternion(quat);
 
 
-    var i;
-    for (i=0; i<8; i++) {
-        subunitMesh.position.y = 1.2*Math.cos(i*Math.PI/4);
-        subunitMesh.position.z = 1.2*Math.sin(i*Math.PI/4);
-        subunitMesh.updateMatrix();
-        npcGeom.merge(subunitMesh.geometry, subunitMesh.matrix);
-    }
+
+            
+            subunitMesh.position.addVectors(pos, dial);
+
+
+            subunitMesh.updateMatrix();
+            npcGeom.merge(subunitMesh.geometry, subunitMesh.matrix);
+        }
+
+
+        //positions.push(pos);
+
+        console.log(pos, pos.length());
+
+    }     
+
+
+
 
 
     var npcMesh = new THREE.Mesh(npcGeom);
     npcMesh.updateMatrix();
     nucleusGeom.merge(npcMesh.geometry, npcMesh.matrix)
 
-    var holeGeom = new THREE.PlaneBufferGeometry(1,1);
-    var holeMat = new THREE.MeshBasicMaterial({color: 0x555555});
-    var hole = new THREE.Mesh(holeGeom, holeMat);
-    hole.position.x = 100;
-    hole.rotation.y = Math.PI/2;
-    scene.add(hole);
+    // var holeGeom = new THREE.PlaneBufferGeometry(1,1);
+    // var holeMat = new THREE.MeshBasicMaterial({color: 0x555555});
+    // var hole = new THREE.Mesh(holeGeom, holeMat);
+    // hole.position.z = 100;
+    // scene.add(hole);
 
-    var nucleusMat = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
+    
     
     var nucleus = new THREE.Mesh(nucleusGeom, nucleusMat);
     return nucleus;
@@ -666,11 +683,8 @@ function createDNAgeometry(pathObjList, extrusionSteps) {
     var helixShape = new THREE.Shape();
     var longSide = 0.22; //0.2
     var shortSide = 0.065; //0.07
-    // helixShape.moveTo( -longSide/2, 0);
-    // helixShape.quadraticCurveTo(0, shortSide/2, longSide/2, 0);
-    // helixShape.quadraticCurveTo(0, -shortSide/2, -longSide/2, 0);
     helixShape.ellipse(0, 0, longSide/2, shortSide/2, 0, 2*Math.PI, true, 0.4*Math.PI);
-    //ellipse: function ( aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation )
+   
 
 
 

@@ -90,19 +90,13 @@ function init() {
     var loader1 = new THREE.JSONLoader();
     loader1.load('models/crisprV2.3.json', function (geometry, materials) {
 
-        //materials[0].fog = false;
-        //console.log(geometry.vertices.length);
-        //geometry.mergeVertices();
-        //geometry.computeVertexNormals();
-        //geometry.computeFaceNormals();
+
         pdb5F9R = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
         //test1.receiveShadow = true;
         //test1.castShadow = true;
         scene.add(pdb5F9R);
         pdb5F9R.scale.set(10,10,10);
-        //console.log(test1.material);
-        //test1.material.materials[0].alphaTest = 0.5;
-        //pdb5F9R.visible = false;
+
 
         // Center mol
         pdb5F9R.geometry.computeBoundingSphere();
@@ -138,7 +132,7 @@ function init() {
 
     // Camera Controls
     controls = new THREE.TrackballControls( camera, renderer.domElement );
-    controls.maxDistance = 250;
+    controls.maxDistance = 1000; //250
     controls.zoomSpeed = 0.5;
     //controls.noPan = true;
 
@@ -163,15 +157,15 @@ function init() {
 
     // Bubbles
     particleSystem = createParticleSystem();
-    //scene.add(particleSystem);
+    scene.add(particleSystem);
 
     // Floppy RNA
-    //var rna = createFloppyRNA();
-    //scene.add(rna);
+    var rna = createFloppyRNA();
+    scene.add(rna);
 
     // DNA
-    //var dna = createDNA();
-    //scene.add(dna);
+    var dna = createDNA();
+    scene.add(dna);
 
     // // cut DNA part 1
     // var dnaPart1 = createDNApart1();
@@ -256,9 +250,8 @@ function createNucleus() {
     var positions = [];
     var radius = 200;
     var nrOfNpc = 100;
-    var npcRadius = 2;
-    var npcOffset = 1; //0.995
-    var holeRadius = 2.4; //2
+    var npcRadius = radius/100;
+    var holeRadius = npcRadius*1.2;
 
     var nucleusMat = new THREE.MeshLambertMaterial({color: 0xaaaaaa, side: THREE.DoubleSide});
     var holesMat = new THREE.MeshBasicMaterial({color: 0x555555});
@@ -271,7 +264,7 @@ function createNucleus() {
     nucleusGeom.merge(membraneMesh.geometry, membraneMesh.matrix);
 
     var npcGeom = new THREE.Geometry();
-    var subunitGeom = new THREE.SphereGeometry(npcRadius, 8, 8); //, 0, Math.PI, 0, Math.PI);
+    var subunitGeom = new THREE.SphereGeometry(npcRadius, 8, 8);
     var subunitMesh = new THREE.Mesh(subunitGeom);
     var i;
     for (i=0; i<8; i++) {
@@ -294,23 +287,17 @@ function createNucleus() {
 
     for (j=0; j<nrOfNpc; j++) {
 
-        // http://corysimon.github.io/articles/uniformdistn-on-sphere/
-        // https://hbfs.wordpress.com/2010/10/12/random-points-on-a-sphere-generating-random-sequences-iii/
-        // https://www.jasondavies.com/maps/random-points/
-
         x = Math.sin(Phi) * Math.cos(Theta);
         y = Math.sin(Phi) * Math.sin(Theta);
         z = Math.cos(Phi); 
         pos = new THREE.Vector3(x, y, z);
         quat.setFromUnitVectors(zVec, pos);
-        pos.multiplyScalar(radius*npcOffset);
+        pos.multiplyScalar(radius);
 
         npcMesh.position.copy(pos);
         npcMesh.quaternion.copy(quat);
         npcMesh.updateMatrix();
         nucleusGeom.merge(npcMesh.geometry, npcMesh.matrix);
-
-        pos.multiplyScalar(1/npcOffset);
 
         holeMesh.position.copy(pos);
         holeMesh.quaternion.copy(quat);
@@ -318,9 +305,7 @@ function createNucleus() {
         holesGeom.merge(holeMesh.geometry, holeMesh.matrix);
 
         Theta = 2*Math.PI*Math.random();
-        Phi = Math.acos(1 - 2*Math.random());
-
-        //console.log(Theta, Phi);       
+        Phi = Math.acos(1 - 2*Math.random());    
 
     }     
 

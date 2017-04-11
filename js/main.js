@@ -74,7 +74,8 @@ function init() {
     camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );   
     camera.up.set(0.3,0.9,0.2);
     camera.lookAt(new THREE.Vector3(0, 0, 0)); 
-    camera.position.set(-79, -44, 122);
+    //camera.position.set(-79, -44, 122);
+    camera.position.set(0, 0, 150);
     scene.add(camera);
 
     // Lights
@@ -253,12 +254,14 @@ function init() {
 function createNucleus() {
 
     var positions = [];
-    var radius = 100;
+    var radius = 200;
     var nrOfNpc = 100;
-    var npcRadius = 1;
-    var holeRadius = 1.2;
+    var npcRadius = 2;
+    var npcOffset = 1; //0.995
+    var holeRadius = 2.4; //2
 
-    var nucleusMat = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
+    var nucleusMat = new THREE.MeshLambertMaterial({color: 0xaaaaaa, side: THREE.DoubleSide});
+    var holesMat = new THREE.MeshBasicMaterial({color: 0x555555});
 
     var nucleusGeom = new THREE.Geometry();
 
@@ -268,77 +271,72 @@ function createNucleus() {
     nucleusGeom.merge(membraneMesh.geometry, membraneMesh.matrix);
 
     var npcGeom = new THREE.Geometry();
-    var subunitGeom = new THREE.SphereGeometry(npcRadius, 16, 16);
+    var subunitGeom = new THREE.SphereGeometry(npcRadius, 8, 8); //, 0, Math.PI, 0, Math.PI);
     var subunitMesh = new THREE.Mesh(subunitGeom);
+    var i;
+    for (i=0; i<8; i++) {
+        subunitMesh.position.x = holeRadius*Math.cos(i*Math.PI/4);
+        subunitMesh.position.y = holeRadius*Math.sin(i*Math.PI/4);
+        subunitMesh.updateMatrix();
+        npcGeom.merge(subunitMesh.geometry, subunitMesh.matrix);
+    }
+    var npcMesh = new THREE.Mesh(npcGeom);
+
+    var holesGeom = new THREE.Geometry();
+    var holeGeom = new THREE.PlaneGeometry(holeRadius, holeRadius);
+    var holeMesh = new THREE.Mesh(holeGeom);
 
 
-
-    var j, Theta, Phi, x, y, z, pos, dial, quat;
+    var j, x, y, z, pos, dial;
     var zVec = new THREE.Vector3(0, 0, 1);
+    var quat = new THREE.Quaternion();
+    var Theta = 0, Phi =0;
 
     for (j=0; j<nrOfNpc; j++) {
+
+        // http://corysimon.github.io/articles/uniformdistn-on-sphere/
+        // https://hbfs.wordpress.com/2010/10/12/random-points-on-a-sphere-generating-random-sequences-iii/
+        // https://www.jasondavies.com/maps/random-points/
+
+        x = Math.sin(Phi) * Math.cos(Theta);
+        y = Math.sin(Phi) * Math.sin(Theta);
+        z = Math.cos(Phi); 
+        pos = new THREE.Vector3(x, y, z);
+        quat.setFromUnitVectors(zVec, pos);
+        pos.multiplyScalar(radius*npcOffset);
+
+        npcMesh.position.copy(pos);
+        npcMesh.quaternion.copy(quat);
+        npcMesh.updateMatrix();
+        nucleusGeom.merge(npcMesh.geometry, npcMesh.matrix);
+
+        pos.multiplyScalar(1/npcOffset);
+
+        holeMesh.position.copy(pos);
+        holeMesh.quaternion.copy(quat);
+        holeMesh.updateMatrix();
+        holesGeom.merge(holeMesh.geometry, holeMesh.matrix);
 
         Theta = 2*Math.PI*Math.random();
         Phi = Math.acos(1 - 2*Math.random());
 
-        // console.log(Theta, Phi);
-
-        x = Math.sin(Phi) * Math.cos(Theta);
-        y = Math.sin(Phi) * Math.sin(Theta);
-        z = Math.cos(Phi);
-
-        pos = new THREE.Vector3(x, y, z);
-        quat = new THREE.Quaternion();
-        quat.setFromUnitVectors(zVec, pos);
-        pos.multiplyScalar(radius);
-
-        var i;
-        for (i=0; i<8; i++) {
-
-
-            dial = new THREE.Vector3(holeRadius*Math.cos(i*Math.PI/4), holeRadius*Math.sin(i*Math.PI/4), 0);
-            dial.applyQuaternion(quat);
-
-
-
-            
-            subunitMesh.position.addVectors(pos, dial);
-
-
-            subunitMesh.updateMatrix();
-            npcGeom.merge(subunitMesh.geometry, subunitMesh.matrix);
-        }
-
-
-        //positions.push(pos);
-
-        console.log(pos, pos.length());
+        //console.log(Theta, Phi);       
 
     }     
 
-
-
-
-
-    var npcMesh = new THREE.Mesh(npcGeom);
-    npcMesh.updateMatrix();
-    nucleusGeom.merge(npcMesh.geometry, npcMesh.matrix)
-
-    // var holeGeom = new THREE.PlaneBufferGeometry(1,1);
-    // var holeMat = new THREE.MeshBasicMaterial({color: 0x555555});
-    // var hole = new THREE.Mesh(holeGeom, holeMat);
-    // hole.position.z = 100;
-    // scene.add(hole);
-
     
-    
-    var nucleus = new THREE.Mesh(nucleusGeom, nucleusMat);
-    return nucleus;
+    var nucleusBufferGeom = new THREE.BufferGeometry().fromGeometry(nucleusGeom);
+    var holesBufferGeom = new THREE.BufferGeometry().fromGeometry(holesGeom);
 
-    // Create array of NPC positions: eg. a thousand vectors starting 0/0/0 pointing to the nuclear membrane
-    // http://corysimon.github.io/articles/uniformdistn-on-sphere/
-    // https://hbfs.wordpress.com/2010/10/12/random-points-on-a-sphere-generating-random-sequences-iii/
-    // https://www.jasondavies.com/maps/random-points/
+    var nucleus = new THREE.Mesh(nucleusBufferGeom, nucleusMat);
+    var holes = new THREE.Mesh(holesBufferGeom, holesMat);
+
+    var nucleusWithHoles = new THREE.Object3D();
+    nucleusWithHoles.add(nucleus, holes);
+
+    return nucleusWithHoles;
+
+
     
 }
 

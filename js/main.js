@@ -6,7 +6,7 @@ var stats, camera, controls, scene, renderer;
 var postprocessing = {};
 var clock, deltaTime, particleSystem;
 var uniforms;
-
+var tcontrol;
 var center;
 var T = 0;
 var p5 = new p5();
@@ -62,7 +62,7 @@ function init() {
     // Scene and Renderer
     scene = new THREE.Scene();
     // scene.fog = new THREE.FogExp2(0xffffff, 0.002); //0.001
-    scene.fog = new THREE.Fog(0xffffff, 80, 300); // 30000
+    scene.fog = new THREE.Fog(0xffffff, 80, 3000000); // 300
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(scene.fog.color);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -124,6 +124,11 @@ function init() {
             pdb4ZTO.visible = false;
         });
 
+        // Transform Controls (delete later...)
+        // tcontrol = new THREE.TransformControls(camera, renderer.domElement);
+        // tcontrol.attach(pdb5F9R);
+        // scene.add(tcontrol);
+
         animate();
 
     });
@@ -154,20 +159,19 @@ function init() {
     
     // Resize
     window.addEventListener('resize', onWindowResize, false);
-    //window.addEventListener('orientationchange', onOrientationChange, false); 
-    // issues on chrome and firefox on ios!!!! 
+    // window.addEventListener('orientationchange', onWindowResize, false); firefox and chrome on iOS????
 
     // Bubbles
     particleSystem = createParticleSystem();
-    //scene.add(particleSystem);
+    scene.add(particleSystem);
 
     // Floppy RNA
-    //var rna = createFloppyRNA();
-    //scene.add(rna);
+    var rna = createFloppyRNA();
+    scene.add(rna);
 
     // DNA
-    //var dna = createDNA();
-    //scene.add(dna);
+    var dna = createDNA();
+    scene.add(dna);
 
     // // cut DNA part 1
     // var dnaPart1 = createDNApart1();
@@ -178,13 +182,13 @@ function init() {
     // scene.add(dnaPart2);
 
     // Nucleus
-    //var nucleus = createNucleus();
-    //nucleus.scale.set(4, 4, 4);
-    //scene.add(nucleus);    
+    var nucleus = createNucleus();
+    nucleus.scale.set(4, 4, 4);
+    scene.add(nucleus);    
 
     // Transform Controls (delete later...)
-    // var tcontrol = new THREE.TransformControls( camera, renderer.domElement );
-    // tcontrol.addEventListener( 'change', onTransform ); //render
+    // tcontrol = new THREE.TransformControls(camera, renderer.domElement);
+    // tcontrol.addEventListener('change', onTransform); //render
     // function onTransform() {
     //   console.log('----');
     //   console.log(this.object.position.x, this.object.position.y, this.object.position.z);
@@ -194,7 +198,7 @@ function init() {
     //var posBall = new THREE.Mesh((new THREE.SphereGeometry(0.1)), new THREE.MeshLambertMaterial({color: 0xff0000}));
     //rna.add(posBall);
     //tcontrol.attach(posBall);
-    // tcontrol.attach(dnaPart1);
+    // tcontrol.attach(pdb5F9R);
     // scene.add(tcontrol);
 
     window.addEventListener( 'keydown', function ( event ) {
@@ -249,21 +253,32 @@ function init() {
 function createNucleus() {
 
     var positions = [];
-    var radius = 3000; // 3000
+    var radius = 1500; // 3000
     var nrOfNpc = 100; // 2000
-    var npcRadius = 60; // 60
+    var npcRadius = 30; // 60
     var holeRadius = npcRadius*1.2;
 
     var outerNucleusMat = new THREE.MeshLambertMaterial({
         color: 0xaaaaaa, 
-        // side: THREE.DoubleSide,
         fog: false
     });
-    var innerNucleusMat = new THREE.MeshLambertMaterial({
-        color: 0xffffff, 
-        side: THREE.DoubleSide,
-        fog: true
-    });
+
+    // var innerNucleusMat = new THREE.MeshLambertMaterial({
+    //     color: 0xaaaaaa, 
+    //     side: THREE.BackSide,
+    //     fog: false
+    // });
+    var loader = new THREE.TextureLoader();
+    var bg = loader.load("textures/skydomeV4-01.png");
+    var uniforms = {  
+        texture: { type: 't', value: bg }
+    };
+    var innerNucleusMat = new THREE.ShaderMaterial( {  
+        uniforms:       uniforms,
+        vertexShader:   document.getElementById('sky-vertex').textContent,
+        fragmentShader: document.getElementById('sky-fragment').textContent,
+        fog: false
+    });    
 
     var holesMat = new THREE.MeshBasicMaterial({
         color: 0x555555,
@@ -332,6 +347,8 @@ function createNucleus() {
 
     var innerNucleusBufferGeom = new THREE.SphereBufferGeometry(radius-npcRadius, 32, 32);
     var innerNucleus = new THREE.Mesh(innerNucleusBufferGeom, innerNucleusMat);
+    innerNucleus.scale.set(-1, 1, 1);  
+    innerNucleus.eulerOrder = 'XZY';    
 
     var nucleus = new THREE.Object3D();
     nucleus.add(outerNucleus, holes, innerNucleus);
@@ -823,10 +840,12 @@ function createParticleSystem() {
         particles.vertices.push(particle);
     }
     // Create the material that will be used to render each vertex of the geometry
+    var loader = new THREE.TextureLoader();
+    var texture = loader.load("textures/circle.png");  
     var particleMaterial = new THREE.PointsMaterial(
             {color: 0xffffff, 
              size: 4,
-             map: THREE.ImageUtils.loadTexture("textures/circle.png"),
+             map: texture,
              blending: THREE.NormalBlending, //AdditiveBlending, NormalBlending
              transparent: true,
              opacity: 0.5,
@@ -861,8 +880,8 @@ function animate() {
     stats.update();
     animateParticles();
     TWEEN.update();
-    //conformationalChange(pdb5F9R, pdb4ZTO);
     render();
+    //window.scrollTo(0, 0); // iOS... PERHAPS force landscape mode?
 }
 
 
@@ -872,27 +891,12 @@ function onWindowResize() {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
-    console.log('windowresize321', width, height);
-
-
-    //window.scrollTo(0, 0);
-
-    setTimeout(function(){ 
-        window.scrollTo(0, 0); 
-        console.log('timeout', width, height);
-    }, 100); //1000
-    
+    // setTimeout(function(){ 
+    //     window.scrollTo(0, 0); // for iOS DOESNT WORK...
+    // }, 500);
 }
 
-// function onOrientationChange() {
-//     var width = window.innerWidth;
-//     var height = window.innerHeight;
-//     camera.aspect = width / height;
-//     camera.updateProjectionMatrix();
-//     renderer.setSize(width, height);
-//     console.log('orientationchange321', width, height);
-//     //window.scrollTo(0, 0);
-// }
+
     
     
 

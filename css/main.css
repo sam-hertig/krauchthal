@@ -1,0 +1,47 @@
+body {
+    margin: 0px;
+    overflow: hidden;
+}
+
+.arrow {
+    margin: 10px;
+    position:absolute;
+    top: 50%;           
+}
+
+.right {
+    right: 0px;
+    -webkit-transform: translate(0, -50%);
+    -moz-transform: translate(0, -50%);    
+    -ms-transform: translate(0, -50%);
+    -o-transform: translate(0, -50%);
+    transform: translate(0, -50%);    
+}
+
+.left {
+    /*display: none;*/
+    -webkit-transform: translate(0, -50%) rotate(180deg);
+    -moz-transform: translate(0, -50%) rotate(180deg);    
+    -ms-transform: translate(0, -50%) rotate(180deg);
+    -o-transform: translate(0, -50%) rotate(180deg);
+    transform: translate(0, -50%) rotate(180deg);
+}
+
+.arrowShape {
+    fill: #000000;
+    fill-opacity: 0.2;
+    -webkit-transition: fill-opacity 0.75s;
+    -moz-transition: fill-opacity 0.75s;
+    -ms-transition: fill-opacity 0.75s;
+    -o-transition: fill-opacity 0.75s;    
+    transition: fill-opacity 0.75s; 
+}
+
+.arrowShape:hover {
+    fill-opacity: 0.4;
+    -webkit-transition: fill-opacity 0.25s;
+    -moz-transition: fill-opacity 0.25s;
+    -ms-transition: fill-opacity 0.25s;
+    -o-transition: fill-opacity 0.25s;    
+    transition: fill-opacity 0.25s;    
+}

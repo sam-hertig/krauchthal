@@ -4,21 +4,25 @@
     <head>
         <title>CRISPR-CAS9</title>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        <style>
-            body {
-                margin: 0px;
-                overflow: hidden;
-            }
-        </style>        
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"> 
+        <link rel="stylesheet" href="css/main.css">      
     </head>
 
     <body>
+
+        <!-- Three.js canvas -->
         <div id="container"></div>
+
+        <!-- Arrows -->
+        <svg version="1.1" class="arrow right" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="75px" height="96px" viewBox="0 0 75 96">
+            <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96 "/>
+        </svg>
+        <svg version="1.1" class="arrow left" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="75px" height="96px" viewBox="0 0 75 96">
+            <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96 "/>
+        </svg>
 
         <!-- Three.js general -->
         <script src="js/three.min.js"></script>
-        <script src="js/ColladaLoader.js"></script>
         <script src="js/OrbitControls.js"></script>
         <script src="js/TrackballControls.js"></script>
         <script src="js/Detector.js"></script>
@@ -28,7 +32,6 @@
         <!-- Other libraries -->
         <script src="js/p5.min.js"></script>
         <script src="js/Tween.js"></script>
-        <script src="js/rx.all.min.js"></script>
 
         <!-- JS Main -->
         <script src="js/main.js"></script>

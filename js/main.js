@@ -10,6 +10,7 @@ var tcontrol;
 var center;
 var T = 0;
 var p5 = new p5();
+var uniforms;
 
 var pdb4CMP, pdb4ZTO, pdb5F9R, gRNA; 
 
@@ -269,14 +270,19 @@ function createNucleus() {
     //     fog: false
     // });
     var loader = new THREE.TextureLoader();
-    var bg = loader.load("textures/skydomeV4-01.png");
-    var uniforms = {  
-        texture: { type: 't', value: bg }
+    var bg = loader.load("textures/perlin_noise.jpg");
+    uniforms = {  
+        time: { type: "f", value: 0.0 },
+        speed: { type: "f", value: 0.2 },
+        resolution: { type: "f", value: 10.0 },
+        color: { type: "v3", value: new THREE.Vector3(1.0, 1.0, 1.0) },
+        image: { type: 't', value: bg },
+        brightness: { type: "f", value: 1.0 },       
     };
     var innerNucleusMat = new THREE.ShaderMaterial( {  
         uniforms:       uniforms,
-        vertexShader:   document.getElementById('sky-vertex').textContent,
-        fragmentShader: document.getElementById('sky-fragment').textContent,
+        vertexShader:   document.getElementById('nucleus-vertex').textContent,
+        fragmentShader: document.getElementById('nucleus-fragment').textContent,
         fog: false
     });    
 
@@ -880,6 +886,9 @@ function animate() {
     stats.update();
     animateParticles();
     TWEEN.update();
+
+    uniforms.time.value += deltaTime;
+
     render();
     //window.scrollTo(0, 0); // iOS... PERHAPS force landscape mode?
 }

@@ -132,7 +132,7 @@ function init() {
 
     // Camera Controls
     controls = new THREE.TrackballControls( camera, renderer.domElement );
-    controls.maxDistance = 250; //250
+    controls.maxDistance = 25000; //250
     controls.zoomSpeed = 0.5;
     //controls.noPan = true;
 
@@ -153,7 +153,9 @@ function init() {
     container.appendChild( stats.dom );
     
     // Resize
-    window.addEventListener( 'resize', onWindowResize, false );
+    window.addEventListener('resize', onWindowResize, false);
+    //window.addEventListener('orientationchange', onOrientationChange, false); 
+    // issues on chrome and firefox on ios!!!! 
 
     // Bubbles
     particleSystem = createParticleSystem();
@@ -181,14 +183,14 @@ function init() {
     //scene.add(nucleus);    
 
     // Transform Controls (delete later...)
-    var tcontrol = new THREE.TransformControls( camera, renderer.domElement );
-    tcontrol.addEventListener( 'change', onTransform ); //render
-    function onTransform() {
-      console.log('----');
-      console.log(this.object.position.x, this.object.position.y, this.object.position.z);
-      console.log(this.object.rotation.x, this.object.rotation.y, this.object.rotation.z);
-      console.log(this.object.scale.x, this.object.scale.y, this.object.scale.z);
-    } 
+    // var tcontrol = new THREE.TransformControls( camera, renderer.domElement );
+    // tcontrol.addEventListener( 'change', onTransform ); //render
+    // function onTransform() {
+    //   console.log('----');
+    //   console.log(this.object.position.x, this.object.position.y, this.object.position.z);
+    //   console.log(this.object.rotation.x, this.object.rotation.y, this.object.rotation.z);
+    //   console.log(this.object.scale.x, this.object.scale.y, this.object.scale.z);
+    // } 
     //var posBall = new THREE.Mesh((new THREE.SphereGeometry(0.1)), new THREE.MeshLambertMaterial({color: 0xff0000}));
     //rna.add(posBall);
     //tcontrol.attach(posBall);
@@ -854,7 +856,7 @@ function animateParticles() {
 
 function animate() {
     deltaTime = clock.getDelta();
-    requestAnimationFrame( animate );
+    requestAnimationFrame(animate);
     controls.update();
     stats.update();
     animateParticles();
@@ -869,10 +871,30 @@ function onWindowResize() {
     var height = window.innerHeight;
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize( width, height );
+    renderer.setSize(width, height);
+    console.log('windowresize321', width, height);
 
+
+    //window.scrollTo(0, 0);
+
+    setTimeout(function(){ 
+        window.scrollTo(0, 0); 
+        console.log('timeout', width, height);
+    }, 100); //1000
+    
 }
 
+// function onOrientationChange() {
+//     var width = window.innerWidth;
+//     var height = window.innerHeight;
+//     camera.aspect = width / height;
+//     camera.updateProjectionMatrix();
+//     renderer.setSize(width, height);
+//     console.log('orientationchange321', width, height);
+//     //window.scrollTo(0, 0);
+// }
+    
+    
 
 function render() {
     renderer.render( scene, camera );

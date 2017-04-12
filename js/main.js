@@ -58,11 +58,24 @@ wheelRxTest();
 
 function wheelRxTest() {
 
+    var T = 0;
+    var Tmax = 100000;
+
+    var onMouseWheel = function(event) {
+        
+        T += event.deltaY;
+        T = (T < 0) ? 0 : T;
+        T = (T > Tmax) ? Tmax : T;
+
+        console.log(T);
+
+    };
+
     //document.addEventListener('wheel', (event) => console.log('Wheeled!'));
-
     const wheelEvent$ = Rx.Observable.fromEvent(document, 'wheel');
+    wheelEvent$.subscribe(onMouseWheel);
 
-    wheelEvent$.subscribe(() => console.log('Wheeled!'));
+
 
 }
 

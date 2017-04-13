@@ -11,6 +11,7 @@ var center;
 var T = 0;
 var p5 = new p5();
 var uniforms;
+var nucleusDarkness = 0.3; //0-1
 
 var pdb4CMP, pdb4ZTO, pdb5F9R, gRNA; 
 
@@ -66,7 +67,7 @@ function init() {
     scene.fog = new THREE.Fog(0xffffff, 80, 300); // 300
     renderer = new THREE.WebGLRenderer();
     // renderer.setClearColor(scene.fog.color);
-    renderer.setClearColor(0xdddddd);
+    renderer.setClearColor(0xffffff);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     var container = document.getElementById('container');
@@ -76,7 +77,6 @@ function init() {
     camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 50000 );   
     camera.up.set(0.3,0.9,0.2);
     camera.lookAt(new THREE.Vector3(0, 0, 0)); 
-    //camera.position.set(-79, -44, 122);
     camera.position.set(0, 0, 150);
     scene.add(camera);
 
@@ -94,8 +94,6 @@ function init() {
 
 
         pdb5F9R = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
-        //test1.receiveShadow = true;
-        //test1.castShadow = true;
         scene.add(pdb5F9R);
         pdb5F9R.scale.set(10,10,10);
 
@@ -141,19 +139,7 @@ function init() {
     controls = new THREE.TrackballControls( camera, renderer.domElement );
     controls.maxDistance = 25000; //250
     controls.zoomSpeed = 0.5;
-    //controls.noPan = true;
-
-    // Shadows
-    camLight.castShadow = true;
-    camLight.shadow.mapSize.width = 2048;
-    camLight.shadow.mapSize.height = 2048;
-    var d = 50;
-    camLight.shadow.camera.left = -d;
-    camLight.shadow.camera.right = d;
-    camLight.shadow.camera.top = d;
-    camLight.shadow.camera.bottom = -d;
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;    
+    //controls.noPan = true;   
 
     // Stats
     stats = new Stats();
@@ -205,30 +191,30 @@ function init() {
 
     window.addEventListener( 'keydown', function ( event ) {
         switch ( event.keyCode ) {
-            case 81: // Q
-                tcontrol.setSpace( tcontrol.space === "local" ? "world" : "local" );
-                break;
-            case 17: // Ctrl
-                tcontrol.setTranslationSnap( 100 );
-                tcontrol.setRotationSnap( THREE.Math.degToRad( 15 ) );
-                break;
-            case 87: // W
-                tcontrol.setMode( "translate" );
-                break;
-            case 69: // E
-                tcontrol.setMode( "rotate" );
-                break;
-            case 82: // R
-                tcontrol.setMode( "scale" );
-                break;
-            case 187:
-            case 107: // +, =, num+
-                tcontrol.setSize( tcontrol.size + 0.1 );
-                break;
-            case 189:
-            case 109: // -, _, num-
-                tcontrol.setSize( Math.max( tcontrol.size - 0.1, 0.1 ) );
-                break;
+            // case 81: // Q
+            //     tcontrol.setSpace( tcontrol.space === "local" ? "world" : "local" );
+            //     break;
+            // case 17: // Ctrl
+            //     tcontrol.setTranslationSnap( 100 );
+            //     tcontrol.setRotationSnap( THREE.Math.degToRad( 15 ) );
+            //     break;
+            // case 87: // W
+            //     tcontrol.setMode( "translate" );
+            //     break;
+            // case 69: // E
+            //     tcontrol.setMode( "rotate" );
+            //     break;
+            // case 82: // R
+            //     tcontrol.setMode( "scale" );
+            //     break;
+            // case 187:
+            // case 107: // +, =, num+
+            //     tcontrol.setSize( tcontrol.size + 0.1 );
+            //     break;
+            // case 189:
+            // case 109: // -, _, num-
+            //     tcontrol.setSize( Math.max( tcontrol.size - 0.1, 0.1 ) );
+            //     break;
             case 77: //m
                 animateDNA(dna.children[0], 3000);
                 animateDNA(dna.children[1], 3000);
@@ -239,14 +225,14 @@ function init() {
                 break; 
         }
     });
-    window.addEventListener( 'keyup', function ( event ) {
-        switch ( event.keyCode ) {
-            case 17: // Ctrl
-                tcontrol.setTranslationSnap( null );
-                tcontrol.setRotationSnap( null );
-                break;
-        }
-    }); 
+    // window.addEventListener( 'keyup', function ( event ) {
+    //     switch ( event.keyCode ) {
+    //         case 17: // Ctrl
+    //             tcontrol.setTranslationSnap( null );
+    //             tcontrol.setRotationSnap( null );
+    //             break;
+    //     }
+    // }); 
 
 
 }
@@ -261,16 +247,16 @@ function createNucleus() {
     var holeRadius = npcRadius*1.2;
 
     var npcMat = new THREE.MeshLambertMaterial({
-        color: 0xffffff, 
+        color: 0xbbbbbb, 
         fog: false
     });
 
     uniforms = {  
         time: { type: "f", value: 0.0 },
         speed: { type: "f", value: 0.2 },
-        color: { type: "v3", value: new THREE.Vector3(1.0, 1.0, 1.0) },
+        darkening: { type: "f", value: nucleusDarkness },
         scale: { type: "f", value: 20 }, 
-        contrast: { type: "f", value: 0.3 },       
+        contrast: { type: "f", value: 0.2 },       
     };
     var innerNucleusMat = new THREE.ShaderMaterial( {  
         uniforms:       uniforms,
@@ -344,16 +330,23 @@ function createNucleus() {
     innerNucleus.rotation.order = 'XZY';  
 
     var outerNucleusBufferGeom = new THREE.SphereBufferGeometry(radius, 32, 32);
-    var outerNucleus = new THREE.Mesh(outerNucleusBufferGeom, innerNucleusMat);       
+    var outerNucleus = new THREE.Mesh(outerNucleusBufferGeom, innerNucleusMat);  
+
+    // var outlineMat = new THREE.MeshLambertMaterial({
+    //     color: 0xffffff, 
+    //     side: THREE.BackSide, 
+    //     fog: false,
+    //     transparent: true,
+    //     opacity: 0.4
+    // });
+    // var outlineGeom = outerNucleusBufferGeom.clone();
+    // var outline = new THREE.Mesh(outlineGeom, outlineMat);
+    // outline.scale.set(1.003, 1.003, 1.003);
 
     var nucleus = new THREE.Object3D();
     nucleus.add(outerNucleus, allNpcs, holes, innerNucleus);
 
     return nucleus;
-
-    // var prev = window.performance.now();
-    // now = window.performance.now();
-    // console.log((now-prev)/1000);
     
 }
 
@@ -799,16 +792,19 @@ function createDNAgeometry(pathObjList, extrusionSteps) {
 function animateDNA(mesh, t) {
 
     var currentParams = {
-        morph : mesh.morphTargetInfluences[1]
+        morph : mesh.morphTargetInfluences[1],
+        nDark : nucleusDarkness
     }
     var targetParams = {
-        morph : 1-mesh.morphTargetInfluences[1]               
+        morph : 1-mesh.morphTargetInfluences[1],
+        nDark : 0.0             
     };                
 
     var tween = new TWEEN.Tween(currentParams).to(targetParams, t);
 
     var transition = function() {
         mesh.morphTargetInfluences[1]=currentParams.morph;
+        uniforms.darkening.value = currentParams.nDark;
     }
 
     tween.onUpdate(transition);
@@ -861,7 +857,6 @@ function animateParticles() {
             vert.y = Math.random() * 400 - 200;
         }
         vert.y = vert.y + (3.0 * deltaTime);
-
     }
     particleSystem.geometry.verticesNeedUpdate = true;
     particleSystem.rotation.y -= 0.03 * deltaTime;
@@ -876,14 +871,9 @@ function animate() {
     stats.update();
     animateParticles();
     TWEEN.update();
-
-
     uniforms.time.value += deltaTime;
-
-    //console.log(uniforms.time.value);
-
-    render();
-    //window.scrollTo(0, 0); // iOS... PERHAPS force landscape mode?
+    renderer.render( scene, camera );
+    //window.scrollTo(0, 0); // iOS... perhaps force landscape mode?
 }
 
 
@@ -896,12 +886,4 @@ function onWindowResize() {
     // setTimeout(function(){ 
     //     window.scrollTo(0, 0); // for iOS DOESNT WORK...
     // }, 500);
-}
-
-
-    
-    
-
-function render() {
-    renderer.render( scene, camera );
 }

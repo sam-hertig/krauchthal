@@ -63,7 +63,7 @@ function init() {
     // Scene and Renderer
     scene = new THREE.Scene();
     // scene.fog = new THREE.FogExp2(0xffffff, 0.002); //0.001
-    scene.fog = new THREE.Fog(0xffffff, 80, 3000000); // 300
+    scene.fog = new THREE.Fog(0xffffff, 80, 300); // 300
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(scene.fog.color);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -274,10 +274,10 @@ function createNucleus() {
     uniforms = {  
         time: { type: "f", value: 0.0 },
         speed: { type: "f", value: 0.2 },
-        resolution: { type: "f", value: 10.0 },
+        resolution: { type: "f", value: 20.0 },
         color: { type: "v3", value: new THREE.Vector3(1.0, 1.0, 1.0) },
         image: { type: 't', value: bg },
-        brightness: { type: "f", value: 1.0 },       
+        brightness: { type: "f", value: 0.1 },       
     };
     var innerNucleusMat = new THREE.ShaderMaterial( {  
         uniforms:       uniforms,

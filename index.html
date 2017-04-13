@@ -8,7 +8,9 @@
         <link rel="stylesheet" href="css/main.css">
 
         <!-- Shaders -->
-        <script type="application/x-glsl" id="nucleus-vertex">  
+        <script type="application/x-glsl" id="nucleus-vertex"> 
+            //precision highp float;
+
             varying vec2 vUv;
 
             void main() {  
@@ -17,7 +19,10 @@
               gl_Position = projectionMatrix * modelViewMatrix * pos;
             }
         </script>
-        <script type="application/x-glsl" id="nucleus-fragment">  
+        <script type="application/x-glsl" id="nucleus-fragment"> 
+
+            // http://shaderfrog.com/view/44
+
             precision highp float;
 
             #define PI 3.141592653589793238462643383279
@@ -30,8 +35,6 @@
             uniform float brightness;
 
             varying vec2 vUv;
-            varying vec3 vPosition;
-            varying vec3 vNormal;
 
             vec3 lig = normalize(vec3(0.9,0.35,-0.2));
 
@@ -39,27 +42,36 @@
                 
                 vec2 uvMax = ( 2.0 * asin( sin( 2.0 * PI * vUv ) ) ) / PI;
                 vec2 position = vUv * resolution;
-                
                 vec3 nor = vec3( 0.0, 1.0, 0.0 );
                 float dif = max(dot(nor,lig),0.0);
-                
                 vec3 pos = vec3( position.x, 0.0, position.y );
-                
                 float timeScale = time * speed;
                 
                 // lights
-                vec3 brdf = vec3(0.0);
                 float cc  = 0.55*texture2D( image, 1.8*0.02*pos.xz + 0.007*timeScale*vec2( 1.0, 0.0) ).x;
                 cc += 0.25*texture2D( image, 1.8*0.04*pos.xz + 0.011*timeScale*vec2( 0.0, 1.0) ).x;
                 cc += 0.10*texture2D( image, 1.8*0.08*pos.xz + 0.014*timeScale*vec2(-1.0,-1.0) ).x;
                 cc = 0.6*(1.0-smoothstep( 0.0, 0.025, abs(cc-0.4))) + 
                     0.4*(1.0-smoothstep( 0.0, 0.150, abs(cc-0.4)));
-
-                vec3 col = color * cc;
                 
-                gl_FragColor = vec4( color * cc * brightness, 1.0 );
+                //gl_FragColor = vec4( color * cc * brightness, 1.0 ); //original
+       
+                vec3 ones = vec3(1.0, 1.0, 1.0);
+                vec3 pre = ones - (color * cc * brightness); 
+                float seam = 1.0 - (smoothstep(0.0, 0.2, min(vUv.x, vUv.y)) * (1.0 - smoothstep(0.8, 1.0, max(vUv.x, vUv.y))));
+                gl_FragColor = vec4(max(seam, pre.x), max(seam, pre.y), max(seam, pre.z), 1.0);
+
             }
         </script>
+        <script type="application/x-glsl" id="nucleus-fragment2">  
+            uniform sampler2D image;  
+            varying vec2 vUv;
+
+            void main() {  
+              vec4 sample = texture2D(image, vUv);
+              gl_FragColor = vec4(sample.xyz, sample.w);
+            }
+        </script>         
 
     </head>
 

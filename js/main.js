@@ -65,7 +65,8 @@ function init() {
     // scene.fog = new THREE.FogExp2(0xffffff, 0.002); //0.001
     scene.fog = new THREE.Fog(0xffffff, 80, 300); // 300
     renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor(scene.fog.color);
+    // renderer.setClearColor(scene.fog.color);
+    renderer.setClearColor(0xdddddd);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     var container = document.getElementById('container');
@@ -80,7 +81,7 @@ function init() {
     scene.add(camera);
 
     // Lights
-    var ambLight = new THREE.AmbientLight(0xffffff, 0.6);
+    var ambLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambLight);
     var camLight = new THREE.DirectionalLight(0xffffff, 0.5);
     camLight.position.set(0, 0, 0); 
@@ -259,21 +260,16 @@ function createNucleus() {
     var npcRadius = 30; // 60
     var holeRadius = npcRadius*1.2;
 
-    var outerNucleusMat = new THREE.MeshLambertMaterial({
-        color: 0xaaaaaa, 
+    var npcMat = new THREE.MeshLambertMaterial({
+        color: 0xffffff, 
         fog: false
     });
 
-    // var innerNucleusMat = new THREE.MeshLambertMaterial({
-    //     color: 0xaaaaaa, 
-    //     side: THREE.BackSide,
-    //     fog: false
-    // });
     var loader = new THREE.TextureLoader();
-    var bg = loader.load("textures/perlin_noise.jpg");
+    var bg = loader.load("textures/perlin_noise0.jpg");
     uniforms = {  
         time: { type: "f", value: 0.0 },
-        speed: { type: "f", value: 0.2 },
+        speed: { type: "f", value: 20 },
         resolution: { type: "f", value: 20.0 },
         color: { type: "v3", value: new THREE.Vector3(1.0, 1.0, 1.0) },
         image: { type: 't', value: bg },
@@ -291,12 +287,7 @@ function createNucleus() {
         fog: false
     });
 
-    var outerNucleusGeom = new THREE.Geometry();
-
-    var membraneGeom = new THREE.SphereGeometry(radius, 32, 32);
-    var membraneMesh = new THREE.Mesh(membraneGeom);
-    membraneMesh.updateMatrix();
-    outerNucleusGeom.merge(membraneMesh.geometry, membraneMesh.matrix);
+    var allNpcsGeom = new THREE.Geometry();
 
     var npcGeom = new THREE.Geometry();
     var subunitGeom = new THREE.SphereGeometry(npcRadius, 8, 8);
@@ -327,12 +318,12 @@ function createNucleus() {
         z = Math.cos(Phi); 
         pos = new THREE.Vector3(x, y, z);
         quat.setFromUnitVectors(zVec, pos);
-        pos.multiplyScalar(radius);
+        pos.multiplyScalar(radius+npcRadius/10);
 
         npcMesh.position.copy(pos);
         npcMesh.quaternion.copy(quat);
         npcMesh.updateMatrix();
-        outerNucleusGeom.merge(npcMesh.geometry, npcMesh.matrix);
+        allNpcsGeom.merge(npcMesh.geometry, npcMesh.matrix);
 
         holeMesh.position.copy(pos);
         holeMesh.quaternion.copy(quat);
@@ -345,19 +336,22 @@ function createNucleus() {
     }     
 
     
-    var outerNucleusBufferGeom = new THREE.BufferGeometry().fromGeometry(outerNucleusGeom);
+    var allNpcsBufferGeom = new THREE.BufferGeometry().fromGeometry(allNpcsGeom);
     var holesBufferGeom = new THREE.BufferGeometry().fromGeometry(holesGeom);
 
-    var outerNucleus = new THREE.Mesh(outerNucleusBufferGeom, outerNucleusMat);
+    var allNpcs = new THREE.Mesh(allNpcsGeom, npcMat);
     var holes = new THREE.Mesh(holesBufferGeom, holesMat);
 
     var innerNucleusBufferGeom = new THREE.SphereBufferGeometry(radius-npcRadius, 32, 32);
     var innerNucleus = new THREE.Mesh(innerNucleusBufferGeom, innerNucleusMat);
-    innerNucleus.scale.set(-1, 1, 1);  
-    innerNucleus.eulerOrder = 'XZY';    
+    innerNucleus.scale.set(-1, 1, 1);
+    innerNucleus.rotation.order = 'XZY';  
+
+    var outerNucleusBufferGeom = new THREE.SphereBufferGeometry(radius, 32, 32);
+    var outerNucleus = new THREE.Mesh(outerNucleusBufferGeom, innerNucleusMat);       
 
     var nucleus = new THREE.Object3D();
-    nucleus.add(outerNucleus, holes, innerNucleus);
+    nucleus.add(outerNucleus, allNpcs, holes, innerNucleus);
 
     return nucleus;
 
@@ -887,7 +881,10 @@ function animate() {
     animateParticles();
     TWEEN.update();
 
+
     uniforms.time.value += deltaTime;
+
+    //console.log(uniforms.time.value);
 
     render();
     //window.scrollTo(0, 0); // iOS... PERHAPS force landscape mode?

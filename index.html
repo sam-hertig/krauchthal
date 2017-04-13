@@ -8,16 +8,22 @@
         <link rel="stylesheet" href="css/main.css">
 
         <!-- Shaders -->
-        <script type="application/x-glsl" id="nucleus-vertex"> 
-            //precision highp float;
+        <script type="application/x-glsl" id="nucleus-vertex">
+
+            precision highp float;
+            precision highp int;
 
             varying vec2 vUv;
+            varying vec3 vPosition;
+            varying vec3 vNormal;            
 
-            void main() {  
-              vUv = uv;
-              vec4 pos = vec4(position, 1.0);
-              gl_Position = projectionMatrix * modelViewMatrix * pos;
+            void main() {
+                vUv = uv;
+                vPosition = position;
+                vNormal = normal;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             }
+
         </script>
         <script type="application/x-glsl" id="nucleus-fragment"> 
 
@@ -35,6 +41,8 @@
             uniform float brightness;
 
             varying vec2 vUv;
+            varying vec3 vPosition;
+            varying vec3 vNormal;
 
             vec3 lig = normalize(vec3(0.9,0.35,-0.2));
 
@@ -54,7 +62,7 @@
                 cc = 0.6*(1.0-smoothstep( 0.0, 0.025, abs(cc-0.4))) + 
                     0.4*(1.0-smoothstep( 0.0, 0.150, abs(cc-0.4)));
                 
-                //gl_FragColor = vec4( color * cc * brightness, 1.0 ); //original
+                // gl_FragColor = vec4( color * cc * brightness, 1.0 ); //original
        
                 vec3 ones = vec3(1.0, 1.0, 1.0);
                 vec3 pre = ones - (color * cc * brightness); 
@@ -66,10 +74,9 @@
         <script type="application/x-glsl" id="nucleus-fragment2">  
             uniform sampler2D image;  
             varying vec2 vUv;
-
             void main() {  
-              vec4 sample = texture2D(image, vUv);
-              gl_FragColor = vec4(sample.xyz, sample.w);
+                vec4 sample = texture2D(image, vUv);
+                gl_FragColor = vec4(sample.xyz, sample.w);
             }
         </script>         
 

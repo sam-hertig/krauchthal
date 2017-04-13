@@ -265,21 +265,17 @@ function createNucleus() {
         fog: false
     });
 
-    var loader = new THREE.TextureLoader();
-    var bg = loader.load("textures/perlin_noise0.jpg");
     uniforms = {  
         time: { type: "f", value: 0.0 },
-        speed: { type: "f", value: 20 },
-        resolution: { type: "f", value: 20.0 },
+        speed: { type: "f", value: 0.2 },
         color: { type: "v3", value: new THREE.Vector3(1.0, 1.0, 1.0) },
-        image: { type: 't', value: bg },
-        brightness: { type: "f", value: 0.1 },       
+        scale: { type: "f", value: 20 }, 
+        contrast: { type: "f", value: 0.3 },       
     };
     var innerNucleusMat = new THREE.ShaderMaterial( {  
         uniforms:       uniforms,
         vertexShader:   document.getElementById('nucleus-vertex').textContent,
         fragmentShader: document.getElementById('nucleus-fragment').textContent,
-        fog: false
     });    
 
     var holesMat = new THREE.MeshBasicMaterial({

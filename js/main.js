@@ -441,9 +441,7 @@ function conformationalChange(pdb1, pdb2) {
 function createFloppyRNA() {
 
     // Create helix container
-    rnaObj = new THREE.Object3D();
-    // rnaObj.position.set(1.353, -10.015, 5.629);
-    // rnaObj.rotation.set(1.241, 0.007, 0);    
+    rnaObj = new THREE.Object3D();   
     rnaObj.scale.set(4, 4, 4);
 
     // Gather vertices for unfolded shape
@@ -503,9 +501,7 @@ function createFloppyRNA() {
 function createDNA() {
 
     // Create helix container
-    dnaObj = new THREE.Object3D();
-    // dnaObj.position.set(1.353, -10.015, 5.629);
-    // dnaObj.rotation.set(1.241, 0.007, 0);    
+    dnaObj = new THREE.Object3D();    
     dnaObj.scale.set(4, 4, 4);
 
     // Gather vertices for unfolded shape

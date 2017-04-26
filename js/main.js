@@ -17,14 +17,14 @@ var pdb4CMP, pdb4ZTO, pdb5F9R, gRNA;
 
 // Create RNA material 1
 var rnaMat1 = new THREE.MeshPhongMaterial({ 
-    color : 0x0000FF,
+    color : 0xDDABFF,
     specular : 0xFFFFFF,
     shininess: 10, 
     side : THREE.DoubleSide, 
     shading: THREE.SmoothShading
 });
-var rnaMat2 = new THREE.MeshPhongMaterial({ 
-    color : 0x0000FF,
+var rnaMat1m = new THREE.MeshPhongMaterial({ 
+    color : 0xDDABFF,
     specular : 0xFFFFFF,
     shininess: 10,
     morphTargets : true, 
@@ -34,8 +34,27 @@ var rnaMat2 = new THREE.MeshPhongMaterial({
 });
 
 // Create DNA material
+var dnaMat1m = new THREE.MeshPhongMaterial({ 
+    color : 0x2600E6,
+    specular : 0xFFFFFF,
+    shininess: 10,
+    morphTargets : true, 
+    morphNormals : true, 
+    side : THREE.DoubleSide, 
+    shading: THREE.SmoothShading
+});
 var dnaMat1 = new THREE.MeshPhongMaterial({ 
-    color : 0x9900AA,
+    color : 0x2600E6,
+    specular : 0xFFFFFF,
+    shininess: 10,
+    // morphTargets : true, 
+    // morphNormals : true,     
+    side : THREE.DoubleSide, 
+    shading: THREE.SmoothShading
+});
+// Create DNA material
+var dnaMat2m = new THREE.MeshPhongMaterial({ 
+    color : 0x8900E6,
     specular : 0xFFFFFF,
     shininess: 10,
     morphTargets : true, 
@@ -44,7 +63,16 @@ var dnaMat1 = new THREE.MeshPhongMaterial({
     shading: THREE.SmoothShading
 });
 var dnaMat2 = new THREE.MeshPhongMaterial({ 
-    color : 0x9900AA,
+    color : 0x8900E6,
+    specular : 0xFFFFFF,
+    shininess: 10,
+    // morphTargets : true, 
+    // morphNormals : true,     
+    side : THREE.DoubleSide, 
+    shading: THREE.SmoothShading
+});
+var dnaMat3 = new THREE.MeshPhongMaterial({ 
+    color : 0x333333,
     specular : 0xFFFFFF,
     shininess: 10,
     // morphTargets : true, 
@@ -90,7 +118,7 @@ function init() {
 
     // Load cas9 5f9r
     var loader1 = new THREE.JSONLoader();
-    loader1.load('models/crisprV2.3.json', function (geometry, materials) {
+    loader1.load('models/crisprV3.2_5f9r.json', function (geometry, materials) { //crisprV3.2_5f9r.json, crisprV2.3.json
 
 
         pdb5F9R = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
@@ -104,9 +132,9 @@ function init() {
         center.multiplyScalar(10).negate();
         pdb5F9R.position.copy(center);  
  
-        // Load RNA
+        // Load guideRNA
         var loader2 = new THREE.JSONLoader();
-        loader2.load('models/crisprV2.2e.json', function (geometry, materials) {
+        loader2.load('models/crisprV3.2_rna.json', function (geometry, materials) { //crisprV3.2_rna.json, crisprV2.2e.json
             gRNA = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
             gRNA.material = rnaMat1;
             gRNA.scale.set(10,10,10);     
@@ -114,12 +142,22 @@ function init() {
             gRNA.position.copy(center);
         });
 
+        // Load guideDNA
+        var loader22 = new THREE.JSONLoader();
+        loader22.load('models/crisprV3.2_dna.json', function (geometry, materials) {
+            gDNA = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
+            gDNA.material = dnaMat3;
+            gDNA.scale.set(10,10,10);     
+            //scene.add(gDNA);   
+            gDNA.position.copy(center);
+        });        
+
         // Load cas9 4zt0
         var loader3 = new THREE.JSONLoader();
-        loader3.load('models/crisprV2.4.4zt0.json', function (geometry, materials) {
+        loader3.load('models/crisprV3.2_4cmp.json', function (geometry, materials) {
             pdb4ZTO = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
             pdb4ZTO.scale.set(10,10,10);     
-            scene.add(pdb4ZTO);   
+            //scene.add(pdb4ZTO);   
             pdb4ZTO.position.copy(center);
             pdb4ZTO.visible = false;
         });
@@ -155,11 +193,22 @@ function init() {
 
     // Floppy RNA
     var rna = createFloppyRNA();
-    scene.add(rna);
+    //scene.add(rna);
 
     // DNA
     var dna = createDNA();
-    scene.add(dna);
+    //scene.add(dna);
+
+    var containr = new THREE.Object3D();
+    containr.add(rna,dna);
+    //containr.position.set(-3.8855183414413506, -8.637970693083439, 3.9477057682204166);
+    //containr.rotation.set(1.2517250023876436, -0.44897028815186263, 0.9607665726412165);
+    // containr.position.set(-5.766649251997339, -5.930137176811356, 4.763754925113571);
+    // containr.rotation.set(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
+    containr.position.set(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
+    containr.rotation.set(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
+
+    scene.add(containr);
 
     // // cut DNA part 1
     // var dnaPart1 = createDNApart1();
@@ -178,15 +227,15 @@ function init() {
     // tcontrol = new THREE.TransformControls(camera, renderer.domElement);
     // tcontrol.addEventListener('change', onTransform); //render
     // function onTransform() {
-    //   console.log('----');
-    //   console.log(this.object.position.x, this.object.position.y, this.object.position.z);
-    //   console.log(this.object.rotation.x, this.object.rotation.y, this.object.rotation.z);
-    //   console.log(this.object.scale.x, this.object.scale.y, this.object.scale.z);
+    //    console.log('----');
+    //    console.log(this.object.position.x, this.object.position.y, this.object.position.z);
+    //    console.log(this.object.rotation.x, this.object.rotation.y, this.object.rotation.z);
+    //    console.log(this.object.scale.x, this.object.scale.y, this.object.scale.z);
     // } 
     //var posBall = new THREE.Mesh((new THREE.SphereGeometry(0.1)), new THREE.MeshLambertMaterial({color: 0xff0000}));
     //rna.add(posBall);
     //tcontrol.attach(posBall);
-    // tcontrol.attach(pdb5F9R);
+    // tcontrol.attach(containr);
     // scene.add(tcontrol);
 
     window.addEventListener( 'keydown', function ( event ) {
@@ -393,8 +442,8 @@ function createFloppyRNA() {
 
     // Create helix container
     rnaObj = new THREE.Object3D();
-    rnaObj.position.set(1.353, -10.015, 5.629);
-    rnaObj.rotation.set(1.241, 0.007, 0);    
+    // rnaObj.position.set(1.353, -10.015, 5.629);
+    // rnaObj.rotation.set(1.241, 0.007, 0);    
     rnaObj.scale.set(4, 4, 4);
 
     // Gather vertices for unfolded shape
@@ -438,7 +487,7 @@ function createFloppyRNA() {
 
    
     // Create Meshes:
-    var rnaMesh1 = new THREE.Mesh(rnaGeom1, rnaMat2);
+    var rnaMesh1 = new THREE.Mesh(rnaGeom1, rnaMat1m);
     rnaObj.add(rnaMesh1);
 
     // Compute Normals:
@@ -455,8 +504,8 @@ function createDNA() {
 
     // Create helix container
     dnaObj = new THREE.Object3D();
-    dnaObj.position.set(1.353, -10.015, 5.629);
-    dnaObj.rotation.set(1.241, 0.007, 0);    
+    // dnaObj.position.set(1.353, -10.015, 5.629);
+    // dnaObj.rotation.set(1.241, 0.007, 0);    
     dnaObj.scale.set(4, 4, 4);
 
     // Gather vertices for unfolded shape
@@ -535,8 +584,8 @@ function createDNA() {
     dnaGeom2.morphTargets.push({ name: "2", vertices: dnaGeom2morphed1.vertices });
    
     // Create Meshes:
-    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat1);
-    var dnaMesh2 = new THREE.Mesh(dnaGeom2, dnaMat1);
+    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat1m);
+    var dnaMesh2 = new THREE.Mesh(dnaGeom2, dnaMat2m);
     dnaObj.add(dnaMesh1);
     dnaObj.add(dnaMesh2);
 
@@ -608,7 +657,7 @@ function createDNApart1() {
     var dnaGeom2 = dnaGeometries[1];
    
     // Create Meshes:
-    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat2);
+    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat1);
     var dnaMesh2 = new THREE.Mesh(dnaGeom2, dnaMat2);
     dnaObj.add(dnaMesh1);
     dnaObj.add(dnaMesh2);
@@ -664,7 +713,7 @@ function createDNApart2() {
     var dnaGeom2 = dnaGeometries[1];
    
     // Create Meshes:
-    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat2);
+    var dnaMesh1 = new THREE.Mesh(dnaGeom1, dnaMat1);
     var dnaMesh2 = new THREE.Mesh(dnaGeom2, dnaMat2);
     dnaObj.add(dnaMesh1);
     dnaObj.add(dnaMesh2);

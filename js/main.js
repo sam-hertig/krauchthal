@@ -11,7 +11,7 @@ var center;
 var T = 0;
 var p5 = new p5();
 var uniforms;
-var nucleusDarkness = 0.3; //0-1
+var nucleusDarkness = 0.0; //0.3
 
 var pdb4CMP, pdb4ZTO, pdb5F9R, gRNA; 
 
@@ -19,14 +19,14 @@ var pdb4CMP, pdb4ZTO, pdb5F9R, gRNA;
 var rnaMat1 = new THREE.MeshPhongMaterial({ 
     color : 0xDDABFF,
     specular : 0xFFFFFF,
-    shininess: 10, 
+    shininess: 5, 
     side : THREE.DoubleSide, 
     shading: THREE.SmoothShading
 });
 var rnaMat1m = new THREE.MeshPhongMaterial({ 
     color : 0xDDABFF,
     specular : 0xFFFFFF,
-    shininess: 10,
+    shininess: 5,
     morphTargets : true, 
     morphNormals : true, 
     side : THREE.DoubleSide, 
@@ -34,27 +34,8 @@ var rnaMat1m = new THREE.MeshPhongMaterial({
 });
 
 // Create DNA material
-var dnaMat1m = new THREE.MeshPhongMaterial({ 
-    color : 0x2600E6,
-    specular : 0xFFFFFF,
-    shininess: 10,
-    morphTargets : true, 
-    morphNormals : true, 
-    side : THREE.DoubleSide, 
-    shading: THREE.SmoothShading
-});
-var dnaMat1 = new THREE.MeshPhongMaterial({ 
-    color : 0x2600E6,
-    specular : 0xFFFFFF,
-    shininess: 10,
-    // morphTargets : true, 
-    // morphNormals : true,     
-    side : THREE.DoubleSide, 
-    shading: THREE.SmoothShading
-});
-// Create DNA material
 var dnaMat2m = new THREE.MeshPhongMaterial({ 
-    color : 0x8900E6,
+    color : 0x2600E6,
     specular : 0xFFFFFF,
     shininess: 10,
     morphTargets : true, 
@@ -63,20 +44,33 @@ var dnaMat2m = new THREE.MeshPhongMaterial({
     shading: THREE.SmoothShading
 });
 var dnaMat2 = new THREE.MeshPhongMaterial({ 
+    color : 0x2600E6,
+    specular : 0xFFFFFF,
+    shininess: 10,    
+    side : THREE.DoubleSide, 
+    shading: THREE.SmoothShading
+});
+// Create DNA material
+var dnaMat1m = new THREE.MeshPhongMaterial({ 
     color : 0x8900E6,
     specular : 0xFFFFFF,
     shininess: 10,
-    // morphTargets : true, 
-    // morphNormals : true,     
+    morphTargets : true, 
+    morphNormals : true, 
+    side : THREE.DoubleSide, 
+    shading: THREE.SmoothShading
+});
+var dnaMat1 = new THREE.MeshPhongMaterial({ 
+    color : 0x8900E6,
+    specular : 0xFFFFFF,
+    shininess: 10,     
     side : THREE.DoubleSide, 
     shading: THREE.SmoothShading
 });
 var dnaMat3 = new THREE.MeshPhongMaterial({ 
     color : 0x333333,
     specular : 0xFFFFFF,
-    shininess: 10,
-    // morphTargets : true, 
-    // morphNormals : true,     
+    shininess: 10,     
     side : THREE.DoubleSide, 
     shading: THREE.SmoothShading
 });
@@ -118,7 +112,7 @@ function init() {
 
     // Load cas9 5f9r
     var loader1 = new THREE.JSONLoader();
-    loader1.load('models/crisprV3.2_5f9r.json', function (geometry, materials) { //crisprV3.2_5f9r.json, crisprV2.3.json
+    loader1.load('models/crisprV3.2_5f9r.json', function (geometry, materials) {
 
 
         pdb5F9R = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
@@ -134,7 +128,7 @@ function init() {
  
         // Load guideRNA
         var loader2 = new THREE.JSONLoader();
-        loader2.load('models/crisprV3.2_rna.json', function (geometry, materials) { //crisprV3.2_rna.json, crisprV2.2e.json
+        loader2.load('models/crisprV3.2_rna.json', function (geometry, materials) {
             gRNA = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
             gRNA.material = rnaMat1;
             gRNA.scale.set(10,10,10);     
@@ -154,10 +148,10 @@ function init() {
 
         // Load cas9 4zt0
         var loader3 = new THREE.JSONLoader();
-        loader3.load('models/crisprV3.2_4cmp.json', function (geometry, materials) {
+        loader3.load('models/crisprV3.2_4zt0.json', function (geometry, materials) {
             pdb4ZTO = new THREE.Mesh(geometry, new THREE.MultiMaterial(materials));
             pdb4ZTO.scale.set(10,10,10);     
-            //scene.add(pdb4ZTO);   
+            scene.add(pdb4ZTO);   
             pdb4ZTO.position.copy(center);
             pdb4ZTO.visible = false;
         });
@@ -201,10 +195,6 @@ function init() {
 
     var containr = new THREE.Object3D();
     containr.add(rna,dna);
-    //containr.position.set(-3.8855183414413506, -8.637970693083439, 3.9477057682204166);
-    //containr.rotation.set(1.2517250023876436, -0.44897028815186263, 0.9607665726412165);
-    // containr.position.set(-5.766649251997339, -5.930137176811356, 4.763754925113571);
-    // containr.rotation.set(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
     containr.position.set(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
     containr.rotation.set(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
 

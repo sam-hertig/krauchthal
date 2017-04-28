@@ -11,7 +11,7 @@ var center;
 var T = 0;
 var p5 = new p5();
 var uniforms;
-var nucleusDarkness = 0.0; //0.3
+var nucleusDarkness = 0; //0.3
 
 var pdb4CMP, pdb4ZTO, pdb5F9R, gRNA; 
 
@@ -280,8 +280,8 @@ function init() {
 function createNucleus() {
 
     var positions = [];
-    var radius = 1500; // 3000
-    var nrOfNpc = 100; // 2000
+    var radius = 1500; // 3000, 1500
+    var nrOfNpc = 150; // 2000, 100
     var npcRadius = 30; // 60
     var holeRadius = npcRadius*1.2;
 

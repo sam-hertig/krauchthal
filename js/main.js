@@ -3,7 +3,8 @@ if (! Detector.webgl) {
 }   
 
 var visualization = {};
-visualization = addMaterials(visualization);
-console.log(visualization);
 visualization = setup3D(visualization);
-console.log(visualization);
+visualization = setupMaterials(visualization);
+visualization = loadBiology(visualization);
+run(visualization);
+

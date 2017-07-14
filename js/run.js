@@ -9,8 +9,8 @@ function run(module) {
         module.deltaTime = module.clock.getDelta();
         module.materials.nucMatUniforms.time.value += module.deltaTime;
 
-        //module.animateParticles();
-        //TWEEN.update();
+        module.animateParticles(module.bubbles);
+        TWEEN.update();
         
         requestAnimationFrame(animate);
     }

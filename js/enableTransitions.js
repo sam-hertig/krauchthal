@@ -1,17 +1,26 @@
 function enableTransitions(module) {
 
 
+    module.modifiers = {
+        '0' : (function(v) {module.cas9.containerObject.position.x = v}),
+        '1' : (function(v) {module.cas9.containerObject.rotation.x = v}),
+        '2' : (function(v) {module.nucleicAcids.position.y = v}),
+    };
+
 
     module.states = [
         
         {
-            x : 0,
-            y : -5.8371807191324620,
+            '0' : 0,
+            '1' : 0,
+            '2' : -5.8371807191324620,
+
         },
 
         {
-            x : 50,
-            y : -50,
+            '0' : 50,
+            '1' : 0,
+            '2' : -50,
         }
 
     ];
@@ -23,14 +32,28 @@ function enableTransitions(module) {
         var tween = new TWEEN.Tween(origin).to(target, time*1000);
 
         var transition = function() {
-            module.cas9.containerObject.position.x = origin.x;
-            module.nucleicAcids.position.y = origin.y;
+            //console.log(module.cas9.containerObject.position.x);
+            module.modifiers['0'](origin['0']);
+            module.modifiers['1'](origin['1']);
+            module.modifiers['2'](origin['2']);
+
+            Object.keys(module.modifiers).forEach(function(key) {
+                if (target[key] != origin[key]) {
+                    module.modifiers[key](origin[key]); //somehow turn that into a factory for the transition function so it
+                    // needs to create the function once
+
+                    // CONTINUE HERE...
+
+                }
+            })
+
         }
 
         tween.onUpdate(transition);
         tween.easing(TWEEN.Easing.Quadratic.InOut);
         tween.start();
 
+        console.log(Object.keys(module.modifiers));
 
     }
 

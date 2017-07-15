@@ -420,7 +420,8 @@ function createNucleicAcids(module) {
     
     // Floppy RNA (part of gRNA that will wrap around target DNA)
     var rna = createFloppyRNA();
-    module.nucleicAcids.add(rna);
+    //module.nucleicAcids.add(rna);
+    module.cas9.containerObject.add(rna);
     
     // DNA (before cut)
     var dnaPreCut = createDNApreCut();

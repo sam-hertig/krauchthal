@@ -5,10 +5,10 @@ function enableTransitions(module) {
     module.currentStateNr = 0;
 
     module.modifiers = {
-        '0' : (function(v) {module.cas9.containerObject.position.x = v}),
-        '1' : (function(v) {module.cas9.containerObject.rotation.x = v}),
-        '2' : (function(v) {module.nucleicAcids.position.y = v}),
-        '3boolean' : (function(b) {module.nucleicAcids.visible = b}),
+        '0' : (function(v) {module.cas9.containerObject.position.x = v;}),
+        '1' : (function(v) {module.cas9.containerObject.rotation.x = v;}),
+        '2' : (function(v) {module.nucleicAcids.position.y = v;}),
+        '3' : (function(v) {module.nucleicAcids.visible = (v<0.5) ? true : false;console.log(v);})
     };
 
     module.states = [
@@ -17,15 +17,14 @@ function enableTransitions(module) {
             '0' : 0,
             '1' : 0,
             '2' : -5.8371807191324620,
-            '3boolean' : true,
-
+            '3' : 0,
         },
 
         {
             '0' : 50,
             '1' : 0,
             '2' : -50,
-            '3boolean' : false,
+            '3' : 1.0,
         }
 
     ];
@@ -35,31 +34,28 @@ function enableTransitions(module) {
 
     module.transitionState = function (targetStateNr, time) { //time in seconds
 
+        // Stop currently active tween
+        if (module.tween !== undefined)
+            module.tween.stop();
 
         var origin = {
             '0' : module.cas9.containerObject.position.x,
             '1' : module.cas9.containerObject.rotation.x,
             '2' : module.nucleicAcids.position.y,
-            '3boolean' : module.nucleicAcids.visible,
-        };
+            '3' : module.nucleicAcids.visible ? 0.1 : 0.9, //could also check for module.state if necessary
+                                                           //avoiding 1 and 0 will ensure that it is always tweened
+        };                                                 //but might not be necessary
         var target = module.states[targetStateNr];
 
         var requiredModifiers = [];
-        var requiredSwitches = [];
         
         Object.keys(module.modifiers).forEach(function(key) {
             if (target[key] != origin[key]) {
-                if (key.indexOf('boolean') === -1) {
-                    requiredModifiers.push(key);
-                } else {
-                    requiredSwitches.push(key);
-                }
+                requiredModifiers.push(key);
             }
         })
 
-        
         console.log('Tweening', requiredModifiers.length, 'parameters.');
-        console.log('Switching', requiredSwitches.length, 'parameters.');
 
         var tween = new TWEEN.Tween(origin).to(target, time*1000);
 
@@ -72,36 +68,20 @@ function enableTransitions(module) {
         tween.onUpdate(transition);
         tween.easing(TWEEN.Easing.Quadratic.InOut);
         tween.start();
-        //tween.onComplete(function() {
         module.currentStateNr = targetStateNr;
-        requiredSwitches.forEach(function(key) {
-            module.modifiers[key](target[key]);
-        })
-        //});
-
-
-        
+        module.tween = tween;
+        //tween.onComplete(function() {
 
     }
 
-
     // Activate arrows
-
-
-
     document.querySelector(".right").addEventListener("click", onClick(1));
     document.querySelector(".left").addEventListener("click", onClick(-1));
     function onClick(sign) {
         return (function(event) {
-            // console.log(module.currentStateNr, module.currentStateNr+sign);
-            module.transitionState(module.currentStateNr+sign, 5);
+            module.transitionState(module.currentStateNr+sign, (sign+1)*2);
         });
     }
-
-
-    
-
-
 
     return module;
 }

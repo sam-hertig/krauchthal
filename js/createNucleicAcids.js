@@ -12,7 +12,49 @@ function createNucleicAcids(module) {
     var longSide = 0.22; //0.2
     var shortSide = 0.065; //0.07
     helixShape.ellipse(0, 0, longSide/2, shortSide/2, 0, 2*Math.PI, true, 0.4*Math.PI);    
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    // Add and transform nucleic acid container object
+    module.nucleicAcids = new THREE.Object3D();
+    // var pos = new THREE.Vector3(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
+    // var rot = new THREE.Vector3(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
     
+    
+    // Floppy RNA (part of gRNA that will wrap around target DNA)
+    var rna = createFloppyRNA();
+    //rna.position.copy(pos);
+    //rna.rotation.copy(rot);
+    //module.rna = rna;
+    //module.scene.add(rna);
+    module.nucleicAcids.add(rna);
+    
+
+    // DNA (before cut)
+    var dnaPreCut = createDNApreCut();
+    module.nucleicAcids.add(dnaPreCut);
+    
+    // cut DNA part 1
+    //var dnaPostCut1 = createDNApostCut1();
+    //module.nucleicAcids.add(dnaPostCut1);
+
+    // cut DNA part 2
+    //var dnaPostCut2 = createDNApostCut2();
+    //module.nucleicAcids.add(dnaPostCut2);
+
+    // module.nucleicAcids.children.forEach(function(child) {
+    //     child.position.copy(pos);
+    //     child.rotation.copy(rot);
+    // });
+
+    module.nucleicAcids.position.set(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
+    module.nucleicAcids.rotation.set(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
+
+    module.scene.add(module.nucleicAcids);    
+
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -408,32 +450,6 @@ function createNucleicAcids(module) {
         return dnaObj;
     }
 
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    // Add and transform nucleic acid container object
-    module.nucleicAcids = new THREE.Object3D();
-    module.nucleicAcids.position.set(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
-    module.nucleicAcids.rotation.set(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
-    module.scene.add(module.nucleicAcids);
-    
-    // Floppy RNA (part of gRNA that will wrap around target DNA)
-    var rna = createFloppyRNA();
-    //module.nucleicAcids.add(rna);
-    module.cas9.containerObject.add(rna);
-    
-    // DNA (before cut)
-    var dnaPreCut = createDNApreCut();
-    module.nucleicAcids.add(dnaPreCut);
-    
-    // cut DNA part 1
-    //var dnaPostCut1 = createDNApostCut1();
-    //module.nucleicAcids.add(dnaPostCut1);
-
-    // cut DNA part 2
-    //var dnaPostCut2 = createDNApostCut2();
-    //module.nucleicAcids.add(dnaPostCut2);
 
     return module;
 }

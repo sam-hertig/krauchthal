@@ -3,7 +3,7 @@ if (! Detector.webgl) {
 }   
 
 // Module augmentation pattern:
-
+var p5 = new p5();
 var visualization = {};
 visualization = setup3D(visualization);
 visualization = setupMaterials(visualization);

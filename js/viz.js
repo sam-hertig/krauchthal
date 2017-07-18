@@ -2,8 +2,9 @@ if (! Detector.webgl) {
     Detector.addGetWebGLMessage();
 }   
 
-// Module augmentation pattern:
 var p5 = new p5();
+
+// Module augmentation pattern:
 var visualization = {};
 visualization = setup3D(visualization);
 visualization = setupMaterials(visualization);

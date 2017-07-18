@@ -10,6 +10,8 @@ function run(module) {
         module.materials.nucMatUniforms.time.value += module.deltaTime;
 
         module.animateParticles(module.bubbles);
+        module.brownianMotion();
+
         TWEEN.update();
         
         requestAnimationFrame(animate);

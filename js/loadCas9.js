@@ -1,10 +1,11 @@
 function loadCas9(module) {
 
     var scale = 10;
-    var loadDNA = false;
+    var center;
     
-    //change!
     module.cas9 = new THREE.Object3D();
+    module.cas9.center = null;
+
 
     function loadMolProm(url) {
         return new Promise(function(succeed, fail) {
@@ -23,7 +24,6 @@ function loadCas9(module) {
         })
     } 
 
-    var center;
     loadMolProm('models/crisprV3.2_4cmp.json').then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
         mol.scale.set(scale,scale,scale);
@@ -56,6 +56,7 @@ function loadCas9(module) {
         console.log('Failed to load one or more molecules.');
     }).then(function() {
         module.cas9.position.copy(center);
+        module.cas9.center = center;
         module.scene.add(module.cas9);
     });
 

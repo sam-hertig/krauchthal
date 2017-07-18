@@ -4,6 +4,8 @@ function enableTransitions(module) {
     var transitionTime = 4; //in seconds
     var smoothness = 100;
     module.currentStateNr = 0;
+    module.brownianObjects = [];
+    module.brownianDisplacement = 0; //these could all be local vars I think...
 
     module.modifiers = {
         '0' : (function(v) {module.cas9.position.x = v;}),
@@ -105,12 +107,18 @@ function enableTransitions(module) {
         // 1: 4zt0, rna
         // 2: 4cmp
         
-        //var vis5f9r = Math.random() > p;
-        var vis5f9r = p5.noise(p*smoothness) > p;
+        var vis5f9r = Math.random() > p;
+        //var vis5f9r = p5.noise(p*smoothness) > p;
         module.cas9.children[3].visible = vis5f9r;
         module.cas9.children[2].visible = !vis5f9r;
 
-        // call brownian!!!
+        if (p>0.01 && p<0.99) {
+            module.brownianObjects = [module.cas9];
+        }
+        else {
+            module.brownianObjects = [];
+        }
+        module.brownianDisplacement = (p<0.5) ? 50*p : 50*(1-p); 
 
     }
 
@@ -119,6 +127,20 @@ function enableTransitions(module) {
     // Brownian motion (made to look smoother with perlin noise)
 
     module.brownianMotion = function() {
+        if (module.brownianObjects.length === 0) {
+            return;
+        }
+        else {
+            var seedX = module.clock.getElapsedTime();
+            var seedY = seedX + 17;
+            var seedZ = seedY + 42;
+            var displacement = new THREE.Vector3(2*p5.noise(seedX)-1, 2*p5.noise(seedY)-1, 2*p5.noise(seedZ)-1);
+            displacement.multiplyScalar(module.brownianDisplacement);
+            module.brownianObjects.forEach(function(obj) {
+                obj.position.addVectors(obj.center, displacement);
+            });
+
+        }
 
     }
 

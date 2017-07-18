@@ -11,7 +11,7 @@ function setup3D(module) {
     renderer.setClearColor(0xffffff);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    var container = document.getElementById('container');
+    var container = document.getElementById('webgl-container');
     container.appendChild(renderer.domElement);
 
     // Camera

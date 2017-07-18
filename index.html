@@ -5,6 +5,7 @@
         <title>CRISPR-CAS9</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"> 
+        <link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond" rel="stylesheet">
         <link rel="stylesheet" href="css/main.css">
 
         <!-- Shaders -->
@@ -185,15 +186,47 @@
     <body>
 
         <!-- Three.js canvas -->
-        <div id="container"></div>
+        <div id="webgl-container"></div>
 
         <!-- Arrows -->
         <svg version="1.1" class="arrow right" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="75px" height="96px" viewBox="0 0 75 96">
-            <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96 "/>
+            <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96"/>
         </svg>
         <svg version="1.1" class="arrow left" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="75px" height="96px" viewBox="0 0 75 96">
-            <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96 "/>
+            <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96"/>
         </svg>
+
+        <!-- Textboxes -->
+        <div class="flex-container">
+            <div class="textbox active">
+                1
+            </div>
+            <div class="textbox inactive">
+                2
+            </div>
+            <div class="textbox active">
+                3
+            </div>
+            <div class="textbox">
+                4
+            </div>
+            <div class="textbox">
+                5
+            </div>
+            <div class="textbox">
+                6
+            </div>
+            <div class="textbox">
+                7
+            </div>
+            <div class="textbox">
+                8
+            </div>                       
+        </div>
+        <div class="story-container">
+            <div class="textbox" id="storytext">
+            </div>
+        </div>
 
         <!-- Three.js general -->
         <script src="jsLib/three.min.js"></script>

@@ -1,6 +1,15 @@
 body {
     margin: 0px;
     overflow: hidden;
+    font-family: 'Cormorant Garamond', serif;
+    color: black;
+    font-size: 10pt;
+}
+
+@media (min-width: 550px) {
+    body {
+        font-size: 16pt;       
+    }
 }
 
 .arrow {
@@ -19,7 +28,6 @@ body {
 }
 
 .left {
-    /*display: none;*/
     -webkit-transform: translate(0, -50%) rotate(180deg);
     -moz-transform: translate(0, -50%) rotate(180deg);    
     -ms-transform: translate(0, -50%) rotate(180deg);
@@ -28,20 +36,77 @@ body {
 }
 
 .arrowShape {
-    fill: #000000;
-    fill-opacity: 0.2;
-    -webkit-transition: fill-opacity 0.75s;
-    -moz-transition: fill-opacity 0.75s;
-    -ms-transition: fill-opacity 0.75s;
-    -o-transition: fill-opacity 0.75s;    
-    transition: fill-opacity 0.75s; 
+    fill: #ffffff;
+    fill-opacity: 0.8;
+    stroke: #aaaaaa;
+    stroke-width: 1;
+    cursor: default;
+    -webkit-transition: stroke 0.75s, fill 0.75s;
+    -moz-transition: stroke 0.75s, fill 0.75s;
+    -ms-transition: stroke 0.75s, fill 0.75s;
+    -o-transition: stroke 0.75s, fill 0.75s;
+    transition: stroke 0.75s, fill 0.75s;
 }
 
 .arrowShape:hover {
-    fill-opacity: 0.4;
-    -webkit-transition: fill-opacity 0.25s;
-    -moz-transition: fill-opacity 0.25s;
-    -ms-transition: fill-opacity 0.25s;
-    -o-transition: fill-opacity 0.25s;    
-    transition: fill-opacity 0.25s;    
+    fill: #000000;
+    stroke: #000000;
+    cursor: pointer;
+    -webkit-transition: stroke 0.25s, fill 0.25s;
+    -moz-transition: stroke 0.25s, fill 0.25s;
+    -ms-transition: stroke 0.25s, fill 0.25s;
+    -o-transition: stroke 0.25s, fill 0.25s;
+    transition: stroke 0.25s, fill 0.25s;
+}
+
+
+.flex-container {
+    position: absolute;
+    top: 2%;
+    left: 5%;
+    width: 90%;
+
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;  
+    flex-wrap: wrap;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;    
+    -webkit-align-items: flex-start;
+    align-items: flex-start;  
+}
+
+.story-container {
+    position: absolute;
+    bottom: 3%;
+    left: 5%;
+    width: 90%;
+}
+
+.textbox {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #aaaaaa;
+    border-radius: 5px;    
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 2px;
+    cursor: default;   
+}
+
+.inactive {
+    border: none;
+    color: #eeeeee;
+    /*cursor: not-allowed;*/
+    pointer-events: none;
+}
+
+.active:hover {
+    color: white;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-color: #000000;
 }

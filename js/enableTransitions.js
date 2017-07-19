@@ -2,7 +2,7 @@ function enableTransitions(module) {
 
     
     var transitionTime = 4; //in seconds
-    var maxBrownianDisplacement = 10;
+    var maxBrownianDisplacement = 1;
     var rightArrow = document.querySelector(".right");
     var leftArrow = document.querySelector(".left");
     leftArrow.style.display = 'none';

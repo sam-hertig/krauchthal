@@ -28,7 +28,7 @@ function createAmbiance(module) {
 
 
 
-    var nrOfBubbles = 2000;
+    var nrOfBubbles = 1000;
     var bubbleSphereRadius = 200;
 
     // Alternative: have only a small area of bubbles always in front of the camera,

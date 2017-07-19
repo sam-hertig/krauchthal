@@ -1,35 +1,9 @@
 function createAmbiance(module) {
 
-    function createFogCaps() {
-        var capsGeom = new THREE.Geometry();            
-        capsGeom.vertices = [
-            new THREE.Vector3(132.47850306191188, 112.87494579739156, -188.99734163163194),
-            new THREE.Vector3(-132.28641467717367, -212.01072905633762, 52.681448121595665),
-            new THREE.Vector3(0, -5000, 0),
-            new THREE.Vector3(0, 5000, 0),
-        ];
-        var loader = new THREE.TextureLoader();
-        var texture = loader.load("textures/dnaCap.png");  
-        var capsMat = new THREE.PointsMaterial({
-            color: 0xffffff, 
-            size: 1000,
-            sizeAttenuation: false,
-            map: texture,
-            blending: THREE.NormalBlending, //AdditiveBlending, NormalBlending
-            transparent: true,
-            opacity: 1,
-            depthTest: true,
-            fog: false,
-        });
-        return new THREE.Points(capsGeom, capsMat);
-    }
-    var caps = createFogCaps();
-    module.scene.add(caps);
-
-
-
-    var nrOfBubbles = 1000;
+    var nrOfBubbles = 500;
     var bubbleSphereRadius = 200;
+    var nrOfBgSprites = 6;
+    var bgSpriteSphereRadius = 1000;
 
     // Alternative: have only a small area of bubbles always in front of the camera,
     // and animate faster (and randomly) when camera is being moved
@@ -58,6 +32,35 @@ function createAmbiance(module) {
     }
 
 
+
+
+    function createBgSprites(nrOfBgSprites, radius) {
+
+        var initPositions = [];
+        var Theta = 0, Phi =0;
+        var x, y, z, pos;
+
+        for (var j=0; j<nrOfBgSprites; j++) {
+
+            x = Math.sin(Phi) * Math.cos(Theta);
+            y = Math.sin(Phi) * Math.sin(Theta);
+            z = Math.cos(Phi); 
+            pos = new THREE.Vector3(x, y, z);
+            pos.multiplyScalar(radius);
+            initPositions.push(pos);
+
+            Theta = 2*Math.PI*Math.random();
+            Phi = Math.acos(1 - 2*Math.random());    
+
+        }
+
+        console.log(initPositions);
+
+        return new THREE.Object3D();
+    }
+
+
+
     module.animateParticles = function(particleSystem) {
         var verts = particleSystem.geometry.vertices;
         for(var i = 0; i < verts.length; i++) {
@@ -73,6 +76,9 @@ function createAmbiance(module) {
 
     module.bubbles = createBubbles(nrOfBubbles, bubbleSphereRadius);
     module.scene.add(module.bubbles);
+
+    module.bgSprites = createBgSprites(nrOfBgSprites, bgSpriteSphereRadius);
+    module.scene.add(module.bgSprites);
 
     return module;
 }

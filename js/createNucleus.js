@@ -92,11 +92,21 @@ function createNucleus(module) {
         
     }
 
+    // Create nucleus
+    module.nucleus = new THREE.Object3D();
+    var mainPart = createNucleus();
+    module.nucleus.add(mainPart);
 
+    // Create caps:
+    var poles = [
+        new THREE.Vector3(0, -5000, 0),
+        new THREE.Vector3(0, 5000, 0)
+    ];
+    var caps = module.createFogCaps(poles);    
+    module.nucleus.add(caps);
 
-    module.nucleus = createNucleus();
-    module.scene.add(module.nucleus);    
-
+    // Add to scene:
+    module.scene.add(module.nucleus);
 
     return module;
 }

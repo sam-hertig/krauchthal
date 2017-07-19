@@ -49,8 +49,19 @@ function createNucleicAcids(module) {
     //     child.rotation.copy(rot);
     // });
 
+    // Adjust to cas9 position and rotation
     module.nucleicAcids.position.set(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
     module.nucleicAcids.rotation.set(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
+    module.nucleicAcids.updateMatrixWorld();
+
+    // Fog caps to mask ends
+    var dnaEnds  = [
+        module.nucleicAcids.worldToLocal(new THREE.Vector3(132.47850306191188, 112.87494579739156, -188.99734163163194)),
+        module.nucleicAcids.worldToLocal(new THREE.Vector3(-132.28641467717367, -212.01072905633762, 52.681448121595665)),
+    ];
+    var caps = module.createFogCaps(dnaEnds);
+    module.nucleicAcids.add(caps);
+
 
     module.scene.add(module.nucleicAcids);    
 

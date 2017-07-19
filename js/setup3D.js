@@ -3,7 +3,7 @@ function setup3D(module) {
     // Scene 
     var scene = new THREE.Scene();
     // scene.fog = new THREE.FogExp2(0xffffff, 0.002); //0.001
-    scene.fog = new THREE.Fog(0xffffff, 250, 300); // 300
+    scene.fog = new THREE.Fog(0xffffff, 250, 300);
 
     // Renderer
     var renderer = new THREE.WebGLRenderer();
@@ -31,9 +31,9 @@ function setup3D(module) {
 
     // Camera Controls
     var controls = new THREE.TrackballControls(camera, renderer.domElement);
-    controls.maxDistance = 200;
+    //controls.maxDistance = 200;
     controls.zoomSpeed = 0.5;
-    controls.noPan = true;   
+    //controls.noPan = true;   
     
     // Resize
     window.addEventListener('resize', onWindowResize, false);
@@ -62,7 +62,27 @@ function setup3D(module) {
     // scene.add(transControls);    
     // module.box = boxMesh;
 
-    // Add properties and methods to module:
+    // Helper function for creating white sprites that can mask unwanted spots
+    module.createFogCaps = function(vertices) {
+        var capsGeom = new THREE.Geometry();            
+        capsGeom.vertices = vertices;
+        var loader = new THREE.TextureLoader();
+        var texture = loader.load("textures/fogCap.png");  
+        var capsMat = new THREE.PointsMaterial({
+            color: 0xffffff, 
+            size: 1000,
+            sizeAttenuation: false,
+            map: texture,
+            blending: THREE.NormalBlending, //AdditiveBlending, NormalBlending
+            transparent: true,
+            opacity: 1,
+            depthTest: true,
+            fog: false,
+        });
+        return new THREE.Points(capsGeom, capsMat);
+    }
+
+    // Add properties to module:
     module.clock = clock;
     module.scene = scene; 
     module.renderer = renderer;

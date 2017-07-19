@@ -100,11 +100,10 @@ body {
 .inactive {
     border: none;
     color: #eeeeee;
-    /*cursor: not-allowed;*/
     pointer-events: none;
 }
 
-.active:hover {
+.active:hover, .active.current {
     color: white;
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.8);

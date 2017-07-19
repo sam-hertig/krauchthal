@@ -7,24 +7,14 @@ function enableTransitions(module) {
     var leftArrow = document.querySelector(".left");
     leftArrow.style.display = 'none';
     var textBox = document.getElementById("storytext");
+    var flexBox = document.querySelector(".flex-container");
+    var currentState = 0;
+    var tween = null;
 
 
-    module.currentState = 0;
-
-    //module.brownianObjects = [];
-    //module.brownianDisplacement = 0; //these could all be local vars I think...
-
-    module.modifiers = {
-        0 : (function(v) {module.cas9.position.x = v;}),
-        1 : (function(v) {module.cas9.rotation.x = v;}),
-        2 : (function(v) {module.nucleicAcids.position.y = v;}),
-        3 : (function(v) {module.nucleicAcids.visible = (v>0.5) ? true : false;}),
-        4 : (function(v) {module.conformationalChange(v)}),
-    };
-
-
-    module.textBoxContents = [
-        "Cas9 cuts DNA. It's really nice.",
+    // Define story texts and set up text box with state 0:
+    var textBoxContents = [
+        "Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. ",
         "To do so, Cas9 needs a guide RNA.",
         "Cas9 is now ready to cut some DNA. It does so within the nucleus.",
         "Cas9 searches for PAM sequence on DNA.",
@@ -33,9 +23,24 @@ function enableTransitions(module) {
         "Cas9 cuts DNA.",
         "The gap in the DNA can now be used to do insert custom sequences.",
     ];
-    textBox.innerHTML = module.textBoxContents[0];
+    textBox.innerHTML = textBoxContents[0];
 
-    module.states = [
+
+    // Listen to arrow clicks
+    rightArrow.addEventListener("click", onArrowClick(1));
+    leftArrow.addEventListener("click", onArrowClick(-1));
+    function onArrowClick(sign) {
+        return (function(event) {
+            var targetState = currentState+sign;
+            // leftArrow.style.display = (targetState === 0) ? 'none' : 'block';
+            // rightArrow.style.display = (targetState === states.length-1) ? 'none' : 'block';
+            transitionState(targetState, (sign+1)*transitionTime/2);
+        });
+    }    
+
+
+    // Set up states
+    var states = [
         
         {
             0 : 0,
@@ -64,13 +69,46 @@ function enableTransitions(module) {
     ];
 
 
+    // Create and listen to state button clicks
+    states.forEach(function(s, n) {
+        var linkButton = document.createElement("div");
+        linkButton.className = "textbox inactive";
+        // linkButton.className = "textbox active";
+        linkButton.id = n;
+        linkButton.innerHTML = n+1;
+        flexBox.appendChild(linkButton);
+    })
+    document.getElementById("0").className = "textbox active current";
+    flexBox.addEventListener("click", onStateClick);
+    function onStateClick(event) {
+        var targetState = event.target.innerHTML-1;
+        if (event.target.className === "textbox active") {
+            transitionState(targetState, 0);
+        }
+    }
+
+
+    // Define modifers used by transition function
+    var modifiers = {
+        0 : (function(v) {module.cas9.position.x = v;}),
+        1 : (function(v) {module.cas9.rotation.x = v;}),
+        2 : (function(v) {module.nucleicAcids.position.y = v;}),
+        3 : (function(v) {module.nucleicAcids.visible = (v>0.5) ? true : false;}),
+        4 : (function(v) {conformationalChange(v)}),
+    };    
+
+
     // Transition function 
+    function transitionState(targetState, time) {
 
-    module.transitionState = function (targetState, time) { //time in seconds
+        if (tween !== null)
+        tween.stop();
 
-        // Stop currently active tween
-        if (module.tween !== undefined)
-            module.tween.stop();
+        leftArrow.style.display = (targetState === 0) ? 'none' : 'block';
+        rightArrow.style.display = (targetState === states.length-1) ? 'none' : 'block';
+        document.getElementById(currentState).className = "textbox active";
+        document.getElementById(targetState).className = "textbox active current";
+        //console.log(document.getElementById(currentState), document.getElementById(targetState));
 
         var origin = {
             0 : module.cas9.position.x,
@@ -80,11 +118,11 @@ function enableTransitions(module) {
             4 : module.cas9.children[3].visible ? 0 : 1, //??? module.state ... 
                                                           
         };                                                
-        var target = module.states[targetState];
+        var target = states[targetState];
 
         var requiredModifiers = [];
         
-        Object.keys(module.modifiers).forEach(function(key) {
+        Object.keys(modifiers).forEach(function(key) {
             if (target[key] != origin[key]) {
                 requiredModifiers.push(key);
             }
@@ -92,41 +130,29 @@ function enableTransitions(module) {
 
         console.log('Tweening', requiredModifiers.length, 'parameters.');
 
-        var tween = new TWEEN.Tween(origin).to(target, time*1000);
+        tween = new TWEEN.Tween(origin).to(target, time*1000);
 
         var transition = function() {
             requiredModifiers.forEach(function(key) {
-                module.modifiers[key](origin[key]);
+                modifiers[key](origin[key]);
             });
         }
 
         tween.onUpdate(transition);
         tween.easing(TWEEN.Easing.Quadratic.InOut);
         tween.start();
-        module.currentState = targetState;
-        module.tween = tween;
+        currentState = targetState;        
+        
         tween.onComplete(function() {
-            textBox.innerHTML = module.textBoxContents[module.currentState];
+            textBox.innerHTML = textBoxContents[currentState];
         });
 
-    }
-
-    // Listen to arrow clicks
-    rightArrow.addEventListener("click", onClick(1));
-    leftArrow.addEventListener("click", onClick(-1));
-    function onClick(sign) {
-        return (function(event) {
-            var targetState = module.currentState+sign;
-            leftArrow.style.display = (targetState === 0) ? 'none' : 'block';
-            rightArrow.style.display = (targetState === module.states.length-1) ? 'none' : 'block';
-            module.transitionState(targetState, (sign+1)*transitionTime/2);
-        });
     }
 
 
 
     // Conformational change function
-    module.conformationalChange = function(p) {
+    function conformationalChange(p) {
         // 0: 5f9r, rna
         // 1: 4zt0, rna
         // 2: 4cmp
@@ -141,7 +167,7 @@ function enableTransitions(module) {
 
 
 
-    // Brownian motion (made to look smoother with perlin noise)
+    // Global Brownian motion function (made to look smoother with perlin noise)
     module.brownianMotion = function() {
         var seed = module.clock.getElapsedTime();
         var displacement;

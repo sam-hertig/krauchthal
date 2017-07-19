@@ -7,7 +7,7 @@ function run(module) {
         module.renderer.render(module.scene, module.camera);
 
         module.deltaTime = module.clock.getDelta();
-        module.materials.nucMatUniforms.time.value += module.deltaTime;
+        module.nucMatUniforms.time.value += module.deltaTime;
 
         module.animateParticles(module.bubbles);
         module.brownianMotion();

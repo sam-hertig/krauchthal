@@ -62,7 +62,7 @@ function createNucleus(module) {
         var holesBufferGeom = new THREE.BufferGeometry().fromGeometry(holesGeom);
 
         var allNpcs = new THREE.Mesh(allNpcsGeom, module.materials.npcMat);
-        var holes = new THREE.Mesh(holesBufferGeom, module.materials.holesMat);
+        var holes = new THREE.Mesh(holesBufferGeom, module.materials.npcHolesMat);
 
         var innerNucleusBufferGeom = new THREE.SphereBufferGeometry(radius-npcRadius, 32, 32);
         var innerNucleus = new THREE.Mesh(innerNucleusBufferGeom, module.materials.innerNucleusMat);

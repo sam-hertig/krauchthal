@@ -32,9 +32,7 @@ function enableTransitions(module) {
     function onArrowClick(sign) {
         return (function(event) {
             var targetState = currentState+sign;
-            // leftArrow.style.display = (targetState === 0) ? 'none' : 'block';
-            // rightArrow.style.display = (targetState === states.length-1) ? 'none' : 'block';
-            transitionState(targetState, (sign+1)*transitionTime/2);
+            transitionState(targetState, (3+sign)*transitionTime/4 );
         });
     }    
 
@@ -73,7 +71,6 @@ function enableTransitions(module) {
     states.forEach(function(s, n) {
         var linkButton = document.createElement("div");
         linkButton.className = "textbox inactive";
-        // linkButton.className = "textbox active";
         linkButton.id = n;
         linkButton.innerHTML = n+1;
         flexBox.appendChild(linkButton);
@@ -81,8 +78,8 @@ function enableTransitions(module) {
     document.getElementById("0").className = "textbox active current";
     flexBox.addEventListener("click", onStateClick);
     function onStateClick(event) {
-        var targetState = event.target.innerHTML-1;
         if (event.target.className === "textbox active") {
+            var targetState = event.target.innerHTML-1;
             transitionState(targetState, 0);
         }
     }
@@ -101,15 +98,21 @@ function enableTransitions(module) {
     // Transition function 
     function transitionState(targetState, time) {
 
+        // Stop previous tweens and brownian motions
         if (tween !== null)
         tween.stop();
+        module.scene.traverse(function(obj) {
+            if (obj instanceof THREE.Mesh && obj.brownianDisplacement !== undefined) {
+                obj.brownianDisplacement = 0;
+            }
+        });
 
+        // Handle arrows and buttons
         leftArrow.style.display = (targetState === 0) ? 'none' : 'block';
         rightArrow.style.display = (targetState === states.length-1) ? 'none' : 'block';
         document.getElementById(currentState).className = "textbox active";
-        document.getElementById(targetState).className = "textbox active current";
-        //console.log(document.getElementById(currentState), document.getElementById(targetState));
-
+        
+        // Define origin and target states
         var origin = {
             0 : module.cas9.position.x,
             1 : module.cas9.rotation.x,
@@ -120,30 +123,30 @@ function enableTransitions(module) {
         };                                                
         var target = states[targetState];
 
+        // Evaluate what needs to be tweened
         var requiredModifiers = [];
-        
         Object.keys(modifiers).forEach(function(key) {
             if (target[key] != origin[key]) {
                 requiredModifiers.push(key);
             }
         })
-
         console.log('Tweening', requiredModifiers.length, 'parameters.');
 
+        // Setup the Tween
         tween = new TWEEN.Tween(origin).to(target, time*1000);
-
         var transition = function() {
             requiredModifiers.forEach(function(key) {
                 modifiers[key](origin[key]);
             });
         }
-
         tween.onUpdate(transition);
         tween.easing(TWEEN.Easing.Quadratic.InOut);
         tween.start();
         currentState = targetState;        
         
+        // Handle text and buttons after tween finishes
         tween.onComplete(function() {
+            document.getElementById(currentState).className = "textbox active current";
             textBox.innerHTML = textBoxContents[currentState];
         });
 

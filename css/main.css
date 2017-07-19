@@ -1,9 +1,10 @@
 body {
     margin: 0px;
     overflow: hidden;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Muli', sans-serif;
     color: black;
     font-size: 10pt;
+    font-weight: 300;
 }
 
 @media (min-width: 550px) {

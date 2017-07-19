@@ -5,7 +5,7 @@
         <title>CRISPR-CAS9</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"> 
-        <link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Muli:300,600" rel="stylesheet"> 
         <link rel="stylesheet" href="css/main.css">
 
         <!-- Shaders -->
@@ -13,55 +13,17 @@
 
             // http://shaderfrog.com/app/view/285
 
-            /**
-            * Example Vertex Shader
-            * Sets the position of the vertex by setting gl_Position
-            */
-
-            // Set the precision for data types used in this shader
             precision highp float;
             precision highp int;
-
-            // // Default THREE.js uniforms available to both fragment and vertex shader
-            // uniform mat4 modelMatrix;
-            // uniform mat4 modelViewMatrix;
-            // uniform mat4 projectionMatrix;
-            // uniform mat4 viewMatrix;
-            // uniform mat3 normalMatrix;
-
-            // // Default uniforms provided by ShaderFrog.
-            // uniform vec3 cameraPosition;
-            // uniform float time;
-
-            // // Default attributes provided by THREE.js. Attributes are only available in the
-            // // vertex shader. You can pass them to the fragment shader using varyings
-            // attribute vec3 position;
-            // attribute vec3 normal;
-            // attribute vec2 uv;
-            // attribute vec2 uv2;
-
-            // // Examples of variables passed from vertex to fragment shader
-            // varying vec3 vPosition;
-            // varying vec3 vNormal;
             varying vec2 vUv;
-            // varying vec2 vUv2;
 
             void main() {
-
-                // // To pass variables to the fragment shader, you assign them here in the
-                // main function. Traditionally you name the varying with vAttributeName
-                // vNormal = normal;
                 vUv = uv;
-                // vUv2 = uv2;
-                // vPosition = position;
-
-                // This sets the position of the vertex in 3d space. The correct math is
-                // provided below to take into account camera and object data.
                 gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-
             }
 
         </script>
+
         <script type="application/x-glsl" id="nucleus-fragment"> 
 
             // Clasic 2D perlin noise from
@@ -165,8 +127,7 @@
                 // Mix final noise value
                 vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
                 m = m * m;
-                return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
-                            dot(p2,x2), dot(p3,x3) ) );
+                return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
             }
 
             void main() {
@@ -225,11 +186,6 @@
         <script src="js/enableTransitions.js"></script>
         <script src="js/run.js"></script>
         <script src="js/viz.js"></script>
-
-
-
-
-
 
     </body>
 

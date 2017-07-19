@@ -4,7 +4,7 @@ function loadCas9(module) {
     var center;
     
     module.cas9 = new THREE.Object3D();
-    module.cas9.center = null;
+    //module.cas9.center = null;
 
 
     function loadMolProm(url) {
@@ -62,7 +62,7 @@ function loadCas9(module) {
         console.log('Failed to load one or more molecules.');
     }).then(function() {
         module.cas9.position.copy(center);
-        module.cas9.center = center;
+        //module.cas9.center = center;
         module.scene.add(module.cas9);
     });
 

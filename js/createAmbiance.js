@@ -1,13 +1,10 @@
 function createAmbiance(module) {
 
     var nrOfBubbles = 1000;
-    var radius = 300;
-    module.bubbles = createBubbles(nrOfBubbles, radius);
-    module.scene.add(module.bubbles);
+    var bubbleSphereRadius = 300;
 
     // Alternative: have only a small area of bubbles always in front of the camera,
     // and animate faster (and randomly) when camera is being moved
-
     function createBubbles(nrOfBubbles, radius) {
         var bubblesGeom = new THREE.Geometry();
         for (var p = 0; p < nrOfBubbles; p++) {
@@ -36,8 +33,8 @@ function createAmbiance(module) {
         var verts = particleSystem.geometry.vertices;
         for(var i = 0; i < verts.length; i++) {
             var vert = verts[i];
-            if (vert.y > radius) {
-                vert.y = (2*Math.random()-1) * radius;
+            if (vert.y > bubbleSphereRadius) {
+                vert.y = (2*Math.random()-1) * bubbleSphereRadius;
             }
             vert.y = vert.y + (3.0 * module.deltaTime);
         }
@@ -45,6 +42,8 @@ function createAmbiance(module) {
         particleSystem.rotation.y -= 0.03 * module.deltaTime;
     }
 
+    module.bubbles = createBubbles(nrOfBubbles, bubbleSphereRadius);
+    module.scene.add(module.bubbles);
 
     return module;
 }

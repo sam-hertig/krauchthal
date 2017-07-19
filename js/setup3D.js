@@ -3,7 +3,7 @@ function setup3D(module) {
     // Scene 
     var scene = new THREE.Scene();
     // scene.fog = new THREE.FogExp2(0xffffff, 0.002); //0.001
-    scene.fog = new THREE.Fog(0xffffff, 80, 300); // 300
+    scene.fog = new THREE.Fog(0xffffff, 250, 300); // 300
 
     // Renderer
     var renderer = new THREE.WebGLRenderer();
@@ -21,7 +21,7 @@ function setup3D(module) {
     camera.position.set(0, 0, 150);
     scene.add(camera);
 
-    // Lights
+    // Lights   
     var ambLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambLight);
     var camLight = new THREE.DirectionalLight(0xffffff, 0.5);
@@ -31,9 +31,9 @@ function setup3D(module) {
 
     // Camera Controls
     var controls = new THREE.TrackballControls(camera, renderer.domElement);
-    controls.maxDistance = 25000; //250
+    controls.maxDistance = 200;
     controls.zoomSpeed = 0.5;
-    //controls.noPan = true;   
+    controls.noPan = true;   
     
     // Resize
     window.addEventListener('resize', onWindowResize, false);
@@ -51,6 +51,16 @@ function setup3D(module) {
     // Stats
     var stats = new Stats();
     container.appendChild(stats.dom);
+
+    // Helper Box with transform controls:
+    // var boxGeom = new THREE.BoxGeometry(10, 10, 10);
+    // var boxMat = new THREE.MeshLambertMaterial();
+    // var boxMesh = new THREE.Mesh(boxGeom, boxMesh);
+    // scene.add(boxMesh);
+    // var transControls = new THREE.TransformControls(camera, renderer.domElement);
+    // transControls.attach(boxMesh);
+    // scene.add(transControls);    
+    // module.box = boxMesh;
 
     // Add properties and methods to module:
     module.clock = clock;

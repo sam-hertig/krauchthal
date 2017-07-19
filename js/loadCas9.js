@@ -4,8 +4,6 @@ function loadCas9(module) {
     var center;
     
     module.cas9 = new THREE.Object3D();
-    //module.cas9.center = null;
-
 
     function loadMolProm(url) {
         return new Promise(function(succeed, fail) {
@@ -26,7 +24,7 @@ function loadCas9(module) {
 
     loadMolProm('models/crisprV3.2_4cmp.json').then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
-        mol.scale.set(scale,scale,scale);
+        //mol.scale.set(scale,scale,scale);
         module.cas9.add(mol);
         mol.visible = false;
         mol.brownianDisplacement = 0;
@@ -34,7 +32,7 @@ function loadCas9(module) {
         return loadMolProm('models/crisprV3.2_rna.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, module.materials.rnaMat1);
-        mol.scale.set(scale,scale,scale);
+        //mol.scale.set(scale,scale,scale);
         module.cas9.add(mol);
         //mol.visible = false;
         mol.brownianDisplacement = 0;
@@ -42,7 +40,7 @@ function loadCas9(module) {
         return loadMolProm('models/crisprV3.2_4zt0.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
-        mol.scale.set(scale,scale,scale);
+        //mol.scale.set(scale,scale,scale);
         module.cas9.add(mol);
         mol.visible = false;
         mol.brownianDisplacement = 0;
@@ -50,7 +48,7 @@ function loadCas9(module) {
         return loadMolProm('models/crisprV3.2_5f9r.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
-        mol.scale.set(scale,scale,scale);
+        //mol.scale.set(scale,scale,scale);
         module.cas9.add(mol);
         //mol.visible = false;
         mol.brownianDisplacement = 0;
@@ -62,7 +60,7 @@ function loadCas9(module) {
         console.log('Failed to load one or more molecules.');
     }).then(function() {
         module.cas9.position.copy(center);
-        //module.cas9.center = center;
+        module.cas9.scale.set(scale, scale, scale);
         module.scene.add(module.cas9);
     });
 

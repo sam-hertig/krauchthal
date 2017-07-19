@@ -1,10 +1,10 @@
 function createNucleus(module) {
 
     var scale = 4;
-    var radius = 1500; // 3000, 1500
-    var nrOfNpc = 150; // 2000, 100
-    var npcRadius = 30; // 60
-    var holeRadius = npcRadius*1.2; 
+    var radius = 1500; // real 3000, last 1500
+    var nrOfNpc = 150; // real 2000, last 150
+    var npcRadius = 30; // real 60, last 30
+    var holeRadius = npcRadius*1.2; // npcRadius*1.2
 
 
     function createNucleus() {

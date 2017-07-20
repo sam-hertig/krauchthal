@@ -59,7 +59,7 @@ function createNucleicAcids(module) {
         module.nucleicAcids.worldToLocal(new THREE.Vector3(132.47850306191188, 112.87494579739156, -188.99734163163194)),
         module.nucleicAcids.worldToLocal(new THREE.Vector3(-132.28641467717367, -212.01072905633762, 52.681448121595665)),
     ];
-    var caps = module.createFogCaps(dnaEnds);
+    var caps = module.createFogCaps(dnaEnds, 300);
     module.nucleicAcids.add(caps);
 
 

@@ -63,25 +63,28 @@ function setup3D(module) {
     // module.box = boxMesh;
 
     // Helper function for creating white sprites that can mask unwanted spots
-    module.createFogCaps = function(vertices) {
-        var capsGeom = new THREE.Geometry();            
-        capsGeom.vertices = vertices;
-        var loader = new THREE.TextureLoader();
-        var texture = loader.load("textures/fogCap.png");  
-        var capsMat = new THREE.PointsMaterial({
-            color: 0xffffff, 
-            size: 1000,
-            sizeAttenuation: false,
-            map: texture,
-            blending: THREE.NormalBlending, //AdditiveBlending, NormalBlending
-            transparent: true,
-            opacity: 1,
-            depthWrite: false,
-            // depthTest: false,
-            fog: false,
+    module.createFogCaps = function(vertices, size) {
+        var caps = new THREE.Object3D();
+        vertices.forEach(function(v) {
+            var spriteMap = new THREE.TextureLoader().load("textures/fogCap.png");
+            var spriteMaterial = new THREE.SpriteMaterial({
+                map: spriteMap,
+                color: 0xffffff,
+                transparent: true,
+                opacity: 1,
+                depthWrite: false,
+                // depthTest: false,
+                fog: false,
+                rotation: 0,                
+            });
+            var sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.copy(v);
+            sprite.scale.set(size, size, size);
+            caps.add(sprite);
         });
-        return new THREE.Points(capsGeom, capsMat);
+        return caps;
     }
+  
 
     // Add properties to module:
     module.clock = clock;

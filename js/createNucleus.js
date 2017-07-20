@@ -102,7 +102,7 @@ function createNucleus(module) {
         new THREE.Vector3(0, -5000, 0),
         new THREE.Vector3(0, 5000, 0)
     ];
-    var caps = module.createFogCaps(poles);    
+    var caps = module.createFogCaps(poles, 3000);    
     module.nucleus.add(caps);
 
     // Add to scene:

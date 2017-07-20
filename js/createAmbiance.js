@@ -5,8 +5,8 @@ function createAmbiance(module) {
     var nrOfBgSprites = 30;
     var bgSpriteSphereRadius = 500;
 
-    // Alternative: have only a small area of bubbles always in front of the camera,
-    // and animate faster (and randomly) when camera is being moved
+
+
     function createBubbles(nrOfBubbles, radius) {
         var bubblesGeom = new THREE.Geometry();
         for (var p = 0; p < nrOfBubbles; p++) {
@@ -17,7 +17,7 @@ function createAmbiance(module) {
             bubblesGeom.vertices.push(bubblePos);
         }
         var loader = new THREE.TextureLoader();
-        var texture = loader.load("textures/circle.png");  
+        var texture = loader.load("textures/bubble.png");  
         var bubbleMat = new THREE.PointsMaterial({
             color: 0xffffff, 
             size: 4,
@@ -47,7 +47,6 @@ function createAmbiance(module) {
         ];
 
         var bgSprites = new THREE.Object3D();
-        //var initPositions = [];
         var Theta = 0, Phi = 0;
         var x, y, z, index, pos, posDelta, size;
 
@@ -62,10 +61,8 @@ function createAmbiance(module) {
             pos = new THREE.Vector3(x, y, z);
             posDelta = Math.random()-0.5;
             pos.multiplyScalar( radius + (radius*posDelta) );
-            //initPositions.push(pos);
 
             index = j % images.length;
-
             var spriteMap = new THREE.TextureLoader().load(images[index]);
             var spriteMaterial = new THREE.SpriteMaterial({
                 map: spriteMap,
@@ -87,12 +84,12 @@ function createAmbiance(module) {
             sprite.scale.set(sprite.rotSign*size, size, size);
         }
 
-        // console.log(initPositions.length);
-
         bgSprites.rotDir = 0;
         return bgSprites;
         
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
     var bubbles = createBubbles(nrOfBubbles, bubbleSphereRadius);
     module.scene.add(bubbles);
@@ -138,7 +135,6 @@ function createAmbiance(module) {
         }
 
     }
-
 
     return module;
 }

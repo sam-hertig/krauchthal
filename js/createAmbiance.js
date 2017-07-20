@@ -1,9 +1,9 @@
 function createAmbiance(module) {
 
-    var nrOfBubbles = 500;
+    var nrOfBubbles = 1000;
     var bubbleSphereRadius = 200;
-    var nrOfBgSprites = 6;
-    var bgSpriteSphereRadius = 1000;
+    var nrOfBgSprites = 30;
+    var bgSpriteSphereRadius = 500;
 
     // Alternative: have only a small area of bubbles always in front of the camera,
     // and animate faster (and randomly) when camera is being moved
@@ -25,8 +25,9 @@ function createAmbiance(module) {
             blending: THREE.NormalBlending, //AdditiveBlending, NormalBlending
             transparent: true,
             opacity: 0.5,
-            depthTest: true,
-            fog: false,
+            depthWrite: false,
+            // depthTest: false,
+            fog: false, 
         });
         return new THREE.Points(bubblesGeom, bubbleMat);
     }
@@ -36,33 +37,68 @@ function createAmbiance(module) {
 
     function createBgSprites(nrOfBgSprites, radius) {
 
-        var initPositions = [];
-        var Theta = 0, Phi =0;
-        var x, y, z, pos;
+        var images = [
+            "textures/bgSprites-01.png",
+            "textures/bgSprites-02.png",
+            "textures/bgSprites-03.png",
+            "textures/bgSprites-04.png",
+            "textures/bgSprites-05.png",
+            "textures/bgSprites-06.png"
+        ];
+
+        var bgSprites = new THREE.Object3D();
+        //var initPositions = [];
+        var Theta = 0, Phi = 0;
+        var x, y, z, index, pos, posDelta, size;
 
         for (var j=0; j<nrOfBgSprites; j++) {
 
+            Theta = 2*Math.PI*Math.random();
+            Phi = Math.acos(1 - 2*Math.random()); 
             x = Math.sin(Phi) * Math.cos(Theta);
             y = Math.sin(Phi) * Math.sin(Theta);
             z = Math.cos(Phi); 
+
             pos = new THREE.Vector3(x, y, z);
-            pos.multiplyScalar(radius);
-            initPositions.push(pos);
+            posDelta = Math.random()-0.5;
+            pos.multiplyScalar( radius + (radius*posDelta) );
+            //initPositions.push(pos);
 
-            Theta = 2*Math.PI*Math.random();
-            Phi = Math.acos(1 - 2*Math.random());    
+            index = j % images.length;
 
+            var spriteMap = new THREE.TextureLoader().load(images[index]);
+            var spriteMaterial = new THREE.SpriteMaterial({
+                map: spriteMap,
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.2 - 0.2*(posDelta),
+                depthWrite: false,
+                // depthTest: false,
+                fog: false,
+                rotation: 2*Math.PI*Math.random(),                
+            });
+            var sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.copy(pos);
+            size = 0.1 * radius;
+            size = (index===5) ? size*4 : size;
+            // sprite.scale.set(size, size, size);
+            bgSprites.add(sprite);
+            sprite.rotSign = -1 + 2*Math.round(Math.random());
+            sprite.scale.set(sprite.rotSign*size, size, size);
         }
 
-        console.log(initPositions);
+        // console.log(initPositions.length);
 
-        return new THREE.Object3D();
+        bgSprites.rotDir = 0;
+        return bgSprites;
+        
     }
 
+    var bubbles = createBubbles(nrOfBubbles, bubbleSphereRadius);
+    module.scene.add(bubbles);
 
-
-    module.animateParticles = function(particleSystem) {
-        var verts = particleSystem.geometry.vertices;
+    module.animateBubbles = function() {
+        var verts = bubbles.geometry.vertices;
         for(var i = 0; i < verts.length; i++) {
             var vert = verts[i];
             if (vert.y > bubbleSphereRadius) {
@@ -70,15 +106,42 @@ function createAmbiance(module) {
             }
             vert.y = vert.y + (3.0 * module.deltaTime);
         }
-        particleSystem.geometry.verticesNeedUpdate = true;
-        particleSystem.rotation.y -= 0.03 * module.deltaTime;
+        bubbles.geometry.verticesNeedUpdate = true;
+        bubbles.rotation.y -= 0.03 * module.deltaTime;
     }
 
-    module.bubbles = createBubbles(nrOfBubbles, bubbleSphereRadius);
-    module.scene.add(module.bubbles);
 
-    module.bgSprites = createBgSprites(nrOfBgSprites, bgSpriteSphereRadius);
-    module.scene.add(module.bgSprites);
+
+    var bgSprites = createBgSprites(nrOfBgSprites, bgSpriteSphereRadius);
+    module.scene.add(bgSprites);
+
+    module.animateBgSprites = function() {
+        
+        bgSprites.traverse(function(sprite) {
+            if (sprite instanceof THREE.Sprite) {
+                sprite.rotSign = (Math.random() > 0.9997) ? -1*sprite.rotSign : sprite.rotSign;
+                sprite.material.rotation += 0.03 * module.deltaTime * sprite.rotSign;
+            }
+        });
+
+        if (Math.random() > 0.9997) {
+            bgSprites.rotDir += Math.round(6*Math.random());
+            bgSprites.rotDir = bgSprites.rotDir % 6; 
+        } else {
+            if (bgSprites.rotDir <= 1) {
+                bgSprites.rotation.x += (2*bgSprites.rotDir-1)*0.01*module.deltaTime;
+            } else if (bgSprites.rotDir <= 3) {
+                bgSprites.rotation.y += (2*(bgSprites.rotDir-2)-1)*0.01*module.deltaTime;
+            } else {
+                bgSprites.rotation.z += (2*(bgSprites.rotDir-4)-1)*0.01*module.deltaTime;
+            }
+        }
+
+    }
+
 
     return module;
 }
+
+
+

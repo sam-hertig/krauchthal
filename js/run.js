@@ -8,7 +8,8 @@ function run(module) {
         module.renderer.render(module.scene, module.camera);
         module.deltaTime = module.clock.getDelta();
         module.nucMatUniforms.time.value += module.deltaTime;
-        module.animateParticles(module.bubbles);
+        module.animateBubbles();
+        module.animateBgSprites();
         module.brownianMotion();
         TWEEN.update();
         requestAnimationFrame(animate);

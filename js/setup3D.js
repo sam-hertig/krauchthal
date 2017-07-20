@@ -31,9 +31,9 @@ function setup3D(module) {
 
     // Camera Controls
     var controls = new THREE.TrackballControls(camera, renderer.domElement);
-    //controls.maxDistance = 200;
+    controls.maxDistance = 200;
     controls.zoomSpeed = 0.5;
-    //controls.noPan = true;   
+    controls.noPan = true;   
     
     // Resize
     window.addEventListener('resize', onWindowResize, false);
@@ -76,7 +76,8 @@ function setup3D(module) {
             blending: THREE.NormalBlending, //AdditiveBlending, NormalBlending
             transparent: true,
             opacity: 1,
-            depthTest: true,
+            depthWrite: false,
+            // depthTest: false,
             fog: false,
         });
         return new THREE.Points(capsGeom, capsMat);

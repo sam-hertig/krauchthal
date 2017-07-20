@@ -43,7 +43,7 @@ function enableTransitions(module) {
         {
             0 : 0,
             1 : 0,
-            2 : -5.8371807191324620,
+            2 : 0,
             3 : 1,
             4 : 0,
         },

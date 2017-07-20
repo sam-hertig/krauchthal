@@ -17,52 +17,49 @@ function createNucleicAcids(module) {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    // Add and transform nucleic acid container object
+    // Create nucleic acid container object
     module.nucleicAcids = new THREE.Object3D();
-    // var pos = new THREE.Vector3(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
-    // var rot = new THREE.Vector3(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
-    
+    var pos = new THREE.Vector3(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
+    var rot = new THREE.Euler(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);     
     
     // Floppy RNA (part of gRNA that will wrap around target DNA)
     var rna = createFloppyRNA();
-    //rna.position.copy(pos);
-    //rna.rotation.copy(rot);
-    //module.rna = rna;
-    //module.scene.add(rna);
-    module.nucleicAcids.add(rna);
+    rna.position.copy(pos);
+    rna.rotation.copy(rot);
+    module.cas9.add(rna);   
     
-
     // DNA (before cut)
-    var dnaPreCut = createDNApreCut();
+    var dnaPreCut = createDNApreCut();  
     module.nucleicAcids.add(dnaPreCut);
-    
+    //dnaPreCut.visible = false;
+
     // cut DNA part 1
-    //var dnaPostCut1 = createDNApostCut1();
-    //module.nucleicAcids.add(dnaPostCut1);
+    var dnaPostCut1 = createDNApostCut1();
+    module.nucleicAcids.add(dnaPostCut1);
+    dnaPostCut1.visible = false;
 
     // cut DNA part 2
-    //var dnaPostCut2 = createDNApostCut2();
-    //module.nucleicAcids.add(dnaPostCut2);
-
-    // module.nucleicAcids.children.forEach(function(child) {
-    //     child.position.copy(pos);
-    //     child.rotation.copy(rot);
-    // });
+    var dnaPostCut2 = createDNApostCut2();
+    module.nucleicAcids.add(dnaPostCut2);
+    dnaPostCut2.visible = false;
 
     // Adjust to cas9 position and rotation
-    module.nucleicAcids.position.set(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
-    module.nucleicAcids.rotation.set(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);
-    module.nucleicAcids.updateMatrixWorld();
+    module.nucleicAcids.children.forEach(function(c) {
+        if (c instanceof THREE.Object3D) {
+            c.position.copy(pos);
+            c.rotation.copy(rot);
+        }    
+    });
 
     // Fog caps to mask ends
     var dnaEnds  = [
-        module.nucleicAcids.worldToLocal(new THREE.Vector3(132.47850306191188, 112.87494579739156, -188.99734163163194)),
-        module.nucleicAcids.worldToLocal(new THREE.Vector3(-132.28641467717367, -212.01072905633762, 52.681448121595665)),
+        new THREE.Vector3(132.47850306191188, 112.87494579739156, -188.99734163163194),
+        new THREE.Vector3(-132.28641467717367, -212.01072905633762, 52.681448121595665),
     ];
     var caps = module.createFogCaps(dnaEnds, 300);
     module.nucleicAcids.add(caps);
 
-
+    // Add
     module.scene.add(module.nucleicAcids);    
 
 

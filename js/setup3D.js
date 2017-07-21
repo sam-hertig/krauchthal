@@ -3,7 +3,10 @@ function setup3D(module) {
     // Scene 
     var scene = new THREE.Scene();
     // scene.fog = new THREE.FogExp2(0xffffff, 0.002); //0.001
-    scene.fog = new THREE.Fog(0xffffff, 250, 300);
+    if (!debug) {
+        scene.fog = new THREE.Fog(0xffffff, 250, 300);    
+    }
+    
 
     // Renderer
     var renderer = new THREE.WebGLRenderer();
@@ -16,24 +19,27 @@ function setup3D(module) {
 
     // Camera
     var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 50000 );   
-    camera.up.set(0.3,0.9,0.2);
+    camera.position.set(10, 10, 10);
     camera.lookAt(new THREE.Vector3(0, 0, 0)); 
-    camera.position.set(0, 0, 150);
+    camera.up.set(0, 1, 0);
     scene.add(camera);
 
     // Lights   
     var ambLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambLight);
-    var camLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    camLight.position.set(0, 0, 0); 
-    camLight.lookAt(new THREE.Vector3(0, 0, 0));
+    var camLight = new THREE.PointLight(0xffffff, 0.4);
+    camLight.position.copy(camera.position); 
     camera.add(camLight);
+    
 
     // Camera Controls
     var controls = new THREE.TrackballControls(camera, renderer.domElement);
-    controls.maxDistance = 200;
+    if (!debug) {
+        controls.noPan = true;      
+        //controls.maxDistance = 200;
+    }
     controls.zoomSpeed = 0.5;
-    controls.noPan = true;   
+     
     
     // Resize
     window.addEventListener('resize', onWindowResize, false);
@@ -49,18 +55,22 @@ function setup3D(module) {
     var clock = new THREE.Clock(true);  
 
     // Stats
-    var stats = new Stats();
-    container.appendChild(stats.dom);
+    if (debug) {
+        var stats = new Stats();
+        container.appendChild(stats.dom);        
+    }
 
     // Helper Box with transform controls:
-    // var boxGeom = new THREE.BoxGeometry(10, 10, 10);
-    // var boxMat = new THREE.MeshLambertMaterial();
-    // var boxMesh = new THREE.Mesh(boxGeom, boxMesh);
-    // scene.add(boxMesh);
-    // var transControls = new THREE.TransformControls(camera, renderer.domElement);
-    // transControls.attach(boxMesh);
-    // scene.add(transControls);    
-    // module.box = boxMesh;
+    if (debug) {
+        var boxGeom = new THREE.BoxGeometry(10, 10, 10);
+        var boxMat = new THREE.MeshLambertMaterial({color: 0x888888});
+        var boxMesh = new THREE.Mesh(boxGeom, boxMat);
+        scene.add(boxMesh);
+        var transControls = new THREE.TransformControls(camera, renderer.domElement);
+        transControls.attach(boxMesh);
+        scene.add(transControls);    
+        module.box = boxMesh;
+    }    
 
     // Helper function for creating white sprites that can mask unwanted spots
     module.createFogCaps = function(vertices, size) {
@@ -93,6 +103,9 @@ function setup3D(module) {
     module.camera = camera;
     module.controls = controls;
     module.stats = stats;
+
+    module.scene.visible = false;
+
     return module;
 
 }

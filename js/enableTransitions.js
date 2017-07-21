@@ -2,7 +2,7 @@ function enableTransitions(module) {
 
     
     var transitionTime = 4; //in seconds
-    var maxBrownianDisplacement = 1;
+    var maxBrownianDisplacement = 30;
     var rightArrow = document.querySelector(".right");
     var leftArrow = document.querySelector(".left");
     leftArrow.style.display = 'none';
@@ -14,9 +14,11 @@ function enableTransitions(module) {
 
     // Define story texts and set up text box with state 0:
     var textBoxContents = [
-        "Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. Cas9 cuts DNA. It's really nice. ",
+        "Cas9 can cut DNA. Here is how it works.",
         "To do so, Cas9 needs a guide RNA.",
-        "Cas9 is now ready to cut some DNA. It does so within the nucleus.",
+        "Cas9 is now ready to cut some DNA.",
+        "It does so within the nucleus.",
+        "Now in the nucleus.",
         "Cas9 searches for PAM sequence on DNA.",
         "Once PAM sequence is found, DNA binds and structure of Cas9 changes.",
         "DNA completes binding by unwinding and attaching to guide RNA.",
@@ -32,38 +34,88 @@ function enableTransitions(module) {
     function onArrowClick(sign) {
         return (function(event) {
             var targetState = currentState+sign;
-            transitionState(targetState, (3+sign)*transitionTime/4 );
+            module.transitionState(targetState, (3+sign)*transitionTime/4 );
         });
     }    
 
 
     // Set up states
-    var states = [
-        
+    var states = [        
         {
-            0 : 0,
-            1 : 0,
-            2 : 0,
-            3 : 1,
-            4 : 0,
+            camX : -93,
+            camY : 210,
+            camZ : 40133,
+            targX : 15,
+            targY : 195,
+            targZ : 40046,            
+            cas9X : 0,
+            cas9Y : 200,
+            cas9Z : 40000,
+            rnaX : 50,
+            rnaY : 200,
+            rnaZ : 40050, 
+            cas9conf : 0,
         },
-
         {
-            0 : 50,
-            1 : 0,
-            2 : -50,
-            3 : 0,
-            4 : 0,
+            camX : -100,
+            camY : 186,
+            camZ : 40074,
+            targX : 0,
+            targY : 200,
+            targZ : 40000,            
+            cas9X : 0,
+            cas9Y : 200,
+            cas9Z : 40000,
+            rnaX : 0,
+            rnaY : 200,
+            rnaZ : 40000, 
+            cas9conf : 1,
         },
-
         {
-            0 : 50,
-            1 : 0,
-            2 : -50,
-            3 : 1,
-            4 : 1,
-        },        
-
+            camX : -162,
+            camY : 191,
+            camZ : 40537,
+            targX : -110,
+            targY : 197,
+            targZ : 39969,            
+            cas9X : 0,
+            cas9Y : 200,
+            cas9Z : 40000,
+            rnaX : 0,
+            rnaY : 200,
+            rnaZ : 40000, 
+            cas9conf : 1,
+        },
+        {
+            camX : -2440,
+            camY : 0,
+            camZ : 8270,
+            targX : -350,
+            targY : 0,
+            targZ : 6770,            
+            cas9X : 0,
+            cas9Y : 0,
+            cas9Z : 7000,
+            rnaX : 0,
+            rnaY : 0,
+            rnaZ : 7000, 
+            cas9conf : 1,
+        },
+        {
+            camX : -100,
+            camY : 0,
+            camZ : 100,
+            targX : 0,
+            targY : 0,
+            targZ : 0,            
+            cas9X : 0,
+            cas9Y : 0,
+            cas9Z : 0,
+            rnaX : 0,
+            rnaY : 0,
+            rnaZ : 0, 
+            cas9conf : 1,
+        },          
     ];
 
 
@@ -78,25 +130,64 @@ function enableTransitions(module) {
     document.getElementById("0").className = "textbox active current";
     flexBox.addEventListener("click", onStateClick);
     function onStateClick(event) {
-        if (event.target.className === "textbox active") {
+        if (event.target.className === "textbox active" || event.target.className === "textbox active current") {
             var targetState = event.target.innerHTML-1;
-            transitionState(targetState, 0);
+            module.transitionState(targetState, 0);
+            module.camera.up.set(0, 1, 0);
         }
     }
 
 
     // Define modifers used by transition function
     var modifiers = {
-        0 : (function(v) {module.cas9.position.x = v;}),
-        1 : (function(v) {module.cas9.rotation.x = v;}),
-        2 : (function(v) {module.nucleicAcids.position.y = v;}),
-        3 : (function(v) {module.nucleicAcids.visible = (v>0.5) ? true : false;}),
-        4 : (function(v) {conformationalChange(v)}),
+        camX :  (function(v) {module.camera.position.x = v;}),
+        camY :  (function(v) {module.camera.position.y = v;}),
+        camZ :  (function(v) {module.camera.position.z = v;}),
+        targX : (function(v) {module.controls.target.x = v;}),
+        targY : (function(v) {module.controls.target.y = v;}),
+        targZ : (function(v) {module.controls.target.z = v;}),
+        cas9X : (function(v) {module.cas9.position.x = v;}),
+        cas9Y : (function(v) {module.cas9.position.y = v;}),
+        cas9Z : (function(v) {module.cas9.position.z = v;}),
+        rnaX : (function(v) {module.rna.position.x = v;}),
+        rnaY : (function(v) {module.rna.position.y = v;}),
+        rnaZ : (function(v) {module.rna.position.z = v;}),         
+        cas9conf : (function(v) {conformationalChange(v);}),
     };    
 
 
-    // Transition function 
-    function transitionState(targetState, time) {
+    // Conformational change function
+    function conformationalChange(p) {
+
+        // 0: 4cmp
+        // 1: 4zt0
+        // 2: 5f9r
+
+        var rand = Math.random();
+
+        if (p<=1) {
+            module.cas9confs['4cmp'].visible = rand >= p;
+            module.cas9confs['4zt0'].visible = rand <= p;
+            module.cas9confs['5f9r'].visible = false;           
+        } else {
+            p = p-1;
+            module.cas9confs['4cmp'].visible = false;
+            module.cas9confs['4zt0'].visible = rand >= p;
+            module.cas9confs['5f9r'].visible = rand <= p; 
+        }
+
+        module.cas9confs['4cmp'].brownianDisplacement = (p<0.5) ? 2*maxBrownianDisplacement*p : 2*maxBrownianDisplacement*(1-p); 
+        module.cas9confs['4zt0'].brownianDisplacement = module.cas9confs['4cmp'].brownianDisplacement;
+        module.cas9confs['5f9r'].brownianDisplacement = module.cas9confs['4cmp'].brownianDisplacement;
+
+    }
+
+
+
+
+
+    // Global transition function 
+    module.transitionState = function(targetState, time) {
 
         // Stop previous tweens and brownian motions
         if (tween !== null)
@@ -114,12 +205,19 @@ function enableTransitions(module) {
         
         // Define origin and target states
         var origin = {
-            0 : module.cas9.position.x,
-            1 : module.cas9.rotation.x,
-            2 : module.nucleicAcids.position.y,
-            3 : module.nucleicAcids.visible ? 1 : 0,
-            4 : module.cas9.children[3].visible ? 0 : 1, //??? module.state ... 
-                                                          
+            camX :  module.camera.position.x,
+            camY :  module.camera.position.y,
+            camZ :  module.camera.position.z,
+            targX : module.controls.target.x,
+            targY : module.controls.target.y,
+            targZ : module.controls.target.z,
+            cas9X : module.cas9.position.x,
+            cas9Y : module.cas9.position.y,
+            cas9Z : module.cas9.position.z,
+            rnaX : module.rna.position.x,
+            rnaY : module.rna.position.y,
+            rnaZ : module.rna.position.z, 
+            cas9conf : (module.cas9confs['4cmp'].visible === true) ? 0 : 1,                                                         
         };                                                
         var target = states[targetState];
 
@@ -153,23 +251,6 @@ function enableTransitions(module) {
     }
 
 
-
-    // Conformational change function
-    function conformationalChange(p) {
-        // 0: 5f9r, rna
-        // 1: 4zt0, rna
-        // 2: 4cmp
-        var pdb5f9r = module.cas9.children[3];
-        var pdb4zt0 = module.cas9.children[2];
-        //var vis5f9r = p5.noise(p*smoothness) > p;
-        pdb5f9r.visible = Math.random() > p;
-        pdb4zt0.visible = !pdb5f9r.visible;
-        pdb5f9r.brownianDisplacement = (p<0.5) ? 2*maxBrownianDisplacement*p : 2*maxBrownianDisplacement*(1-p); 
-        pdb4zt0.brownianDisplacement = pdb5f9r.brownianDisplacement;
-    }
-
-
-
     // Global Brownian motion function (made to look smoother with perlin noise)
     module.brownianMotion = function() {
         var seed = module.clock.getElapsedTime();
@@ -183,7 +264,6 @@ function enableTransitions(module) {
             }
         });
     }
-
 
     return module;
 }

@@ -23,10 +23,10 @@ function createNucleicAcids(module) {
     var rot = new THREE.Euler(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);     
     
     // Floppy RNA (part of gRNA that will wrap around target DNA)
-    var rna = createFloppyRNA();
-    rna.position.copy(pos);
-    rna.rotation.copy(rot);
-    module.cas9.add(rna);   
+    var floppyRna = createFloppyRNA();
+    floppyRna.position.copy(pos);
+    floppyRna.rotation.copy(rot);
+    module.rna.add(floppyRna);   
     
     // DNA (before cut)
     var dnaPreCut = createDNApreCut();  
@@ -157,7 +157,7 @@ function createNucleicAcids(module) {
         // Extrude both strands:
         var helixSpline1 = new THREE.CatmullRomCurve3(strand1vertices);
         var helixSpline2 = new THREE.CatmullRomCurve3(strand2vertices);
-        console.log('Strand lengths:', helixSpline1.getLength(), helixSpline2.getLength());
+        //console.log('Strand lengths:', helixSpline1.getLength(), helixSpline2.getLength());
         var helixGeom1 = new THREE.ExtrudeGeometry(helixShape, { steps : extrusionSteps, extrudePath : helixSpline1 });
         var helixGeom2 = new THREE.ExtrudeGeometry(helixShape, { steps : extrusionSteps, extrudePath : helixSpline2 });
         

@@ -2,7 +2,7 @@ function createNucleus(module) {
 
     var scale = 4;
     var radius = 1500; // real 3000, last 1500
-    var nrOfNpc = 150; // real 2000, last 150
+    var nrOfNpc = 80; // real 2000, last 150
     var npcRadius = 30; // real 60, last 30
     var holeRadius = npcRadius*1.2; // npcRadius*1.2
 
@@ -70,18 +70,7 @@ function createNucleus(module) {
         innerNucleus.rotation.order = 'XZY';  
 
         var outerNucleusBufferGeom = new THREE.SphereBufferGeometry(radius, 32, 32);
-        var outerNucleus = new THREE.Mesh(outerNucleusBufferGeom, module.materials.innerNucleusMat);  
-
-        // var outlineMat = new THREE.MeshLambertMaterial({
-        //     color: 0xffffff, 
-        //     side: THREE.BackSide, 
-        //     fog: false,
-        //     transparent: true,
-        //     opacity: 0.4
-        // });
-        // var outlineGeom = outerNucleusBufferGeom.clone();
-        // var outline = new THREE.Mesh(outlineGeom, outlineMat);
-        // outline.scale.set(1.003, 1.003, 1.003);
+        var outerNucleus = new THREE.Mesh(outerNucleusBufferGeom, module.materials.outerNucleusMat);  
 
         var nucleus = new THREE.Object3D();
         nucleus.add(outerNucleus, allNpcs, holes, innerNucleus);
@@ -97,7 +86,7 @@ function createNucleus(module) {
     var mainPart = createNucleus();
     module.nucleus.add(mainPart);
 
-    // Create caps:
+    // Create caps
     var poles = [
         new THREE.Vector3(0, -5000, 0),
         new THREE.Vector3(0, 5000, 0)
@@ -105,8 +94,15 @@ function createNucleus(module) {
     var caps = module.createFogCaps(poles, 3000);    
     module.nucleus.add(caps);
 
-    // Add to scene:
+    // Add to scene
     module.scene.add(module.nucleus);
+
+    // Animation
+    module.animateNucleus = function() {
+        module.innerNucMatUniforms.time.value += module.deltaTime;
+        module.outerNucMatUniforms.time.value += module.deltaTime;    
+    }
+    
 
     return module;
 }

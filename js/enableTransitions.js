@@ -42,12 +42,12 @@ function enableTransitions(module) {
     // Set up states
     var states = [        
         {
-            camX : -93,
-            camY : 210,
-            camZ : 40133,
-            targX : 15,
-            targY : 195,
-            targZ : 40046,            
+            camX : -114,
+            camY : 207,
+            camZ : 40096,
+            targX : 11,
+            targY : 197,
+            targZ : 40035,            
             cas9X : 0,
             cas9Y : 200,
             cas9Z : 40000,
@@ -133,7 +133,7 @@ function enableTransitions(module) {
         if (event.target.className === "textbox active" || event.target.className === "textbox active current") {
             var targetState = event.target.innerHTML-1;
             module.transitionState(targetState, 0);
-            module.camera.up.set(0, 1, 0);
+            module.camera.up.set(-0.24, -0.96, 0.13);
         }
     }
 
@@ -190,8 +190,10 @@ function enableTransitions(module) {
     module.transitionState = function(targetState, time) {
 
         // Stop previous tweens and brownian motions
-        if (tween !== null)
-        tween.stop();
+        if (tween !== null) {
+            tween.stop();
+        }
+        
         module.scene.traverse(function(obj) {
             if (obj instanceof THREE.Mesh && obj.brownianDisplacement !== undefined) {
                 obj.brownianDisplacement = 0;
@@ -200,7 +202,14 @@ function enableTransitions(module) {
 
         // Handle arrows and buttons
         leftArrow.style.display = (targetState === 0) ? 'none' : 'block';
-        rightArrow.style.display = (targetState === states.length-1) ? 'none' : 'block';
+
+        if (targetState === states.length-1) {
+            rightArrow.style.display = 'none';
+        } else {
+            rightArrow.style.display = (document.getElementById(targetState).className === "textbox active") ? 'block' : 'none';
+        }
+        
+
         document.getElementById(currentState).className = "textbox active";
         
         // Define origin and target states
@@ -245,6 +254,7 @@ function enableTransitions(module) {
         // Handle text and buttons after tween finishes
         tween.onComplete(function() {
             document.getElementById(currentState).className = "textbox active current";
+            rightArrow.style.display = (currentState === states.length-1) ? 'none' : 'block';
             textBox.innerHTML = textBoxContents[currentState];
         });
 

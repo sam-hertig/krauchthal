@@ -16,9 +16,6 @@ function createNucleicAcids(module) {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    // Create nucleic acid container object
-    module.nucleicAcids = new THREE.Object3D();
     var pos = new THREE.Vector3(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
     var rot = new THREE.Euler(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);     
     

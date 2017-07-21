@@ -2,7 +2,7 @@ function createAmbiance(module) {
 
     var nrOfBubbles = 1000;
     var bubbleSphereRadius = 200;
-    var nrOfBgSprites = 30;
+    var nrOfBgSprites = 50;
     var bgSpriteSphereRadius = 500;
 
 
@@ -68,7 +68,7 @@ function createAmbiance(module) {
                 map: spriteMap,
                 color: 0xffffff,
                 transparent: true,
-                opacity: 0.2 - 0.2*(posDelta),
+                opacity: 0.4 - 0.2*(posDelta),
                 depthWrite: false,
                 // depthTest: false,
                 fog: false,
@@ -78,7 +78,6 @@ function createAmbiance(module) {
             sprite.position.copy(pos);
             size = 0.1 * radius;
             size = (index===5) ? size*4 : size;
-            // sprite.scale.set(size, size, size);
             bgSprites.add(sprite);
             sprite.rotSign = -1 + 2*Math.round(Math.random());
             sprite.scale.set(sprite.rotSign*size, size, size);

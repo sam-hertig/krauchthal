@@ -81,7 +81,7 @@ body {
 
 .story-container {
     position: absolute;
-    bottom: 3%;
+    bottom: 5%;
     left: 5%;
     width: 90%;
 }
@@ -100,7 +100,7 @@ body {
 
 .inactive {
     border: none;
-    color: #eeeeee;
+    color: #dddddd;
     pointer-events: none;
 }
 

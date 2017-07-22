@@ -20,8 +20,10 @@ function setup3D(module) {
     // Camera
     var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 50000 );   
     camera.position.set(10, 10, 10);
-    camera.lookAt(new THREE.Vector3(0, 0, 0)); 
-    // camera.up.set(-0.24, -0.96, 0.13);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    // var cameraUp = new THREE.Vector3(-0.35, -0.31, 0.88); // cooler Flug
+    var cameraUp = new THREE.Vector3(-0.55, 0.56, 0.61);
+    camera.up.copy(cameraUp);
     scene.add(camera);
 
     // Lights   
@@ -101,14 +103,16 @@ function setup3D(module) {
     module.scene = scene; 
     module.renderer = renderer;
     module.camera = camera;
+    module.cameraUp = cameraUp;
     module.controls = controls;
     module.stats = stats;
 
     // Main 3D objects:
     module.cas9 = new THREE.Object3D();
     module.rna = new THREE.Object3D();
-    module.cas9confs = {};    
-    module.nucleicAcids = new THREE.Object3D();
+    module.floppyRna = null;
+    module.cas9Confs = {};    
+    module.dna = new THREE.Object3D();
 
     // Methods
     module.animateNucleus = function () {};

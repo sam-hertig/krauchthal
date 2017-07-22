@@ -24,7 +24,7 @@ function loadCas9(module) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
         //mol.visible = false;
         module.cas9.add(mol);
-        module.cas9confs['4cmp'] = mol;
+        module.cas9Confs['4cmp'] = mol;
         return loadMolProm('models/crisprV3.2_rna.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, module.materials.rnaMat1);
@@ -36,14 +36,14 @@ function loadCas9(module) {
         //var mol = new THREE.Object3D();
         mol.visible = false;
         module.cas9.add(mol);
-        module.cas9confs['4zt0'] = mol;
+        module.cas9Confs['4zt0'] = mol;
         return loadMolProm('models/crisprV3.2_5f9r.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
         //var mol = new THREE.Object3D();
         module.cas9.add(mol);
         mol.visible = false;
-        module.cas9confs['5f9r'] = mol;
+        module.cas9Confs['5f9r'] = mol;
         mol.geometry.computeBoundingSphere();
         if (mol.geometry !== undefined) {
             center = mol.geometry.boundingSphere.center.clone();
@@ -82,11 +82,11 @@ function loadCas9(module) {
             }
         });
 
+        // Finalize
         module.scene.add(module.cas9);
         module.scene.add(module.rna);
-
-        module.transitionState(0, 0);
-        module.camera.up.set(-0.24, -0.96, 0.13);
+        module.transitionState(4, 0);
+        module.camera.up.copy(module.cameraUp);
         module.scene.visible = true;
 
     });

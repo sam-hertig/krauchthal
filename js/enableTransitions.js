@@ -18,7 +18,7 @@ function enableTransitions(module) {
         "To do so, Cas9 needs a guide RNA.",
         "Cas9 is now ready to cut some DNA.",
         "It does so within the nucleus.",
-        "Now in the nucleus.",
+        "Now in the nucleus. Where is the DNA?",
         "Cas9 searches for PAM sequence on DNA.",
         "Once PAM sequence is found, DNA binds and structure of Cas9 changes.",
         "DNA completes binding by unwinding and attaching to guide RNA.",
@@ -39,12 +39,16 @@ function enableTransitions(module) {
     }    
 
 
+// -0.3518115508996481 -0.31204904296526725 0.8803147320351159
+
+
+
     // Set up states
     var states = [        
         {
-            camX : -114,
-            camY : 207,
-            camZ : 40096,
+            camX : -128,
+            camY : 208,
+            camZ : 40102,
             targX : 11,
             targY : 197,
             targZ : 40035,            
@@ -54,7 +58,7 @@ function enableTransitions(module) {
             rnaX : 50,
             rnaY : 200,
             rnaZ : 40050, 
-            cas9conf : 0,
+            cas9Conf : 0,
         },
         {
             camX : -100,
@@ -69,7 +73,7 @@ function enableTransitions(module) {
             rnaX : 0,
             rnaY : 200,
             rnaZ : 40000, 
-            cas9conf : 1,
+            cas9Conf : 1,
         },
         {
             camX : -162,
@@ -84,7 +88,7 @@ function enableTransitions(module) {
             rnaX : 0,
             rnaY : 200,
             rnaZ : 40000, 
-            cas9conf : 1,
+            cas9Conf : 1,
         },
         {
             camX : -2440,
@@ -99,12 +103,12 @@ function enableTransitions(module) {
             rnaX : 0,
             rnaY : 0,
             rnaZ : 7000, 
-            cas9conf : 1,
+            cas9Conf : 1,
         },
         {
-            camX : -100,
-            camY : 0,
-            camZ : 100,
+            camX : -109,
+            camY : 19,
+            camZ : 72,
             targX : 0,
             targY : 0,
             targZ : 0,            
@@ -114,9 +118,75 @@ function enableTransitions(module) {
             rnaX : 0,
             rnaY : 0,
             rnaZ : 0, 
-            cas9conf : 1,
-        },          
+            cas9Conf : 1,
+            dnaX: 0,        //nr 5
+            dnaY: -800,
+            dnaZ: 0,
+            dnaBrownianDisplacement: 0,
+        },
+        {
+            camX : -109,
+            camY : 19,
+            camZ : 72,
+            targX : 0,
+            targY : 0,
+            targZ : 0,            
+            cas9X : 0,
+            cas9Y : 0,
+            cas9Z : 0,
+            rnaX : 0,
+            rnaY : 0,
+            rnaZ : 0, 
+            cas9Conf : 1,
+            dnaX: 0,       //nr 6
+            dnaY: 0,
+            dnaZ: 0,
+            dnaBrownianDisplacement: 20,
+        },
+        {
+            camX : -14,
+            camY : 39,
+            camZ : -36,
+            targX : 5,
+            targY : 0,
+            targZ : -12,            
+            cas9X : 0,
+            cas9Y : 0,
+            cas9Z : 0,
+            rnaX : 0,
+            rnaY : 0,
+            rnaZ : 0, 
+            cas9Conf : 2,
+            dnaX: 0,       //nr 7
+            dnaY: 0,
+            dnaZ: 0,
+            dnaBrownianDisplacement: 0,
+            dnaConf: 0, //nr 7
+            rnaConf: 0,
+        },
+        {
+            camX : -14,
+            camY : 39,
+            camZ : -36,
+            targX : 5,
+            targY : 0,
+            targZ : -12,            
+            cas9X : 0,
+            cas9Y : 0,
+            cas9Z : 0,
+            rnaX : 0,
+            rnaY : 0,
+            rnaZ : 0, 
+            cas9Conf : 2,
+            dnaX: 0,       
+            dnaY: 0,
+            dnaZ: 0,
+            dnaBrownianDisplacement: 0,
+            dnaConf: 1, //nr 8
+            rnaConf: 1,
+        },  
     ];
+
 
 
     // Create and listen to state button clicks
@@ -133,7 +203,7 @@ function enableTransitions(module) {
         if (event.target.className === "textbox active" || event.target.className === "textbox active current") {
             var targetState = event.target.innerHTML-1;
             module.transitionState(targetState, 0);
-            module.camera.up.set(-0.24, -0.96, 0.13);
+            module.camera.up.copy(module.cameraUp);
         }
     }
 
@@ -152,7 +222,16 @@ function enableTransitions(module) {
         rnaX : (function(v) {module.rna.position.x = v;}),
         rnaY : (function(v) {module.rna.position.y = v;}),
         rnaZ : (function(v) {module.rna.position.z = v;}),         
-        cas9conf : (function(v) {conformationalChange(v);}),
+        cas9Conf : (function(v) {conformationalChange(v);}),
+        dnaX : (function(v) {module.dna.position.x = v;}),
+        dnaY : (function(v) {module.dna.position.y = v;}),
+        dnaZ : (function(v) {module.dna.position.z = v;}),
+        dnaBrownianDisplacement : (function(v) {module.dna.brownianDisplacement = v}),
+        dnaConf : (function(v) {
+            module.dna.children[0].children[0].morphTargetInfluences[1] = v;
+            module.dna.children[0].children[1].morphTargetInfluences[1] = v;
+        }),
+        rnaConf : (function(v) {module.floppyRna.children[0].morphTargetInfluences[1] = v;}),
     };    
 
 
@@ -166,19 +245,19 @@ function enableTransitions(module) {
         var rand = Math.random();
 
         if (p<=1) {
-            module.cas9confs['4cmp'].visible = rand >= p;
-            module.cas9confs['4zt0'].visible = rand <= p;
-            module.cas9confs['5f9r'].visible = false;           
+            module.cas9Confs['4cmp'].visible = rand >= p;
+            module.cas9Confs['4zt0'].visible = rand <= p;
+            module.cas9Confs['5f9r'].visible = false;           
         } else {
             p = p-1;
-            module.cas9confs['4cmp'].visible = false;
-            module.cas9confs['4zt0'].visible = rand >= p;
-            module.cas9confs['5f9r'].visible = rand <= p; 
+            module.cas9Confs['4cmp'].visible = false;
+            module.cas9Confs['4zt0'].visible = rand >= p;
+            module.cas9Confs['5f9r'].visible = rand <= p; 
         }
 
-        module.cas9confs['4cmp'].brownianDisplacement = (p<0.5) ? 2*maxBrownianDisplacement*p : 2*maxBrownianDisplacement*(1-p); 
-        module.cas9confs['4zt0'].brownianDisplacement = module.cas9confs['4cmp'].brownianDisplacement;
-        module.cas9confs['5f9r'].brownianDisplacement = module.cas9confs['4cmp'].brownianDisplacement;
+        module.cas9Confs['4cmp'].brownianDisplacement = (p<0.5) ? 2*maxBrownianDisplacement*p : 2*maxBrownianDisplacement*(1-p); 
+        module.cas9Confs['4zt0'].brownianDisplacement = module.cas9Confs['4cmp'].brownianDisplacement;
+        module.cas9Confs['5f9r'].brownianDisplacement = module.cas9Confs['4cmp'].brownianDisplacement;
 
     }
 
@@ -226,7 +305,13 @@ function enableTransitions(module) {
             rnaX : module.rna.position.x,
             rnaY : module.rna.position.y,
             rnaZ : module.rna.position.z, 
-            cas9conf : (module.cas9confs['4cmp'].visible === true) ? 0 : 1,                                                         
+            cas9Conf : (module.cas9Confs['4cmp'].visible === true)   ?   0   :   ((module.cas9Confs['4zt0'].visible===true)?1:2),   
+            dnaX : module.dna.position.x,
+            dnaY : module.dna.position.y,
+            dnaZ : module.dna.position.z,
+            dnaBrownianDisplacement : module.dna.brownianDisplacement,
+            dnaConf : module.dna.children[0].children[0].morphTargetInfluences[1],
+            rnaConf : module.floppyRna.children[0].morphTargetInfluences[1],
         };                                                
         var target = states[targetState];
 
@@ -266,7 +351,7 @@ function enableTransitions(module) {
         var seed = module.clock.getElapsedTime();
         var displacement;
         module.scene.traverse(function(obj) {
-            if (obj instanceof THREE.Mesh && obj.brownianDisplacement !== undefined && obj.brownianDisplacement !== 0) {
+            if ( (obj instanceof THREE.Mesh || obj instanceof THREE.Object3D)  &&  obj.brownianDisplacement !== undefined  &&  obj.brownianDisplacement !== 0 ) {
                 seed = seed*obj.brownianJumpiness;
                 displacement = new THREE.Vector3(2*p5.noise(seed)-1, 2*p5.noise(seed + 17)-1, 2*p5.noise(seed + 42)-1);
                 displacement.multiplyScalar(obj.brownianDisplacement);

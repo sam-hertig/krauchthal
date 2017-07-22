@@ -23,25 +23,26 @@ function createNucleicAcids(module) {
     var floppyRna = createFloppyRNA();
     floppyRna.position.copy(pos);
     floppyRna.rotation.copy(rot);
-    module.rna.add(floppyRna);   
+    module.rna.add(floppyRna);
+    module.floppyRna = floppyRna;   
     
     // DNA (before cut)
-    var dnaPreCut = createDNApreCut();  
-    module.nucleicAcids.add(dnaPreCut);
+    var dnaPreCut = createDNApreCut();      
+    module.dna.add(dnaPreCut);
     //dnaPreCut.visible = false;
 
     // cut DNA part 1
     var dnaPostCut1 = createDNApostCut1();
-    module.nucleicAcids.add(dnaPostCut1);
+    module.dna.add(dnaPostCut1);
     dnaPostCut1.visible = false;
 
     // cut DNA part 2
     var dnaPostCut2 = createDNApostCut2();
-    module.nucleicAcids.add(dnaPostCut2);
+    module.dna.add(dnaPostCut2);
     dnaPostCut2.visible = false;
 
     // Adjust to cas9 position and rotation
-    module.nucleicAcids.children.forEach(function(c) {
+    module.dna.children.forEach(function(c) {
         if (c instanceof THREE.Object3D) {
             c.position.copy(pos);
             c.rotation.copy(rot);
@@ -54,10 +55,12 @@ function createNucleicAcids(module) {
         new THREE.Vector3(-132.28641467717367, -212.01072905633762, 52.681448121595665),
     ];
     var caps = module.createFogCaps(dnaEnds, 300);
-    module.nucleicAcids.add(caps);
+    module.dna.add(caps);
 
     // Add
-    module.scene.add(module.nucleicAcids);    
+    module.dna.brownianDisplacement = 0;
+    module.dna.brownianJumpiness = 0.5;     
+    module.scene.add(module.dna);    
 
 
 

@@ -21,8 +21,7 @@ function setup3D(module) {
     var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 50000 );   
     camera.position.set(10, 10, 10);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
-    // var cameraUp = new THREE.Vector3(-0.35, -0.31, 0.88); // cooler Flug
-    var cameraUp = new THREE.Vector3(-0.55, 0.56, 0.61);
+    var cameraUp = new THREE.Vector3(0, 0, 1);
     camera.up.copy(cameraUp);
     scene.add(camera);
 
@@ -38,10 +37,10 @@ function setup3D(module) {
     var controls = new THREE.TrackballControls(camera, renderer.domElement);
     if (!debug) {
         controls.noPan = true;      
-        //controls.maxDistance = 200;
+        
     }
     controls.zoomSpeed = 0.5;
-     
+    controls.maxDistance = 1000; 
     
     // Resize
     window.addEventListener('resize', onWindowResize, false);
@@ -64,7 +63,7 @@ function setup3D(module) {
 
     // Helper Box with transform controls:
     if (debug) {
-        var boxGeom = new THREE.BoxGeometry(10, 10, 10);
+        var boxGeom = new THREE.BoxGeometry(0.5, 0.5, 0.5);
         var boxMat = new THREE.MeshLambertMaterial({color: 0x888888});
         var boxMesh = new THREE.Mesh(boxGeom, boxMat);
         scene.add(boxMesh);
@@ -75,20 +74,21 @@ function setup3D(module) {
     }    
 
     // Helper function for creating white sprites that can mask unwanted spots
-    module.createFogCaps = function(vertices, size) {
+    module.createFogCaps = function(vertices, size, file) {
+        file = file || "textures/fogCap.png";
+        var spriteMap = new THREE.TextureLoader().load(file);
+        var spriteMaterial = new THREE.SpriteMaterial({
+            map: spriteMap,
+            color: 0xffffff,
+            transparent: true,
+            opacity: 1,
+            depthWrite: false,
+            // depthTest: false,
+            fog: false,
+            rotation: 0,                
+        });
         var caps = new THREE.Object3D();
         vertices.forEach(function(v) {
-            var spriteMap = new THREE.TextureLoader().load("textures/fogCap.png");
-            var spriteMaterial = new THREE.SpriteMaterial({
-                map: spriteMap,
-                color: 0xffffff,
-                transparent: true,
-                opacity: 1,
-                depthWrite: false,
-                // depthTest: false,
-                fog: false,
-                rotation: 0,                
-            });
             var sprite = new THREE.Sprite(spriteMaterial);
             sprite.position.copy(v);
             sprite.scale.set(size, size, size);
@@ -110,9 +110,9 @@ function setup3D(module) {
     // Main 3D objects:
     module.cas9 = new THREE.Object3D();
     module.rna = new THREE.Object3D();
-    module.floppyRna = null;
     module.cas9Confs = {};    
     module.dna = new THREE.Object3D();
+    module.naParts = {};
 
     // Methods
     module.animateNucleus = function () {};

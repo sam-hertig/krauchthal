@@ -24,21 +24,23 @@ function createNucleicAcids(module) {
     floppyRna.position.copy(pos);
     floppyRna.rotation.copy(rot);
     module.rna.add(floppyRna);
-    module.floppyRna = floppyRna;   
+    module.naParts['floppyRna'] = floppyRna;   
     
     // DNA (before cut)
     var dnaPreCut = createDNApreCut();      
     module.dna.add(dnaPreCut);
-    //dnaPreCut.visible = false;
+    module.naParts['dnaPreCut'] = dnaPreCut;
 
     // cut DNA part 1
     var dnaPostCut1 = createDNApostCut1();
     module.dna.add(dnaPostCut1);
+    module.naParts['dnaPostCut1'] = dnaPostCut1;
     dnaPostCut1.visible = false;
 
     // cut DNA part 2
     var dnaPostCut2 = createDNApostCut2();
     module.dna.add(dnaPostCut2);
+    module.naParts['dnaPostCut2'] = dnaPostCut2;
     dnaPostCut2.visible = false;
 
     // Adjust to cas9 position and rotation
@@ -57,7 +59,17 @@ function createNucleicAcids(module) {
     var caps = module.createFogCaps(dnaEnds, 300);
     module.dna.add(caps);
 
-    // Add
+    // Cutting halos
+    var cutPos  = [
+        new THREE.Vector3(2.029, 2.597, 4.479),
+        new THREE.Vector3(-6.263, -1.141, -4.649),
+    ];
+    var cutHalos = module.createFogCaps(cutPos, 4, "textures/cutHalo.png");
+    cutHalos.children[0].material.opacity = 0;
+    module.dna.add(cutHalos);   
+    module.naParts['cutHalos'] = cutHalos;
+
+    // Add to scene
     module.dna.brownianDisplacement = 0;
     module.dna.brownianJumpiness = 0.5;     
     module.scene.add(module.dna);    
@@ -182,11 +194,12 @@ function createNucleicAcids(module) {
             points1: [
                 new THREE.Vector3(-0.16370690695911244, -1.7376220683912846, -3.332705870590946),
                 new THREE.Vector3(-0.5252711391915935, -1.394432904812714, -3.2939267742938227),
-                new THREE.Vector3(-1.128,-0.423, -3.996),
-                new THREE.Vector3(-2.556,-0.325, -5.499),
-                new THREE.Vector3(-3.709,-0.989, -5.734),
-
-                new THREE.Vector3(-6.268,-1.5, -7.382),
+                new THREE.Vector3(-1.128,-0.423, -3.996), // ok
+                //new THREE.Vector3(-2.556,-0.325, -5.499), // original
+                new THREE.Vector3(-2.909, 0.0692, -5.160), // new
+                //new THREE.Vector3(-3.709,-0.989, -5.734), // original
+                new THREE.Vector3(-4.426, -0.857, -6.893), // new
+                new THREE.Vector3(-6.268,-1.5, -7.382), // ok
             ],
             points2: [
                 new THREE.Vector3(-0.16370690695911244, -1.7376220683912846, -3.332705870590946),
@@ -220,7 +233,20 @@ function createNucleicAcids(module) {
 
         // Compute Normals:
         rnaMesh1.geometry.computeVertexNormals();
-        rnaMesh1.geometry.computeMorphNormals();    
+        rnaMesh1.geometry.computeMorphNormals(); 
+
+        // Debug only:
+        if (false) {
+            var boxGeom = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+            var boxMat = new THREE.MeshLambertMaterial({color: 0xff0000});
+            var boxMesh = new THREE.Mesh(boxGeom, boxMat);
+            boxMesh.position.set(-2.909, 0.0692, -5.160);
+            rnaObj.add(boxMesh);
+            var transControls = new THREE.TransformControls(module.camera, module.renderer.domElement);
+            transControls.attach(boxMesh);
+            module.scene.add(transControls);    
+            module.box = boxMesh;
+        }  
 
         return rnaObj;
     }
@@ -393,7 +419,7 @@ function createNucleicAcids(module) {
 
         // Compute Normals just to make stuff look smooth:
         dnaMesh1.geometry.computeVertexNormals();
-        dnaMesh2.geometry.computeVertexNormals();
+        dnaMesh2.geometry.computeVertexNormals();         
 
         return dnaObj;
     }

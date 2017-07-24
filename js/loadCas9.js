@@ -61,7 +61,7 @@ function loadCas9(module) {
                 conf.material[0].fog = false;
                 
                 conf.brownianDisplacement = 0;
-                conf.brownianJumpiness = 1; 
+                conf.brownianJumpiness = 100; 
 
                 // "bake" transformations to allow brownian motion around 0,0,0:
                 conf.updateMatrix();
@@ -85,7 +85,7 @@ function loadCas9(module) {
         // Finalize
         module.scene.add(module.cas9);
         module.scene.add(module.rna);
-        module.transitionState(4, 0);
+        module.transitionState(0, 0);
         module.camera.up.copy(module.cameraUp);
         module.scene.visible = true;
 

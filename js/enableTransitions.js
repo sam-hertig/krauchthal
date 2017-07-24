@@ -5,6 +5,7 @@ function enableTransitions(module) {
     var rightArrow = document.querySelector(".right");
     var leftArrow = document.querySelector(".left");
     leftArrow.style.display = 'none';
+    rightArrow.style.display = 'none';
     var textBox = document.getElementById("storytext");
     var flexBox = document.querySelector(".flex-container");
     var currentState = 0;

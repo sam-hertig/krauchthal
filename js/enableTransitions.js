@@ -477,10 +477,8 @@ function enableTransitions(module) {
             module.naParts['cutHalos'].children[0].material.opacity = 0;    
         }
         
-
         // Handle arrows and buttons
         leftArrow.style.display = (targetState === 0) ? 'none' : 'block';
-
         if (targetState === states.length-1) {
             rightArrow.style.display = 'none';
         } else if (!debug) {
@@ -488,9 +486,10 @@ function enableTransitions(module) {
         } else {
             rightArrow.style.display = 'block';
         }
-        
-
         document.getElementById(currentState).className = "textbox active";
+
+        // Update text
+        storyBox.innerHTML = module.storyBoxContents[targetState];
         
         // Define origin and target states
         var origin = {
@@ -552,7 +551,7 @@ function enableTransitions(module) {
         tween.onComplete(function() {
             document.getElementById(currentState).className = "textbox active current";
             rightArrow.style.display = (currentState === states.length-1) ? 'none' : 'block';
-            storyBox.innerHTML = module.storyBoxContents[currentState];
+            // storyBox.innerHTML = module.storyBoxContents[currentState];
         });
 
     }

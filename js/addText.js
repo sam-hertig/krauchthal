@@ -5,7 +5,7 @@ function addText(module) {
         "The CRISPR system (Clustered Regularly Interspaced Short Palindromic Repeats) was first identified in bacteria, where it plays an important role in the immune system. In recent years, molecular biologists have turned the system into a toolbox for genome editing.<br><br>" + 
         "How does a molecular mechanism work that can cut DNA? Two biological macromolecules form the core of the CRISPR system: <span class='cas9'>the CRISPR-associated Protein 9 (Cas9, left)</span>, and <span class='grna'>the guide RNA (gRNA, pink, right)</span>.",
 
-        "While Cas9 can be considered as the molecular scissors that cut DNA, the gRNA serves as the targeting system for Cas9. Inside the cell, the gRNA binds to Cas9 and thus renders Cas9 highly selective for it's target DNA. Upon binding, Cas9 changes it's conformation to accomodate the gRNA, which also coverts the inactive protein to it's active state.",
+        "While Cas9 can be considered as the molecular scissors that cut DNA, the gRNA serves as the targeting system for Cas9. Inside the cell, the gRNA binds to Cas9 and thus renders Cas9 highly selective for it's target DNA. Upon binding, Cas9 changes it's conformation to accomodate the gRNA, which also converts the inactive protein to it's active state.",
 
         "The Cas9-gRNA complex is now ready to cut the target DNA. Since the target DNA lives in the <span class='nucleus'>nucleus</span> of a cell, Cas9 will need to be transported into the nucleus.",
 
@@ -13,7 +13,7 @@ function addText(module) {
 
         "Inside the nucleus, Cas9 needs to locate it's <span class='dna1'>t</span><span class='dna2'>a</span><span class='dna1'>r</span><span class='dna2'>g</span><span class='dna1'>e</span><span class='dna2'>t</span> <span class='dna1'>D</span><span class='dna2'>N</span><span class='dna1'>A</span>, which needs to have a specific sequence of bases.",
 
-        "This stochastic search starts with trying to match a so-called PAM-sequence (protospacer adjacent motif) on the target DNA.",
+        "This stochastic search starts with trying to identify a specific sequence, the PAM-sequence (protospacer adjacent motif), on the target DNA.",
 
         "The PAM sequence on the target DNA binds to <span class='pamdomain'>the PAM-interacting domain (light blue)</span> on Cas9. Initial binding of the target DNA to Cas9 is accompanied by another conformational change in Cas9.",
 

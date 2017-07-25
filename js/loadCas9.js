@@ -22,6 +22,7 @@ function loadCas9(module) {
 
     loadMolProm('models/crisprV3.2_4cmp.json').then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
+        //var mol = new THREE.Object3D();
         //mol.visible = false;
         module.cas9.add(mol);
         module.cas9Confs['4cmp'] = mol;
@@ -88,7 +89,6 @@ function loadCas9(module) {
         module.transitionState(0, 0);
         module.camera.up.copy(module.cameraUp);
         module.scene.visible = true;
-
     });
 
     return module;

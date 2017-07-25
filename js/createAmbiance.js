@@ -37,14 +37,14 @@ function createAmbiance(module) {
 
     function createBgSprites(nrOfBgSprites, radius) {
 
-        var images = [
-            "textures/bgSprites-01.png",
-            "textures/bgSprites-02.png",
-            "textures/bgSprites-03.png",
-            "textures/bgSprites-04.png",
-            "textures/bgSprites-05.png",
-            "textures/bgSprites-06.png"
-        ];
+        var spriteMaps = [
+            new THREE.TextureLoader().load("textures/bgSprites-01.png"),
+            new THREE.TextureLoader().load("textures/bgSprites-02.png"),
+            new THREE.TextureLoader().load("textures/bgSprites-03.png"),
+            new THREE.TextureLoader().load("textures/bgSprites-04.png"),
+            new THREE.TextureLoader().load("textures/bgSprites-05.png"),
+            new THREE.TextureLoader().load("textures/bgSprites-06.png")
+        ];        
 
         var bgSprites = new THREE.Object3D();
         var Theta = 0, Phi = 0;
@@ -62,8 +62,10 @@ function createAmbiance(module) {
             posDelta = Math.random()-0.5;
             pos.multiplyScalar( radius + (radius*posDelta) );
 
-            index = j % images.length;
-            var spriteMap = new THREE.TextureLoader().load(images[index]);
+            index = j % spriteMaps.length;
+
+            var spriteMap = spriteMaps[index];
+
             var spriteMaterial = new THREE.SpriteMaterial({
                 map: spriteMap,
                 color: 0xffffff,

@@ -7,7 +7,6 @@ function setup3D(module) {
         scene.fog = new THREE.Fog(0xffffff, 250, 300);    
     }
     
-
     // Renderer
     var renderer = new THREE.WebGLRenderer();
     // renderer.setClearColor(scene.fog.color);
@@ -18,7 +17,7 @@ function setup3D(module) {
     container.appendChild(renderer.domElement);
 
     // Camera
-    var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 50000 );   
+    var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 50000 ); //50000  
     camera.position.set(10, 10, 10);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     var cameraUp = new THREE.Vector3(0, 0, 1);
@@ -32,7 +31,6 @@ function setup3D(module) {
     camLight.position.copy(camera.position); 
     camera.add(camLight);
     
-
     // Camera Controls
     var controls = new THREE.TrackballControls(camera, renderer.domElement);
     if (!debug) {

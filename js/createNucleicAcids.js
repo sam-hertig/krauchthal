@@ -216,7 +216,7 @@ function createNucleicAcids(module) {
         }
 
         var pathObjList = [rnaPathObj];
-        var extrudeQuality = 100;
+        var extrudeQuality = 40;
 
         // Create Geometries:
         var rnaGeometries = createDNAgeometry(pathObjList, extrudeQuality);
@@ -321,7 +321,7 @@ function createNucleicAcids(module) {
         var pathObjList1 = [dnaPathObj0];
         var pathObjList2 = [dnaPathObj1, dnaPathObj2, dnaPathObj3];
 
-        var extrudeQuality = 1000;
+        var extrudeQuality = 750;
 
         // Create Geometries:
         var dnaGeometries = createDNAgeometry(pathObjList1, extrudeQuality);
@@ -404,7 +404,7 @@ function createNucleicAcids(module) {
                 
         var pathObjList = [dnaPathObj1, dnaPathObj2];
 
-        var extrudeQuality = 500;
+        var extrudeQuality = 375;
 
         // Create Geometries:
         var dnaGeometries = createDNAgeometry(pathObjList, extrudeQuality);
@@ -464,7 +464,7 @@ function createNucleicAcids(module) {
 
         var pathObjList = [dnaPathObj2, dnaPathObj3];
 
-        var extrudeQuality = 500;
+        var extrudeQuality = 375;
 
         // Create Geometries:
         var dnaGeometries = createDNAgeometry(pathObjList, extrudeQuality);

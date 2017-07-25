@@ -490,7 +490,10 @@ function enableTransitions(module) {
                 obj.brownianDisplacement = 0;
             }
         });
-        module.naParts['cutHalos'].children[0].material.opacity = 0;
+        if (module.naParts['cutHalos'] !== undefined) {
+            module.naParts['cutHalos'].children[0].material.opacity = 0;    
+        }
+        
 
         // Handle arrows and buttons
         leftArrow.style.display = (targetState === 0) ? 'none' : 'block';

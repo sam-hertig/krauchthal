@@ -95,6 +95,23 @@ function setup3D(module) {
         return caps;
     }
   
+    // Loading manager
+    var storyBox = document.getElementById("storytext");
+    var nrOfItems = 17;
+    THREE.DefaultLoadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+        // console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+        storyBox.innerHTML = "Visualization loading... ("+Math.round(100*itemsLoaded/nrOfItems)+"%)."
+        if (itemsLoaded === nrOfItems) {
+            setTimeout(function () {
+                storyBox.innerHTML = module.storyBoxContents[0];   
+            }, 200);
+        }
+    };
+ 
+
+
+
+
 
     // Add properties to module:
     module.clock = clock;
@@ -104,6 +121,7 @@ function setup3D(module) {
     module.cameraUp = cameraUp;
     module.controls = controls;
     module.stats = stats;
+    module.storyBoxContents = [];
 
     // Main 3D objects:
     module.cas9 = new THREE.Object3D();

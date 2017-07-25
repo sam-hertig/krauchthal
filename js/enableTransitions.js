@@ -6,27 +6,10 @@ function enableTransitions(module) {
     var leftArrow = document.querySelector(".left");
     leftArrow.style.display = 'none';
     rightArrow.style.display = 'none';
-    var textBox = document.getElementById("storytext");
+    var storyBox = document.getElementById("storytext");
     var flexBox = document.querySelector(".flex-container");
     var currentState = 0;
     var tween = null;
-
-
-    // Define story texts and set up text box with state 0:
-    var textBoxContents = [
-        "Cas9 can cut DNA. Here is how it works.",
-        "To do so, Cas9 needs a guide RNA.",
-        "Cas9 is now ready to cut some DNA.",
-        "It does so within the nucleus.",
-        "Now in the nucleus. Where is the DNA?",
-        "Cas9 searches for PAM sequence on DNA.",
-        "Once PAM sequence is found, DNA binds and structure of Cas9 changes.",
-        "DNA completes binding by unwinding and attaching to guide RNA.",
-        "Cas9 cuts DNA.",
-        "Cas9 cuts DNA.",
-        "Cas9 cuts DNA.",
-        "The gap in the DNA can now be used to do insert custom sequences.",
-    ];
 
 
     // Listen to arrow clicks
@@ -569,7 +552,7 @@ function enableTransitions(module) {
         tween.onComplete(function() {
             document.getElementById(currentState).className = "textbox active current";
             rightArrow.style.display = (currentState === states.length-1) ? 'none' : 'block';
-            textBox.innerHTML = textBoxContents[currentState];
+            storyBox.innerHTML = module.storyBoxContents[currentState];
         });
 
     }

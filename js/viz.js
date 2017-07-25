@@ -12,7 +12,8 @@ viz = setupMaterials(viz);
 viz = loadCas9(viz); 											
 viz = createNucleicAcids(viz); 
 viz = createNucleus(viz); 
-viz = createAmbiance(viz); 				
+viz = createAmbiance(viz);
+viz = addText(viz); 				
 viz = enableTransitions(viz);
 run(viz);
 

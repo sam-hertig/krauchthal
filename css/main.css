@@ -65,15 +65,17 @@ span {
     color: #2600E6;   
 }
 
-.credits {
+.credits-container {
     position: absolute;
     right: 10px;
-    font-weight: 300;
-    font-size: 67%;
     bottom: 6px;
 }
 
-
+.credits {
+    font-weight: 300;    
+    font-size: 50%;
+    color: #AAAAAA;
+}
 
 .arrow {
     margin: 10px;

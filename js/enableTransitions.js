@@ -398,7 +398,7 @@ function enableTransitions(module) {
     // Define modifers used by transition function
     var modifiers = {
 
-        maxZoom : (function(v) {module.controls.maxDistance = v;}),
+        maxZoom : (function(v) {module.controls.maxDistance = debug ? 50000 : v;}),
         camUpX :  (function(v) {module.camera.up.x = v;}),
         camUpY :  (function(v) {module.camera.up.y = v;}),
         camUpZ :  (function(v) {module.camera.up.z = v;}),        
@@ -408,7 +408,6 @@ function enableTransitions(module) {
         targX : (function(v) {module.controls.target.x = v;}),
         targY : (function(v) {module.controls.target.y = v;}),
         targZ : (function(v) {module.controls.target.z = v;}),
-
 
         cas9X : (function(v) {module.cas9.position.x = v;}),
         cas9Y : (function(v) {module.cas9.position.y = v;}),
@@ -432,7 +431,6 @@ function enableTransitions(module) {
             module.cas9Confs['4zt0'].brownianDisplacement = module.cas9Confs['4cmp'].brownianDisplacement;
             module.cas9Confs['5f9r'].brownianDisplacement = module.cas9Confs['4cmp'].brownianDisplacement; 
         }),
-
 
         dnaX : (function(v) {module.dna.position.x = v;}),
         dnaY : (function(v) {module.dna.position.y = v;}),

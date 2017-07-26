@@ -33,12 +33,9 @@ function setup3D(module) {
     
     // Camera Controls
     var controls = new THREE.TrackballControls(camera, renderer.domElement);
-    if (!debug) {
-        controls.noPan = true;      
-        
-    }
     controls.zoomSpeed = 0.5;
     controls.maxDistance = 1000; 
+    controls.noPan = debug ? false : true;      
     
     // Resize
     window.addEventListener('resize', onWindowResize, false);
@@ -100,7 +97,7 @@ function setup3D(module) {
     var nrOfItems = 17;
     THREE.DefaultLoadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
         // console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
-        storyBox.innerHTML = "Visualization loading... ("+Math.round(100*itemsLoaded/nrOfItems)+"%)."
+        storyBox.innerHTML = "Visualization loading... ("+Math.round(100*itemsLoaded/nrOfItems)+"%)"
         if (itemsLoaded === nrOfItems) {
             setTimeout(function () {
                 storyBox.innerHTML = module.storyBoxContents[0];   
@@ -108,10 +105,6 @@ function setup3D(module) {
         }
     };
  
-
-
-
-
 
     // Add properties to module:
     module.clock = clock;

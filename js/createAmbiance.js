@@ -1,8 +1,8 @@
 function createAmbiance(module) {
 
-    var nrOfBubbles = 1000;
+    var nrOfBubbles = 500;
     var bubbleSphereRadius = 200;
-    var nrOfBgSprites = 50;
+    var nrOfBgSprites = 30;
     var bgSpriteSphereRadius = 500;
 
 

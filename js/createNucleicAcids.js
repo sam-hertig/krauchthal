@@ -16,8 +16,10 @@ function createNucleicAcids(module) {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    var pos = new THREE.Vector3(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
-    var rot = new THREE.Euler(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);     
+    //var pos = new THREE.Vector3(-5.842881325672321, -5.8371807191324620, 4.6611525722939830);
+    //var rot = new THREE.Euler(1.0803845763917383, -0.5693376552550835, 0.8406934403471152);  
+    var pos = new THREE.Vector3(3.199786820906784, -6.674090401511426, 8.71901282325824);
+    var rot = new THREE.Euler(0.8568845637812872, 0.2553869901965827, 0.05930168078713633);    
     
     // Floppy RNA (part of gRNA that will wrap around target DNA)
     var floppyRna = createFloppyRNA();
@@ -73,6 +75,48 @@ function createNucleicAcids(module) {
     module.dna.brownianDisplacement = 0;
     module.dna.brownianJumpiness = 0.5;     
     module.scene.add(module.dna);    
+
+    if (debug) {
+        var control = new THREE.TransformControls(module.camera, module.renderer.domElement);
+        control.attach(module.dna);
+        module.scene.add(control);
+        window.addEventListener( 'keydown', function ( event ) {
+            switch ( event.keyCode ) {
+                case 81: // Q
+                    control.setSpace( control.space === "local" ? "world" : "local" );
+                    break;
+                case 17: // Ctrl
+                    control.setTranslationSnap( 100 );
+                    control.setRotationSnap( THREE.Math.degToRad( 15 ) );
+                    break;
+                case 87: // W
+                    control.setMode( "translate" );
+                    break;
+                case 69: // E
+                    control.setMode( "rotate" );
+                    break;
+                case 82: // R
+                    control.setMode( "scale" );
+                    break;
+                case 187:
+                case 107: // +, =, num+
+                    control.setSize( control.size + 0.1 );
+                    break;
+                case 189:
+                case 109: // -, _, num-
+                    control.setSize( Math.max( control.size - 0.1, 0.1 ) );
+                    break;
+            }
+        });
+        window.addEventListener( 'keyup', function ( event ) {
+            switch ( event.keyCode ) {
+                case 17: // Ctrl
+                    control.setTranslationSnap( null );
+                    control.setRotationSnap( null );
+                    break;
+            }
+        });             
+    }
 
 
 

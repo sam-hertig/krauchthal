@@ -20,25 +20,30 @@ function loadCas9(module) {
         })
     } 
 
-    loadMolProm('models/crisprV3.2_4cmp.json').then(function(geom_mats_obj) {
+    loadMolProm('models/crisprV5.1_hires_4cmp.json').then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
         //var mol = new THREE.Object3D();
         //mol.visible = false;
         module.cas9.add(mol);
         module.cas9Confs['4cmp'] = mol;
-        return loadMolProm('models/crisprV3.2_rna.json');
+        return loadMolProm('models/crisprV5.1_rna.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, module.materials.rnaMat1);
         //var mol = new THREE.Object3D();
         module.rna.add(mol);
-        return loadMolProm('models/crisprV3.2_4zt0.json');
+    //     return loadMolProm('models/crisprV5.1_dna.json');
+    // }).then(function(geom_mats_obj) {
+    //     var mol = new THREE.Mesh(geom_mats_obj.geom, module.materials.rnaMat1);
+    //     //var mol = new THREE.Object3D();
+    //     module.rna.add(mol);
+        return loadMolProm('models/crisprV5.1_hires_4zt0.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
         //var mol = new THREE.Object3D();
         mol.visible = false;
         module.cas9.add(mol);
         module.cas9Confs['4zt0'] = mol;
-        return loadMolProm('models/crisprV3.2_5f9r.json');
+        return loadMolProm('models/crisprV5.1_hires_5f9r.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
         //var mol = new THREE.Object3D();
@@ -83,11 +88,52 @@ function loadCas9(module) {
             }
         });
 
+   //      if (debug) {
+   //      	var control = new THREE.TransformControls(module.camera, module.renderer.domElement);
+   //      	control.attach(module.cas9);
+   //      	module.scene.add(control);
+			// window.addEventListener( 'keydown', function ( event ) {
+			// 	switch ( event.keyCode ) {
+			// 		case 81: // Q
+			// 			control.setSpace( control.space === "local" ? "world" : "local" );
+			// 			break;
+			// 		case 17: // Ctrl
+			// 			control.setTranslationSnap( 100 );
+			// 			control.setRotationSnap( THREE.Math.degToRad( 15 ) );
+			// 			break;
+			// 		case 87: // W
+			// 			control.setMode( "translate" );
+			// 			break;
+			// 		case 69: // E
+			// 			control.setMode( "rotate" );
+			// 			break;
+			// 		case 82: // R
+			// 			control.setMode( "scale" );
+			// 			break;
+			// 		case 187:
+			// 		case 107: // +, =, num+
+			// 			control.setSize( control.size + 0.1 );
+			// 			break;
+			// 		case 189:
+			// 		case 109: // -, _, num-
+			// 			control.setSize( Math.max( control.size - 0.1, 0.1 ) );
+			// 			break;
+			// 	}
+			// });
+			// window.addEventListener( 'keyup', function ( event ) {
+			// 	switch ( event.keyCode ) {
+			// 		case 17: // Ctrl
+			// 			control.setTranslationSnap( null );
+			// 			control.setRotationSnap( null );
+			// 			break;
+			// 	}
+			// });        	    
+   //      }
+
         // Finalize
         module.scene.add(module.cas9);
         module.scene.add(module.rna);
-        module.transitionState(0, 0);
-        module.camera.up.copy(module.cameraUp);
+		module.transitionState(0, 0);
         module.scene.visible = true;
     });
 

@@ -57,7 +57,7 @@ function setup3D(module) {
     }
 
     // Helper Box with transform controls:
-    if (debug) {
+    if (false) {
         var boxGeom = new THREE.BoxGeometry(0.5, 0.5, 0.5);
         var boxMat = new THREE.MeshLambertMaterial({color: 0x888888});
         var boxMesh = new THREE.Mesh(boxGeom, boxMat);

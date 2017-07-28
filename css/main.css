@@ -42,29 +42,73 @@ body {
     display: none;
 }
 
+
+
 .arrowShape {
     fill: #ffffff;
     fill-opacity: 0.8;
-    stroke: #666666;
+    stroke: #888888;
     stroke-width: 1;
     cursor: default;
-    -webkit-transition: stroke 0.75s, fill 0.75s;
-    -moz-transition: stroke 0.75s, fill 0.75s;
-    -ms-transition: stroke 0.75s, fill 0.75s;
-    -o-transition: stroke 0.75s, fill 0.75s;
-    transition: stroke 0.75s, fill 0.75s;
+    -webkit-transition: fill 0.75s;
+    -moz-transition: fill 0.75s;
+    -ms-transition: fill 0.75s;
+    -o-transition: fill 0.75s;
+    transition: fill 0.75s;
+    -webkit-animation-name: arrowpulse;
+    -moz-animation-name: arrowpulse;
+    -ms-animation-name: arrowpulse;
+    -o-animation-name: arrowpulse;
+    animation-name: arrowpulse;
+    -webkit-animation-duration: 2s;
+    -moz-animation-duration: 2s;
+    -ms-animation-duration: 2s;
+    -o-animation-duration: 2s;
+    animation-duration: 2s;
+    -webkit-animation-timing-function: ease;
+    -moz-animation-timing-function: ease;
+    -ms-animation-timing-function: ease;
+    -o-animation-timing-function: ease;
+    animation-timing-function: ease;
+    -webkit-animation-delay: 2s;
+    -moz-animation-delay: 2s;
+    -ms-animation-delay: 2s;
+    -o-animation-delay: 2s;
+    animation-delay: 2s;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    -ms-animation-iteration-count: infinite;
+    -o-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+    -moz-animation-direction: alternate;
+    -ms-animation-direction: alternate;
+    -o-animation-direction: alternate;
+    animation-direction: alternate;
 }
 
 .arrowShape:hover {
-    fill: #000000;
-    stroke: #000000;
+    fill: #888888;
     cursor: pointer;
-    -webkit-transition: stroke 0.25s, fill 0.25s;
-    -moz-transition: stroke 0.25s, fill 0.25s;
-    -ms-transition: stroke 0.25s, fill 0.25s;
-    -o-transition: stroke 0.25s, fill 0.25s;
-    transition: stroke 0.25s, fill 0.25s;
+    -webkit-transition: fill 0.25s;
+    -moz-transition: fill 0.25s;
+    -ms-transition: fill 0.25s;
+    -o-transition: fill 0.25s;
+    transition: fill 0.25s;
+    -webkit-animation: paused;
+    -moz-animation: paused;
+    -ms-animation: paused;
+    -o-animation: paused;
+    animation: paused;
 }
+
+@keyframes arrowpulse {
+    from {fill: #ffffff;}
+    to {fill: #888888;}
+}
+
+
+
 
 @media screen and (min-width: 980px) and (min-height: 980px) {
     body {
@@ -84,7 +128,8 @@ body {
     }
 
     .arrow {
-        top: 40%;           
+        top: 40%;
+        margin: 0px;           
     }
 
     .right {

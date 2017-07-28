@@ -22,50 +22,52 @@ function enableTransitions(module) {
         });
     }    
 
-
     // Set up states
     var states = [ 
 
+
         {
             maxZoom : 500,
-            camUpX : -0.55,  
-            camUpY : 0.74,
-            camUpZ : 0.39,
-            camX : -84,
+            camUpX : -0.11,  
+            camUpY : 0.79,
+            camUpZ : 0.61,            
+            camX : -4,
             camY : 193,
-            camZ : 40129,
-            targX : 21,
-            targY : 193,
-            targZ : 40041,            
-            cas9X : 15,
-            cas9Y : 200,
-            cas9Z : 40015,
-            rnaX : 50,
-            rnaY : 200,
-            rnaZ : 40050, 
+            camZ : 40148,
+            targX : 6,
+            targY : 200,
+            targZ : 40000,              
+            cas9X : -30,
+            cas9Y : 210,
+            cas9Z : 40000,
+            rnaX : 30,
+            rnaY : 220,
+            rnaZ : 40000, 
             cas9Conf : 0,
             rnaConf: 0,
+            nucMaskOpa: 1,
         },
 
         {
             maxZoom : 500,
-            camUpX : -0.55,  
-            camUpY : 0.74,
-            camUpZ : 0.39,            
-            camX : -100,
-            camY : 186,
-            camZ : 40074,
+            camUpX : -0.11,  
+            camUpY : 0.79,
+            camUpZ : 0.61,            
+            camX : -2,
+            camY : 193,
+            camZ : 40148,
             targX : 0,
             targY : 200,
             targZ : 40000,            
             cas9X : 0,
-            cas9Y : 200,
+            cas9Y : 210,
             cas9Z : 40000,
             rnaX : 0,
-            rnaY : 200,
+            rnaY : 210,
             rnaZ : 40000, 
             cas9Conf : 1,
             rnaConf: 0,
+            nucMaskOpa: 1,
         },
 
         {   
@@ -87,6 +89,7 @@ function enableTransitions(module) {
             rnaZ : 40000, 
             cas9Conf : 1,
             rnaConf: 0,
+            nucMaskOpa: 0,
         },
 
         {
@@ -107,7 +110,8 @@ function enableTransitions(module) {
             rnaY : 0,
             rnaZ : 7000, 
             cas9Conf : 1,
-            rnaConf: 0,            
+            rnaConf: 0,
+            nucMaskOpa: 0,            
         },
 
         {
@@ -128,6 +132,7 @@ function enableTransitions(module) {
             rnaY : 0,
             rnaZ : 0, 
             cas9Conf : 1,//nr 5
+            nucMaskOpa: 0,
             dnaX: 50,//50
             dnaY: 40,//40
             dnaZ: -30,//-30
@@ -431,6 +436,7 @@ function enableTransitions(module) {
             module.cas9Confs['4zt0'].brownianDisplacement = module.cas9Confs['4cmp'].brownianDisplacement;
             module.cas9Confs['5f9r'].brownianDisplacement = module.cas9Confs['4cmp'].brownianDisplacement; 
         }),
+        nucMaskOpa : (function(v) {module.nucleusMask.children[0].material.opacity = v;}),
 
         dnaX : (function(v) {module.dna.position.x = v;}),
         dnaY : (function(v) {module.dna.position.y = v;}),
@@ -508,6 +514,7 @@ function enableTransitions(module) {
             rnaY : module.rna.position.y,
             rnaZ : module.rna.position.z, 
             cas9Conf : (module.cas9Confs['4cmp'].visible)   ?   0   :   (module.cas9Confs['4zt0'].visible?1:2),   
+            nucMaskOpa : module.nucleusMask.children[0].material.opacity,
             dnaX : module.dna.position.x,
             dnaY : module.dna.position.y,
             dnaZ : module.dna.position.z,
@@ -531,7 +538,7 @@ function enableTransitions(module) {
                 requiredModifiers.push(key);
             }
         })
-        console.log('Tweening', requiredModifiers.length, 'parameters.');
+        //console.log('Tweening', requiredModifiers.length, 'parameters.');
 
         // Setup the Tween
         tween = new TWEEN.Tween(origin).to(target, time*1000);

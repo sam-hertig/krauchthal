@@ -2,7 +2,15 @@ function loadCas9(module) {
 
     var scale = 10;
     var center = new THREE.Vector3(0, 0, 0);
+    var res = isMobileDevice() ? 'lo' : 'hi';
 
+    
+    function isMobileDevice() {
+        var smallScreen = (screen.width < 1280);
+        var hasWinOrient = (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+        return smallScreen || hasWinOrient;
+    };
+    
     function loadMolProm(url) {
         return new Promise(function(succeed, fail) {
             var loader = new THREE.JSONLoader();
@@ -20,7 +28,7 @@ function loadCas9(module) {
         })
     } 
 
-    loadMolProm('models/crisprV5.1_hires_4cmp.json').then(function(geom_mats_obj) {
+    loadMolProm('models/crisprV5.1_'+res+'res_4cmp.json').then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
         //var mol = new THREE.Object3D();
         //mol.visible = false;
@@ -31,19 +39,14 @@ function loadCas9(module) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, module.materials.rnaMat1);
         //var mol = new THREE.Object3D();
         module.rna.add(mol);
-    //     return loadMolProm('models/crisprV5.1_dna.json');
-    // }).then(function(geom_mats_obj) {
-    //     var mol = new THREE.Mesh(geom_mats_obj.geom, module.materials.rnaMat1);
-    //     //var mol = new THREE.Object3D();
-    //     module.rna.add(mol);
-        return loadMolProm('models/crisprV5.1_hires_4zt0.json');
+        return loadMolProm('models/crisprV5.1_'+res+'res_4zt0.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
         //var mol = new THREE.Object3D();
         mol.visible = false;
         module.cas9.add(mol);
         module.cas9Confs['4zt0'] = mol;
-        return loadMolProm('models/crisprV5.1_hires_5f9r.json');
+        return loadMolProm('models/crisprV5.1_'+res+'res_5f9r.json');
     }).then(function(geom_mats_obj) {
         var mol = new THREE.Mesh(geom_mats_obj.geom, geom_mats_obj.mats);
         //var mol = new THREE.Object3D();

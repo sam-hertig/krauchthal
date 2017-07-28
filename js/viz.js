@@ -2,7 +2,7 @@ if (! Detector.webgl) {
     Detector.addGetWebGLMessage();
 }   
 
-var debug = true;
+var debug = false;
 var p5 = new p5();
 
 // Module augmentation pattern:

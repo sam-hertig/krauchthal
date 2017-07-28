@@ -58,8 +58,8 @@ function setup3D(module) {
 
     // Helper Box with transform controls:
     if (debug) {
-        var boxGeom = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-        var boxMat = new THREE.MeshLambertMaterial({color: 0x888888});
+        var boxGeom = new THREE.BoxGeometry(5, 5, 5);
+        var boxMat = new THREE.MeshLambertMaterial({color: 0xFF0000});
         var boxMesh = new THREE.Mesh(boxGeom, boxMat);
         scene.add(boxMesh);
         var control = new THREE.TransformControls(camera, renderer.domElement);
@@ -127,17 +127,22 @@ function setup3D(module) {
         });
         return caps;
     }
+
+    // Create mask for nucleus:
+    var nucleusMask = module.createFogCaps([new THREE.Vector3(0,0,10000)], 50000);
+    scene.add(nucleusMask);
+    module.nucleusMask = nucleusMask;
   
     // Loading manager
     var storyBox = document.getElementById("storytext");
-    var nrOfItems = 17;
+    var nrOfItems = 18;
     THREE.DefaultLoadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
         // console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
         storyBox.innerHTML = "Visualization loading... ("+Math.round(100*itemsLoaded/nrOfItems)+"%)"
         if (itemsLoaded === nrOfItems) {
             setTimeout(function () {
                 storyBox.innerHTML = module.storyBoxContents[0];   
-            }, 200);
+            }, 0); //200
         }
     };
 

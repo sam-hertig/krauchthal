@@ -151,51 +151,56 @@
 
     <body>
 
-        <!-- Three.js canvas -->
-        <div id="webgl-container"></div>
+        <div class="wrap">
 
-        <!-- Arrows -->
-        <svg version="1.1" class="arrow right" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="75px" height="96px" viewBox="0 0 75 96">
-            <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96"/>
-        </svg>
-        <svg version="1.1" class="arrow left" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="75px" height="96px" viewBox="0 0 75 96">
-            <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96"/>
-        </svg>
+            <!-- Three.js canvas -->
+            <div id="webgl-container"></div>
 
-        <!-- Textboxes -->
-        <div class="flex-container">                     
-        </div>
-        <div class="story-container">
-            <div class="textbox" id="storytext">
-                Visualization loading... (0%)
+            <!-- Arrows -->
+            <svg version="1.1" class="arrow right" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="75px" height="96px" viewBox="0 0 75 96">
+                <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96"/>
+            </svg>
+            <svg version="1.1" class="arrow left" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="75px" height="96px" viewBox="0 0 75 96">
+                <polygon class="arrowShape" points="75,48 27.1,0 27.1,28.2 0,28.2 0,67.7 27.1,67.7 27.1,96"/>
+            </svg>
+
+            <!-- Textboxes -->
+            <div class="flex-container">                     
             </div>
+            <div class="story-container">
+                <div class="textbox" id="storytext">
+                    Visualization loading... (0%)
+                </div>
+            </div>
+            <div class='credits-container'>
+                <a href='http://www.samhertig.com' class='credits' target='blank'>© 2017 by Hertig Visualizations</a>
+            </div>    
+
+            <!-- Three.js general -->
+            <script src="jsLib/three.min.js"></script>
+            <script src="jsLib/TrackballControls.js"></script>
+            <script src="jsLib/Detector.js"></script>
+            <script src="jsLib/stats.min.js"></script>
+            <script src="jsLib/TransformControls.js"></script>
+            
+            <!-- Other libraries -->
+            <script src="jsLib/p5.min.js"></script>
+            <script src="jsLib/Tween.js"></script>
+
+            <!-- JS Main -->
+            <script src="js/setup3D.js"></script>
+            <script src="js/setupMaterials.js"></script>
+            <script src="js/loadCas9.js"></script>
+            <script src="js/createNucleicAcids.js"></script>
+            <script src="js/createNucleus.js"></script>
+            <script src="js/createAmbiance.js"></script>
+            <script src="js/addText.js"></script>
+            <script src="js/enableTransitions.js"></script>
+            <script src="js/run.js"></script>
+            <script src="js/viz.js"></script>
+
+
         </div>
-        <div class='credits-container'>
-            <a href='http://www.samhertig.com' class='credits' target='blank'>© 2017 by Hertig Visualizations</a>
-        </div>    
-
-        <!-- Three.js general -->
-        <script src="jsLib/three.min.js"></script>
-        <script src="jsLib/TrackballControls.js"></script>
-        <script src="jsLib/Detector.js"></script>
-        <script src="jsLib/stats.min.js"></script>
-        <script src="jsLib/TransformControls.js"></script>
-        
-        <!-- Other libraries -->
-        <script src="jsLib/p5.min.js"></script>
-        <script src="jsLib/Tween.js"></script>
-
-        <!-- JS Main -->
-        <script src="js/setup3D.js"></script>
-        <script src="js/setupMaterials.js"></script>
-        <script src="js/loadCas9.js"></script>
-        <script src="js/createNucleicAcids.js"></script>
-        <script src="js/createNucleus.js"></script>
-        <script src="js/createAmbiance.js"></script>
-        <script src="js/addText.js"></script>
-        <script src="js/enableTransitions.js"></script>
-        <script src="js/run.js"></script>
-        <script src="js/viz.js"></script>
 
     </body>
 

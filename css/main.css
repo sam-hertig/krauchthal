@@ -1,5 +1,6 @@
 html {
-    -webkit-text-size-adjust: none; /* Prevent font scaling in landscape */
+    -webkit-text-size-adjust: none; /*Prevent font scaling in landscape*/
+    height: 100%; /*Prevent weird autoscroll upon device orientation change on iOS*/
 }
 
 body {
@@ -8,13 +9,13 @@ body {
     font-family: 'Muli', sans-serif;
     color: black;
     font-weight: 300;
+    height: 100%; /*Prevent weird autoscroll upon device orientation change on iOS*/
 }
 
-/*canvas {
-    display: block;  fix necessary to remove space at bottom of canvas 
-    height: 100%;
-    width: 100%;
-}*/
+.wrap {
+    height: 100%; /*Prevent weird autoscroll upon device orientation change on iOS*/
+    overflow: hidden; /*Prevent weird autoscroll upon device orientation change on iOS*/
+}
 
 .arrow {
     margin: 10px;

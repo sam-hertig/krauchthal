@@ -34,7 +34,7 @@ function setup3D(module) {
     // Camera Controls
     var controls = new THREE.TrackballControls(camera, renderer.domElement);
     controls.zoomSpeed = 0.5;
-    controls.maxDistance = 1000; 
+    controls.maxDistance = 1000; //handled by transitions
     controls.noPan = debug ? false : true;      
     
     // Resize

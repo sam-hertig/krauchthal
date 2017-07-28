@@ -88,48 +88,6 @@ function loadCas9(module) {
             }
         });
 
-   //      if (debug) {
-   //      	var control = new THREE.TransformControls(module.camera, module.renderer.domElement);
-   //      	control.attach(module.cas9);
-   //      	module.scene.add(control);
-			// window.addEventListener( 'keydown', function ( event ) {
-			// 	switch ( event.keyCode ) {
-			// 		case 81: // Q
-			// 			control.setSpace( control.space === "local" ? "world" : "local" );
-			// 			break;
-			// 		case 17: // Ctrl
-			// 			control.setTranslationSnap( 100 );
-			// 			control.setRotationSnap( THREE.Math.degToRad( 15 ) );
-			// 			break;
-			// 		case 87: // W
-			// 			control.setMode( "translate" );
-			// 			break;
-			// 		case 69: // E
-			// 			control.setMode( "rotate" );
-			// 			break;
-			// 		case 82: // R
-			// 			control.setMode( "scale" );
-			// 			break;
-			// 		case 187:
-			// 		case 107: // +, =, num+
-			// 			control.setSize( control.size + 0.1 );
-			// 			break;
-			// 		case 189:
-			// 		case 109: // -, _, num-
-			// 			control.setSize( Math.max( control.size - 0.1, 0.1 ) );
-			// 			break;
-			// 	}
-			// });
-			// window.addEventListener( 'keyup', function ( event ) {
-			// 	switch ( event.keyCode ) {
-			// 		case 17: // Ctrl
-			// 			control.setTranslationSnap( null );
-			// 			control.setRotationSnap( null );
-			// 			break;
-			// 	}
-			// });        	    
-   //      }
-
         // Finalize
         module.scene.add(module.cas9);
         module.scene.add(module.rna);

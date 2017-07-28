@@ -57,15 +57,51 @@ function setup3D(module) {
     }
 
     // Helper Box with transform controls:
-    if (false) {
+    if (debug) {
         var boxGeom = new THREE.BoxGeometry(0.5, 0.5, 0.5);
         var boxMat = new THREE.MeshLambertMaterial({color: 0x888888});
         var boxMesh = new THREE.Mesh(boxGeom, boxMat);
         scene.add(boxMesh);
-        var transControls = new THREE.TransformControls(camera, renderer.domElement);
-        transControls.attach(boxMesh);
-        scene.add(transControls);    
+        var control = new THREE.TransformControls(camera, renderer.domElement);
+        control.attach(boxMesh);
+        scene.add(control);    
         module.box = boxMesh;
+        window.addEventListener( 'keydown', function ( event ) {
+            switch ( event.keyCode ) {
+                case 81: // Q
+                    control.setSpace( control.space === "local" ? "world" : "local" );
+                    break;
+                case 17: // Ctrl
+                    control.setTranslationSnap( 100 );
+                    control.setRotationSnap( THREE.Math.degToRad( 15 ) );
+                    break;
+                case 87: // W
+                    control.setMode( "translate" );
+                    break;
+                case 69: // E
+                    control.setMode( "rotate" );
+                    break;
+                case 82: // R
+                    control.setMode( "scale" );
+                    break;
+                case 187:
+                case 107: // +, =, num+
+                    control.setSize( control.size + 0.1 );
+                    break;
+                case 189:
+                case 109: // -, _, num-
+                    control.setSize( Math.max( control.size - 0.1, 0.1 ) );
+                    break;
+            }
+        });
+        window.addEventListener( 'keyup', function ( event ) {
+            switch ( event.keyCode ) {
+                case 17: // Ctrl
+                    control.setTranslationSnap( null );
+                    control.setRotationSnap( null );
+                    break;
+            }
+        });              
     }    
 
     // Helper function for creating white sprites that can mask unwanted spots
@@ -104,7 +140,6 @@ function setup3D(module) {
             }, 200);
         }
     };
- 
 
     // Add properties to module:
     module.clock = clock;

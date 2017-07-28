@@ -15,7 +15,7 @@ function addText(module) {
 
         "This stochastic search starts with Cas9 trying to identify a specific sequence, the PAM-sequence (Protospacer Adjacent Motif), on the target DNA.",
 
-        "The PAM sequence on the target DNA binds to <span class='pamdomain'>the PAM-interacting domain (light blue)</span> on Cas9. Binding of the target DNA to Cas9 is accompanied by <a href='http://science.sciencemag.org/content/351/6275/867' target='blank'>another conformational change in Cas9</a>.",
+        "The PAM sequence on the target DNA binds to <span class='pamdomain'>the PAM-interacting domain (lilac)</span> on Cas9. Binding of the target DNA to Cas9 is accompanied by <a href='http://science.sciencemag.org/content/351/6275/867' target='blank'>another conformational change in Cas9</a>.",
 
         "The bases upstream of the PAM-sequence on the DNA are now in close proximity to the gRNA.",
 
@@ -23,7 +23,7 @@ function addText(module) {
 
         "Proper DNA-gRNA pairing ensures correct positioning of the DNA for cutting.",
 
-        "<span class='dna1'>The target DNA-strand (purple)</span> is cut by amino acids in <span class='hnhdomain'>the HNH domain (salmon) of Cas9</span>, and <span class='dna2'>the non-target DNA strand (blue)</span> is cut by protein residues in <span class='ruvcdomain'>the RuvC-domain (lilac) of Cas9</span>.",
+        "<span class='dna1'>The target DNA-strand (purple)</span> is cut by amino acids in <span class='hnhdomain'>the HNH domain (salmon) of Cas9</span>, and <span class='dna2'>the non-target DNA strand (blue)</span> is cut by protein residues in <span class='ruvcdomain'>the RuvC-domain (light blue) of Cas9</span>.",
 
         "The gap in the DNA inactivates the corresponding gene. The system can be extended by a custom host DNA fragment, which will get inserted into the gap and thus adding as a new gene. All this can take place in a living cell. <br><br>" +
         "For further resources on the structural basis of the CRISPR/Cas9 system, visit <a href='http://pdb101.rcsb.org/motm/181' target='blank'>the Protein Data Bank.</a> " +

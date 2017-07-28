@@ -55,16 +55,16 @@ function createNucleicAcids(module) {
 
     // Fog caps to mask ends
     var dnaEnds  = [
-        new THREE.Vector3(132.47850306191188, 112.87494579739156, -188.99734163163194),
-        new THREE.Vector3(-132.28641467717367, -212.01072905633762, 52.681448121595665),
+        new THREE.Vector3(28.16, -225.26, 138.92),
+        new THREE.Vector3(-131.19, 104.14, -200.78),
     ];
     var caps = module.createFogCaps(dnaEnds, 300);
     module.dna.add(caps);
 
     // Cutting halos
     var cutPos  = [
-        new THREE.Vector3(2.029, 2.597, 4.479),
-        new THREE.Vector3(-6.263, -1.141, -4.649),
+        new THREE.Vector3(4.885, 2.436, 2.508),
+        new THREE.Vector3(-5.228, -4.447, 5.585),
     ];
     var cutHalos = module.createFogCaps(cutPos, 4, "textures/cutHalo.png");
     cutHalos.children[0].material.opacity = 0;
@@ -76,53 +76,8 @@ function createNucleicAcids(module) {
     module.dna.brownianJumpiness = 0.5;     
     module.scene.add(module.dna);    
 
-    if (debug) {
-        var control = new THREE.TransformControls(module.camera, module.renderer.domElement);
-        control.attach(module.dna);
-        module.scene.add(control);
-        window.addEventListener( 'keydown', function ( event ) {
-            switch ( event.keyCode ) {
-                case 81: // Q
-                    control.setSpace( control.space === "local" ? "world" : "local" );
-                    break;
-                case 17: // Ctrl
-                    control.setTranslationSnap( 100 );
-                    control.setRotationSnap( THREE.Math.degToRad( 15 ) );
-                    break;
-                case 87: // W
-                    control.setMode( "translate" );
-                    break;
-                case 69: // E
-                    control.setMode( "rotate" );
-                    break;
-                case 82: // R
-                    control.setMode( "scale" );
-                    break;
-                case 187:
-                case 107: // +, =, num+
-                    control.setSize( control.size + 0.1 );
-                    break;
-                case 189:
-                case 109: // -, _, num-
-                    control.setSize( Math.max( control.size - 0.1, 0.1 ) );
-                    break;
-            }
-        });
-        window.addEventListener( 'keyup', function ( event ) {
-            switch ( event.keyCode ) {
-                case 17: // Ctrl
-                    control.setTranslationSnap( null );
-                    control.setRotationSnap( null );
-                    break;
-            }
-        });             
-    }
-
-
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    
     /**
      * Basic function to create DNA double helix geometries
      */

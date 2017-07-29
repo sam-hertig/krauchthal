@@ -3,7 +3,7 @@ if (! Detector.webgl) {
 }   
 
 var debug = false;
-var p5 = new p5();
+var p5 = new p5(function(){}, document.getElementById('wrap'));
 
 // Module augmentation pattern:
 var viz = {};

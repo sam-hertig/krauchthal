@@ -5,7 +5,8 @@ if (! Detector.webgl) {
 var debug = false;
 var p5 = new p5(function(){}, document.getElementById('wrap'));
 
-// Module augmentation pattern:
+// TO DO: Use Webpack, and possibly angular/react
+
 var viz = {};
 viz = setup3D(viz);
 viz = setupMaterials(viz);
